@@ -1,0 +1,10 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO v2.4-alpha1\n"
+"PO-Revision-Date: 2013-02-26T16:24:49\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: EN\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
