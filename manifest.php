@@ -10,7 +10,7 @@ return array(
 	'name' => 'ltiDeliveryProvider',
 	'description' => 'LTI Delivery Tool Provider',
 	'version' => '0.8',
-	'author' => 'CRP Henri Tudor',
+	'author' => 'Open Assessment Technologies',
 	'dependencies' => array('taoDelivery', 'ltiProvider'),
 	'classLoaderPackages' => array(
 		dirname(__FILE__).'/actions/'
