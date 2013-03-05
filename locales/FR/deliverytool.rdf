@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     @sourceLanguage EN
-    @targetLanguage FI
+    @targetLanguage FR
 -->
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xml:base="http://www.tao.lu/Ontologies/TAOLTI.rdf#">
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery">
     <!--
     @sourceLanguage EN
-    @targetLanguage FI
+    @targetLanguage FR
     @source LTI Delivery Execution Tool
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
     @predicate http://www.w3.org/2000/01/rdf-schema#label
     -->
-    <rdfs:label xml:lang="FI"><![CDATA[LTI Delivery Execution Tool]]></rdfs:label>
+    <rdfs:label xml:lang="FR"><![CDATA[LTI Delivery Execution Tool]]></rdfs:label>
     <!--
     @sourceLanguage EN
-    @targetLanguage FI
+    @targetLanguage FR
     @source Tool to allow test takers to take a delivery from within an tool consumer.
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
     @predicate http://www.w3.org/2000/01/rdf-schema#comment
     -->
-    <rdfs:comment xml:lang="FI"><![CDATA[Tool to allow test takers to take a delivery from within an tool consumer.]]></rdfs:comment>
+    <rdfs:comment xml:lang="FR"><![CDATA[Tool to allow test takers to take a delivery from within an tool consumer.]]></rdfs:comment>
   </rdf:Description>
 </rdf:RDF>
