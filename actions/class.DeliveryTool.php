@@ -8,31 +8,31 @@
  */
 class ltiDeliveryProvider_actions_DeliveryTool extends ltiProvider_actions_ToolModule {
 	
-	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTITool';
-	
-	public function __construct() {
-		parent::__construct();		
+	protected function getToolResource() {
+		return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getToolResource();
 	}
 	
 	private function getDelivery() {
 		$returnValue = null;
 		if ($this->hasRequestParameter('delivery')) {
 			$returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
+		} else {
+			$returnValue = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
 		}
 		return $returnValue;
 	}
 	
-	public function launch() {
+	protected function run() {
 		
 		$delivery = $this->getDelivery();
 		
 		if (is_null($delivery)) {
-			if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'selectDelivery')) {
+			if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
 				// user authorised to select the Delivery
-				$this->redirect(tao_helpers_Uri::url('selectDelivery', 'LinkConfiguration', null, $param));
+				$this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
 			} else {
 				// user NOT authorised to select the Delivery
-				$this->setView('missing.tpl');
+				$this->returnError(__('This tool has not yet been configured, please contact your instructor'), false);
 			}
 		} else {
 			$processDefinition = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_PROCESS));
@@ -42,9 +42,43 @@ class ltiDeliveryProvider_actions_DeliveryTool extends ltiProvider_actions_ToolM
 			
 			$newProcessExecution = taoDelivery_models_classes_DeliveryService::singleton()->initDeliveryExecution($processDefinition, $subject);
 	
-			$param = array('processUri' => $newProcessExecution->getUri());
-			$this->redirect(tao_helpers_Uri::url('index', 'ProcessBrowser', 'taoDelivery', $param));
+			if (tao_helpers_funcACL_funcACL::hasAccess('taoDelivery', 'ProcessBrowser', 'index')) {
+				$this->startResumeDelivery($delivery);
+			} elseif (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
+				$this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
+			} else {
+				$this->returnError(__('Access to this functionality is restricted to students'), false);
+			}
 		}
+	}
+	
+	protected function startResumeDelivery($delivery) {
+			$processDefinition = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_PROCESS));
+
+			$userService = taoDelivery_models_classes_UserService::singleton();
+			$subject = $userService->getCurrentUser();
+			
+			// find existing execution
+			$activityExecutionClass = new core_kernel_classes_Class(CLASS_ACTIVITY_EXECUTION);
+			$currentUserActivityExecutions = $activityExecutionClass->searchInstances(array(
+				PROPERTY_ACTIVITY_EXECUTION_CURRENT_USER => $subject->getUri(),
+			), array('like'=>false));
+			$param = null;
+			foreach ($currentUserActivityExecutions as $actExec) {
+				$procExec = $actExec->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_ACTIVITY_EXECUTION_PROCESSEXECUTION));
+				$procDef = $procExec->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_PROCESSINSTANCES_EXECUTIONOF));
+				if ($procDef->getUri() == $processDefinition->getUri()) {
+					$param = array('processUri' => $procExec->getUri(), 'activityUri' => $actExec->getUri());
+					break;
+				} 
+			}
+			// non found, spawn new
+			if (is_null($param)) {
+				$newProcessExecution = taoDelivery_models_classes_DeliveryService::singleton()->initDeliveryExecution($processDefinition, $subject);
+				$param = array('processUri' => $newProcessExecution->getUri());
+			}
+			$this->redirect(tao_helpers_Uri::url('index', 'ProcessBrowser', 'taoDelivery', $param));
+			
 	}
 	
 }

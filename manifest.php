@@ -17,6 +17,7 @@ return array(
 	 ),
 	'models' => array(
 	 	'http://www.tao.lu/Ontologies/TAOLTI.rdf',
+		'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
 	 ),
 	'install' => array(
 		'checks' => array(
@@ -24,6 +25,7 @@ return array(
 		),
 		'rdf' => array(
 			dirname(__FILE__). '/models/ontology/deliverytool.rdf',
+			dirname(__FILE__). '/models/ontology/ims_membership.rdf'
 		)
 	),
 	'constants' => array(
