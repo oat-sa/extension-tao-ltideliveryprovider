@@ -1,7 +1,7 @@
 <?include(TAO_TPL_PATH.'layout_header.tpl')?>
 <br />
 <div class="ui-widget-header ui-state-default ui-corner-top">
-	<b><?=get_data('treeName')?></b>
+	<b><?=__('Please select a delivery for %s', get_data('linkTitle'))?></b>
 </div>
 <div class="ui-widget-content ui-corner-bottom">
 	<div id="tree-chooser" ></div>
@@ -23,8 +23,6 @@
 				subClassAction: false,
 				deleteAction: false,
 				duplicateAction: false,
-				instanceClass: "node-<?=get_data('instanceName')?>",
-				instanceName: "<?=get_data('instanceName')?>"
 			});
 		});
 	});
