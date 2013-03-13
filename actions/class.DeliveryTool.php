@@ -1,38 +1,28 @@
 <?php
-/*  
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
- * Copyright (c) 2013 (original work) Open Assessment Techonologies SA (under the project TAO-PRODUCT);
- *               
- * 
- */
-?>
-<?php
 /**
  * 
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
- * @package filemanager
- * @subpackage action
+ * @package ltiDeliveryProvider
+ * @subpackage actions
  */
 class ltiDeliveryProvider_actions_DeliveryTool extends ltiProvider_actions_ToolModule {
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see ltiProvider_actions_ToolModule::getToolResource()
+	 */
 	protected function getToolResource() {
 		return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getToolResource();
 	}
 	
+	/**
+	 * Returns the delivery associated with the current link
+	 * either from url or from the remote_link if configured
+	 * returns null if none found
+	 * 
+	 * @return core_kernel_classes_Resource
+	 */
 	private function getDelivery() {
 		$returnValue = null;
 		if ($this->hasRequestParameter('delivery')) {
@@ -43,6 +33,10 @@ class ltiDeliveryProvider_actions_DeliveryTool extends ltiProvider_actions_ToolM
 		return $returnValue;
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see ltiProvider_actions_ToolModule::run()
+	 */
 	protected function run() {
 		
 		$delivery = $this->getDelivery();
@@ -73,7 +67,13 @@ class ltiDeliveryProvider_actions_DeliveryTool extends ltiProvider_actions_ToolM
 		}
 	}
 	
-	protected function startResumeDelivery($delivery) {
+	/**
+	 * Resumes the delivery if the current user has already an active execution of the delivery
+	 * or alternatively starts a new ProcessExecution and redirects the user to the processBrowser
+	 * 
+	 * @param core_kernel_classes_Resource $delivery
+	 */
+	protected function startResumeDelivery(core_kernel_classes_Resource $delivery) {
 			$processDefinition = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_PROCESS));
 
 			$userService = taoDelivery_models_classes_UserService::singleton();
@@ -98,6 +98,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends ltiProvider_actions_ToolM
 				$newProcessExecution = taoDelivery_models_classes_DeliveryService::singleton()->initDeliveryExecution($processDefinition, $subject);
 				$param = array('processUri' => $newProcessExecution->getUri());
 			}
+			$param['allowControl'] = false;
 			$this->redirect(tao_helpers_Uri::url('index', 'ProcessBrowser', 'taoDelivery', $param));
 			
 	}
