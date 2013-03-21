@@ -33,9 +33,6 @@ return array(
 	'version' => '0.8',
 	'author' => 'Open Assessment Technologies',
 	'dependencies' => array('taoDelivery', 'ltiProvider'),
-	'classLoaderPackages' => array(
-		dirname(__FILE__).'/actions/'
-	 ),
 	'models' => array(
 	 	'http://www.tao.lu/Ontologies/TAOLTI.rdf',
 		'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
