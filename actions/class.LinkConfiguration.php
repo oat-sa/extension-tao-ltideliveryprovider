@@ -53,9 +53,7 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 		$link = new core_kernel_classes_Resource($this->getRequestParameter('link'));
 		$delivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 		$link->editPropertyValues(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY), $delivery);
-		echo '<script language="javascript">'
-				.'document.location.reload()'
-			.'</script>';
+		echo '<script language="javascript">document.location.reload()</script>';
 		//echo json_encode(array('message' => __('Sequence saved successfully')));;
 	}
 	
