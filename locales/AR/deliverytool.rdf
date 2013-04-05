@@ -22,4 +22,32 @@
     -->
     <rdfs:comment xml:lang="AR"><![CDATA[Tool to allow test takers to take a delivery from within an tool consumer.]]></rdfs:comment>
   </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#DeliveryToolLink">
+    <!--
+    @sourceLanguage EN
+    @targetLanguage AR
+    @source LTI delivery tool link
+    @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#DeliveryToolLink
+    @predicate http://www.w3.org/2000/01/rdf-schema#label
+    -->
+    <rdfs:label xml:lang="AR"><![CDATA[LTI delivery tool link]]></rdfs:label>
+    <!--
+    @sourceLanguage EN
+    @targetLanguage AR
+    @source Link between delivery Tool and Consumer
+    @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#DeliveryToolLink
+    @predicate http://www.w3.org/2000/01/rdf-schema#comment
+    -->
+    <rdfs:comment xml:lang="AR"><![CDATA[Link between delivery Tool and Consumer]]></rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery">
+    <!--
+    @sourceLanguage EN
+    @targetLanguage AR
+    @source Linked delivery
+    @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery
+    @predicate http://www.w3.org/2000/01/rdf-schema#label
+    -->
+    <rdfs:label xml:lang="AR"><![CDATA[Linked delivery]]></rdfs:label>
+  </rdf:Description>
 </rdf:RDF>

@@ -1,25 +1,4 @@
 <?php
-/*  
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
- * Copyright (c) 2013 (original work) Open Assessment Techonologies SA (under the project TAO-PRODUCT);
- *               
- * 
- */
-?>
-<?php
 $GLOBALS['__l10n']["A formated text"]="En formaterad text";
 $GLOBALS['__l10n']["A long text"]="En lång text";
 $GLOBALS['__l10n']["A multiple choice list"]="En flervalsfrågelista";
@@ -28,11 +7,11 @@ $GLOBALS['__l10n']["A short text"]="En kort text";
 $GLOBALS['__l10n']["A single choice list"]="En envalslista";
 $GLOBALS['__l10n']["A single choice long list"]="En lång envalsfrågelista";
 $GLOBALS['__l10n']["Access denied. Please renew your authentication!"]="Åtkomst nekad";
-$GLOBALS['__l10n']["actions"]="handlingar";
 $GLOBALS['__l10n']["Actions"]="Funktioner";
+$GLOBALS['__l10n']["actions"]="handlingar";
 $GLOBALS['__l10n']["Add"]="Lägg till";
 $GLOBALS['__l10n']["Add / Edit lists"]="Lägg till/redigera listor";
-$GLOBALS['__l10n']["Add a user"]="Lägg till en användare";
+$GLOBALS['__l10n']["Add a user"]="Lägg till användare";
 $GLOBALS['__l10n']["Add property"]="Lägg till egenskap";
 $GLOBALS['__l10n']["Add the source file"]="Lägg till källfilen";
 $GLOBALS['__l10n']["Advanced Authoring Tool"]="Avancerat skapandeverktyg";
@@ -67,14 +46,14 @@ $GLOBALS['__l10n']["download"]="ladda ner";
 $GLOBALS['__l10n']["Download"]="Ladda ner";
 $GLOBALS['__l10n']["duplicate"]="dublett";
 $GLOBALS['__l10n']["Dynamic date picker"]="Dynamisk datumväljare";
-$GLOBALS['__l10n']["Edit"]="Redigera";
 $GLOBALS['__l10n']["edit"]="redigera";
+$GLOBALS['__l10n']["Edit"]="Redigera";
 $GLOBALS['__l10n']["Edit a user"]="Redigera en användare";
 $GLOBALS['__l10n']["Edit Comment"]="Redigera kommentar";
 $GLOBALS['__l10n']["Edit item comment"]="Redigera modulinnehåll";
 $GLOBALS['__l10n']["Edit user"]="Redigera användare";
-$GLOBALS['__l10n']["Element"]="Beståndsdel";
 $GLOBALS['__l10n']["element"]="element";
+$GLOBALS['__l10n']["Element"]="Beståndsdel";
 $GLOBALS['__l10n']["element deleted"]="element raderat";
 $GLOBALS['__l10n']["Error"]="Fel";
 $GLOBALS['__l10n']["Error during file import"]="Fel under filimport";
@@ -92,8 +71,8 @@ $GLOBALS['__l10n']["Filters"]="Filter";
 $GLOBALS['__l10n']["Groups"]="Grupper";
 $GLOBALS['__l10n']["Import"]="Import";
 $GLOBALS['__l10n']["Inclusive (AND)"]="Inklusive (OCH)";
-$GLOBALS['__l10n']["Interface language"]="Gränssnittsspråk";
 $GLOBALS['__l10n']["Interface Language"]="Gränssnittsspråk";
+$GLOBALS['__l10n']["Interface language"]="Gränssnittsspråk";
 $GLOBALS['__l10n']["Invalid field length"]="Ogilitigt fältlängd";
 $GLOBALS['__l10n']["Invalid field range"]="Ogiltig radlängd";
 $GLOBALS['__l10n']["Invalid file size"]="Ogiltig filstorlek";
@@ -118,7 +97,9 @@ $GLOBALS['__l10n']["Manage data list"]="Hantera datalista";
 $GLOBALS['__l10n']["Manage deliveries"]="Hantera leveranser";
 $GLOBALS['__l10n']["Manage groups"]="Hantera grupper";
 $GLOBALS['__l10n']["Manage items"]="Hantera frågor";
+$GLOBALS['__l10n']["Manage processes"]="Hantera processer";
 $GLOBALS['__l10n']["Manage result servers"]="Hantera resultatservrar";
+$GLOBALS['__l10n']["Manage roles"]="Hantera roller";
 $GLOBALS['__l10n']["Manage test takers"]="Hantera testtagare";
 $GLOBALS['__l10n']["Manage tests"]="Hantera tester";
 $GLOBALS['__l10n']["Manage users"]="Hantera användare";
@@ -155,6 +136,8 @@ $GLOBALS['__l10n']["Please select the input data format to import"]="Var vänlig
 $GLOBALS['__l10n']["Please select the way to export the data"]="Var vänlig välj metod för att importera data";
 $GLOBALS['__l10n']["Please upload a CSV file formated as defined by the options above."]="Var vänlig ladda upp en CVS-fil formaterad enligt alternativen ovan";
 $GLOBALS['__l10n']["Please upload an RDF file."]="Var vänlig ladda upp en RDF-fil";
+$GLOBALS['__l10n']["Process authoring"]="Processförfattande";
+$GLOBALS['__l10n']["Processes"]="Processes";
 $GLOBALS['__l10n']["Property"]="Egenskaper";
 $GLOBALS['__l10n']["Remove"]="Ta bort";
 $GLOBALS['__l10n']["Rename"]="Döp om";
@@ -167,8 +150,8 @@ $GLOBALS['__l10n']["Right click the tree to manage your lists"]="Högerklicka p�
 $GLOBALS['__l10n']["Save"]="Spara";
 $GLOBALS['__l10n']["Search"]="Sök";
 $GLOBALS['__l10n']["Search results"]="Sökresultat";
-$GLOBALS['__l10n']["select"]="välj";
 $GLOBALS['__l10n']["Select"]="Välj";
+$GLOBALS['__l10n']["select"]="välj";
 $GLOBALS['__l10n']["Select a language"]="Välj språk";
 $GLOBALS['__l10n']["Select the element destination"]="Välj destination för elementetet";
 $GLOBALS['__l10n']["selected"]="vald";
