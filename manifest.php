@@ -39,7 +39,7 @@ return array(
 	 ),
 	'install' => array(
 		'checks' => array(
-			array('type' => 'CheckFileSystemComponent', 'value' => array('id' => 'fs_ltiDeliveryProvider_includes', 'location' => 'ltiDeliveryProvider/includes', 'rights' => 'r'))
+			array('type' => 'CheckFileSystemComponent', 'value' => array('id' => 'fs_ltiDeliveryProvider_includes', 'location' => 'ltiDeliveryProvider/includes', 'rights' => 'rw'))
 		),
 		'rdf' => array(
 			dirname(__FILE__). '/models/ontology/deliverytool.rdf',
