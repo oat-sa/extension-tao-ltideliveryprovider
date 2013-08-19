@@ -32,7 +32,7 @@ return array(
 	'description' => 'LTI Delivery Tool Provider',
 	'version' => '0.8',
 	'author' => 'Open Assessment Technologies',
-	'dependencies' => array('taoDelivery', 'ltiProvider'),
+	'dependencies' => array('taoDelivery', 'taoLti'),
 	'models' => array(
 	 	'http://www.tao.lu/Ontologies/TAOLTI.rdf',
 		'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'

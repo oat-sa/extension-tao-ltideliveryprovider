@@ -27,7 +27,7 @@
  * @package filemanager
  * @subpackage action
  */
-class ltiDeliveryProvider_actions_DeliveryLinks extends ltiProvider_actions_LinkManagement {
+class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManagement {
 	
 	public function __construct() {
 		parent::__construct(ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton());
