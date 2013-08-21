@@ -10,7 +10,7 @@
 >
 
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery">
-  	<rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOLTI.rdf#LTITool"/>
+  	<rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiOutgoingLink"/>
     <rdfs:label xml:lang="en-US"><![CDATA[LTI Delivery Execution Tool]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Tool to allow test takers to take a delivery from within an tool consumer.]]></rdfs:comment>
     <taolti:ToolService><![CDATA[ltiDeliveryProvider_models_classes_LTIDeliveryTool]]></taolti:ToolService>
