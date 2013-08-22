@@ -141,6 +141,19 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
         	$param = array('processUri' => $newProcessExecution->getUri());
         }
         $param['allowControl'] = false;
+
+        //The result server from LTI context depend on call parameters rather than static result server definition
+        $param['resultServerCallOverrideOptions'] = 
+            array(
+                "type" =>"LTI_Basic_1.1.1",
+                "result_identifier" => "lis_result_sourcedid",
+                "consumer_key" => "oauth_consumer_key",
+                "service_url" => "lis_outcome_service_url",
+                "user_identifier" => "lis_person_sourcedid" //optional
+                );
+        // lis_outcome_service_url This value should not change from one launch to the next and in general,
+        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
+
         $this->redirect(tao_helpers_Uri::url('index', 'ProcessBrowser', 'taoDelivery', $param));
 			
 	}
