@@ -143,7 +143,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
         $param['allowControl'] = false;
 
         //The result server from LTI context depend on call parameters rather than static result server definition
-        $param['resultServerCallOverrideOptions'] = true;
+        $param['resultServerCallOverride'] = true;
         $resultServerCallOptions = array(
                 "type" =>"LTI_Basic_1.1.1",
                 "result_identifier" => "lis_result_sourcedid",
