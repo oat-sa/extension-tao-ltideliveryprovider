@@ -141,7 +141,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
         	$param = array('processUri' => $newProcessExecution->getUri());
         }
         $param['allowControl'] = false;
-
+       //print_r($_POST);die();
         //The result server from LTI context depend on call parameters rather than static result server definition
         $param['resultServerCallOverride'] = true;
         $resultServerCallOptions = array(
@@ -151,6 +151,15 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
                 "service_url" => "lis_outcome_service_url",
                 "user_identifier" => "lis_person_sourcedid" //optional
                 );
+        //temp hack for testing
+          $resultServerCallOptions = array(
+                "type" =>"LTI_Basic_1.1.1",
+                "result_identifier" => $_POST["lis_result_sourcedid"],
+                "consumer_key" => $_POST["oauth_consumer_key"],
+                "service_url" => $_POST["lis_outcome_service_url"],
+                "user_identifier" => $_POST["user_id"] //optional
+                );
+
         $this->initLtiResultServer(new core_kernel_classes_Resource($param["processUri"]), $resultServerCallOptions);
         // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
@@ -172,10 +181,10 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
 
         //a unique identifier for data collected through this delivery execution
         //in the case of LTI, we should use the sourceId
-        $resultIdentifier = (isset($resultServerCallOptions["resultIdentifier"])) ? $resultServerCallOptions["lis_result_sourcedid"] :$deliveryExecution->getUri();
+        $resultIdentifier = (isset($resultServerCallOptions["result_identifier"])) ? $resultServerCallOptions["result_identifier"] :$deliveryExecution->getUri();
         //the dependency to taoResultServer should be re-thinked with respect to a delivery level proxy
-        taoResultServer_models_classes_ResultServerStateFull::singleton()->spawnResult($resultIdentifier);
-
+        taoResultServer_models_classes_ResultServerStateFull::singleton()->spawnResult($deliveryExecution->getUri(), $resultIdentifier);
+        common_Logger::i("Spawning".$resultIdentifier ."related to process execution ".$deliveryExecution->getUri());
         $userIdentifier = (isset($resultServerCallOptions["user_identifier"])) ? $resultServerCallOptions["user_identifier"] :wfEngine_models_classes_UserService::singleton()->getCurrentUser()->getUri();
         //set up the related test taker
         //a unique identifier for the test taker
