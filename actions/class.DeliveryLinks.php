@@ -32,6 +32,35 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
 	public function __construct() {
 		parent::__construct(ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton());
 	}
-	
+    /**
+     * Displays the LTI link for the consumer with respect to the currently selected delviery
+     * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome service impelmentation
+     * @author patrick <patrick@taotesting.com>
+     */
+	public function index(){
+        $feedBackMessage = '';
+        //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
+        $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+        try {
+            $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
+        } catch (Exception $e) {
+            $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
+        }
+        try {
+        $resultServerModel = $resultServer->getUniquePropertyValue(new core_kernel_classes_Property(TAO_RESULTSERVER_MODEL_PROP));
+        } catch (Exception $e) {
+            $feedBackMessage = __("The delivery is associated to an unconfigured result server storage policy ");
+        }
+
+        if ($resultServerModel->getUri() == "http://www.tao.lu/Ontologies/taoLtiBasicOutcome.rdf#LtiResultServerModel") {
+            //$feedBackMessage = __("This is delivery is correctly configured for returning results using LTI Basic outcome Service");
+        } else {
+            $feedBackMessage = __("Notice : In order to use this delivery from an external LTI consumer tool, you will need to configure it with a LTI Basic outcome result server");
+        }
+        
+        parent::index();
+        //rofl
+        echo $feedBackMessage;
+    }
 }
 ?>
