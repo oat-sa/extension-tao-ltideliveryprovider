@@ -31,11 +31,11 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
 
     /**
      * (non-PHPdoc)
-     * @see taoLti_actions_ToolModule::getToolResource()
+     * @see taoLti_actions_ToolModule::getTool()
      */
-    protected function getToolResource()
+    protected function getTool()
     {
-        return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getToolResource();
+        return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton();
     }
 
     /**
@@ -48,9 +48,11 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
     private function getDelivery()
     {
         $returnValue = null;
+        //passed as aprameter
         if ($this->hasRequestParameter('delivery')) {
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
+            // encoded in url
             $rootUrlPath = parse_url(ROOT_URL, PHP_URL_PATH);
             $absPath = parse_url('/' . ltrim($_SERVER['REQUEST_URI'], '/'), PHP_URL_PATH);
             if (substr($absPath, 0, strlen($rootUrlPath)) != $rootUrlPath) {
@@ -64,6 +66,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
                 $params = unserialize(base64_decode($codedUri));
                 $returnValue = new core_kernel_classes_Resource($params['delivery']);
             } else {
+                // stored in link
                 $returnValue = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
             }
         }
@@ -76,9 +79,9 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
      */
     protected function run()
     {
-        $delivery = $this->getDelivery();
+        $compiledDelivery = $this->getDelivery();
         
-        if (is_null($delivery)) {
+        if (is_null($compiledDelivery)) {
             if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
                 // user authorised to select the Delivery
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
@@ -87,13 +90,9 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
                 $this->returnError(__('This tool has not yet been configured, please contact your instructor'), false);
             }
         } else {
-            $processDefinition = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_PROCESS));
             
-            $userService = taoDelivery_models_classes_UserService::singleton();
-            $subject = $userService->getCurrentUser();
-            
-            if (tao_helpers_funcACL_funcACL::hasAccess('taoDelivery', 'ProcessBrowser', 'index')) {
-                $this->startResumeDelivery($delivery);
+            if (tao_helpers_funcACL_funcACL::hasAccess('taoDelivery', 'DeliveryServer', 'resumeDeliveryExecution')) {
+                $this->startResumeDelivery($compiledDelivery);
             } elseif (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
             } else {
@@ -108,71 +107,42 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
      *
      * @param core_kernel_classes_Resource $delivery            
      */
-    protected function startResumeDelivery(core_kernel_classes_Resource $delivery)
+    protected function startResumeDelivery(core_kernel_classes_Resource $compiledDelivery)
     {
-        $processDefinition = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_PROCESS));
-        
-        $userService = taoDelivery_models_classes_UserService::singleton();
-        $subject = $userService->getCurrentUser();
-        
-        // find existing execution
-        $activityExecutionClass = new core_kernel_classes_Class(CLASS_ACTIVITY_EXECUTION);
-        $currentUserActivityExecutions = $activityExecutionClass->searchInstances(array(
-            PROPERTY_ACTIVITY_EXECUTION_CURRENT_USER => $subject->getUri(),
-            PROPERTY_ACTIVITY_EXECUTION_STATUS => INSTANCE_PROCESSSTATUS_STARTED
-        ), array(
-            'like' => false
-        ));
-        $param = null;
-        foreach ($currentUserActivityExecutions as $actExec) {
-            $procExec = $actExec->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_ACTIVITY_EXECUTION_PROCESSEXECUTION));
-            $procDef = $procExec->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_PROCESSINSTANCES_EXECUTIONOF));
-            if ($procDef->getUri() == $processDefinition->getUri()) {
-                $param = array(
-                    'processUri' => $procExec->getUri(),
-                    'activityUri' => $actExec->getUri()
-                );
-                break;
-            }
+        $remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+        $userId = common_session_SessionManager::getSession()->getUserUri();
+        $deliveryExecution = $this->getTool()->getDeliveryExecution($remoteLink, $userId);
+        if (is_null($deliveryExecution)) {
+            $deliveryExecution = taoDelivery_models_classes_DeliveryExecutionService::singleton()->initDeliveryExecution(
+                $compiledDelivery,
+                $userId
+            );
+            $this->getTool()->linkDeliveryExecution($remoteLink, $userId, $deliveryExecution);
         }
-        // non found, spawn new
-        if (is_null($param)) {
-            $newProcessExecution = taoDelivery_models_classes_DeliveryService::singleton()->initDeliveryExecution($processDefinition, $subject);
-        	$param = array('processUri' => $newProcessExecution->getUri());
-        }
-        $param['allowControl'] = false;
-       //print_r($_POST);die();
         //The result server from LTI context depend on call parameters rather than static result server definition
-        $param['resultServerCallOverride'] = true;
-        $resultServerCallOptions = array(
-                "type" =>"LTI_Basic_1.1.1",
-                "result_identifier" => "lis_result_sourcedid",
-                "consumer_key" => "oauth_consumer_key",
-                "service_url" => "lis_outcome_service_url",
-                "user_identifier" => "lis_person_sourcedid" //optional
-                );
-        //temp hack for testing
-          $resultServerCallOptions = array(
-                "type" =>"LTI_Basic_1.1.1",
-                "result_identifier" => $_POST["lis_result_sourcedid"],
-                "consumer_key" => $_POST["oauth_consumer_key"],
-                "service_url" => $_POST["lis_outcome_service_url"],
-                "user_identifier" => $_POST["user_id"] //optional
-                );
-
-        $this->initLtiResultServer(new core_kernel_classes_Resource($param["processUri"]), $resultServerCallOptions);
+        $this->initLtiResultServer($compiledDelivery, $deliveryExecution);
         // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
-
-        $this->redirect(tao_helpers_Uri::url('index', 'ProcessBrowser', 'taoDelivery', $param));
-			
+        
+        $params = array(
+            'uri' => $deliveryExecution->getUri()
+        );
+        $this->redirect(_url('resumeDeliveryExecution', 'DeliveryServer', 'taoDelivery', $params));
 	}
 
-    private function  initLtiResultServer($deliveryExecution, $resultServerCallOptions) {
+    private function  initLtiResultServer($compiledDelivery, $deliveryExecution) {
+        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        $resultServerCallOptions = array(
+            "type" =>"LTI_Basic_1.1.1",
+            "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
+            "consumer_key" => $launchData->getOauthKey(),
+            "service_url" => $launchData->getVariable("lis_outcome_service_url"),
+            "user_identifier" => common_session_SessionManager::getSession()->getUserUri()
+        );
         //starts or resume a taoResultServerStateFull session for results submission
 
         //retrieve the resultServer definition that is related to this delivery to be used
-        $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDelivery($deliveryExecution);
+        $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
         //retrieve the result server definition
         $resultServer = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
         //callOptions are required in the case of a LTI basic storage

@@ -25,6 +25,11 @@ $todefine = array(
 	'INSTANCE_LTITOOL_DELIVERY'		=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery',
 
 	'CLASS_LTI_DELIVERYTOOL_LINK'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#DeliveryToolLink',
-	'PROPERTY_LINK_DELIVERY'		=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery'
+	'PROPERTY_LINK_DELIVERY'		=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery',
+
+    'CLASS_LTI_DELIVERYEXECUTION_LINK'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution',
+    'PROPERTY_LTI_DEL_EXEC_LINK_USER'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser',
+    'PROPERTY_LTI_DEL_EXEC_LINK_LINK'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink',
+    'PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution',
 );
 ?>

@@ -39,4 +39,36 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 		$remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
 		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY));
 	}
+	
+	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
+	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+	    $link = $class->createInstanceWithProperties(array(
+	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
+	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+            PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC => $deliveryExecution
+	    ));
+	    return $link instanceof core_kernel_classes_Resource;
+	}
+	
+	public function getDeliveryExecution(core_kernel_classes_Resource $link, $userUri) {
+	    
+	    $returnValue = null;
+	    
+	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+	    $candidates = $class->searchInstances(array(
+	    	PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
+	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+	    ), array(
+	    	'like' => false
+	    ));
+	    if (count($candidates) > 0) {
+	        if (count($candidates) > 1) {
+	            throw new common_exception_InconsistentData();
+	        }
+	        $link = current($candidates);
+	        $returnValue = $link->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC)); 
+	    } 
+	    return $returnValue;
+	}
+	
 }
