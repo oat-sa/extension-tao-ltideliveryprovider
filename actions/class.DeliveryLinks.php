@@ -58,7 +58,7 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
             $feedBackMessage = __("Notice : In order to use this delivery from an external LTI consumer tool, you will need to configure it with a LTI Basic outcome result server");
         }
         
-        $compiledDelivery = taoDelivery_models_classes_CompilationService::singleton()->getCompiledContent($selectedDelivery);
+        $compiledDelivery = taoDelivery_models_classes_CompilationService::singleton()->getActiveCompilation($selectedDelivery);
         if (is_null($compiledDelivery)) {
             $feedBackMessage = __('Delivery has not been compiled yet');
         } else {
