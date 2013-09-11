@@ -9,17 +9,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "L'accès à cette fonctionnalité est réservé aux étudiants."
 
 msgid "Delivery of this tool: "
-msgstr ""
+msgstr "Délivrance de cet outil : "
 
 msgid "Please select a delivery for %s', get_data('linkTitle"
-msgstr ""
+msgstr "Veuillez sélectionner une délivrance pour %s', get_data('linkTitle"
 
 msgid "Sequence saved successfully"
-msgstr ""
+msgstr "Séquence enregistrée avec succès"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Cet outil n'a pas encore été configuré, veuillez contacter votre instructeur."
 
