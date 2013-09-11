@@ -39,7 +39,8 @@ return array(
 		),
 		'rdf' => array(
 			dirname(__FILE__). '/models/ontology/deliverytool.rdf',
-			dirname(__FILE__). '/models/ontology/ims_membership.rdf'
+			dirname(__FILE__). '/models/ontology/ims_membership.rdf',
+		    dirname(__FILE__). '/models/ontology/aclrole.rdf'
 		)
 	),
 	'constants' => array(

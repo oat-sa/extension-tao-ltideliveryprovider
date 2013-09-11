@@ -91,7 +91,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
             }
         } else {
             
-            if (tao_helpers_funcACL_funcACL::hasAccess('taoDelivery', 'DeliveryServer', 'resumeDeliveryExecution')) {
+            if (tao_helpers_funcACL_funcACL::hasAccess('taoDelivery', 'DeliveryServer', 'runDeliveryExecution')) {
                 $this->startResumeDelivery($compiledDelivery);
             } elseif (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
@@ -127,7 +127,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
         $params = array(
             'uri' => $deliveryExecution->getUri()
         );
-        $this->redirect(_url('resumeDeliveryExecution', 'DeliveryServer', 'taoDelivery', $params));
+        $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, $params));
 	}
 
     private function  initLtiResultServer($compiledDelivery, $deliveryExecution) {
