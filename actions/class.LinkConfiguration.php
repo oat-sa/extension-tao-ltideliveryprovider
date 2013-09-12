@@ -35,6 +35,9 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 	protected function selectDelivery() {
 		
 		$ltiSession = taoLti_models_classes_LtiService::singleton()->getLtiSession();
+		if ($ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
+		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
+		}
 		 
 		$this->setData('dataUrl', tao_helpers_Uri::url('getOntologyData', 'Delivery', 'taoDelivery'));
 		$this->setData('editInstanceUrl', tao_helpers_Uri::url('setDelivery', null, null, array('link' => $ltiSession->getLtiLinkResource()->getUri())));
