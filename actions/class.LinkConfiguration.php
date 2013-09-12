@@ -51,7 +51,8 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 	public function setDelivery() {
 		$link = new core_kernel_classes_Resource($this->getRequestParameter('link'));
 		$delivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-		$link->editPropertyValues(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY), $delivery);
+		$compiled = taoDelivery_models_classes_CompilationService::singleton()->getActiveCompilation($delivery);
+		$link->editPropertyValues(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY), $compiled);
 		echo '<script language="javascript">document.location.reload()</script>';
 		//echo json_encode(array('message' => __('Sequence saved successfully')));;
 	}
@@ -63,13 +64,22 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 	 * Only accessible to LTI instructors
 	 */
 	public function configureDelivery() {
-		$delivery = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
-		if (is_null($delivery)) {
+		$compiledDelivery = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
+		if (is_null($compiledDelivery)) {
 			$this->selectDelivery();
 		} else {
-			$this->setData('delivery', $delivery);			
-			$this->setView('viewDelivery.tpl');
+		    $this->redirect(_url('showDelivery', null, null, array('uri' => $compiledDelivery->getUri())));
 		}
 	}
 	
+	/**
+	 * Displays the currently associated delivery
+	 *
+	 * Only accessible to LTI instructors
+	 */
+	public function showDelivery() {
+	    $delivery = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
+	    $this->setData('delivery', $delivery);
+	    $this->setView('viewDelivery.tpl');
+	}
 }

@@ -50,7 +50,7 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	    return $link instanceof core_kernel_classes_Resource;
 	}
 	
-	public function getDeliveryExecution(core_kernel_classes_Resource $link, $userUri) {
+	protected function getLinkedDeliveryExecution(core_kernel_classes_Resource $link, $userUri) {
 	    
 	    $returnValue = null;
 	    
@@ -69,6 +69,68 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	        $returnValue = $link->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC)); 
 	    } 
 	    return $returnValue;
+	}
+	
+	/**
+	 * Starts or resumes a compiled Delivery and returns
+	 * the active Delivery Execution
+	 * 
+	 * @param core_kernel_classes_Resource $compiledDelivery
+	 * @return core_kernel_classes_Resource
+	 */
+	public function startResumeDelivery(core_kernel_classes_Resource $compiledDelivery) {
+	    
+	    $remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+	    $userId = common_session_SessionManager::getSession()->getUserUri();
+	    $deliveryExecution = $this->getLinkedDeliveryExecution($remoteLink, $userId);
+	    if (is_null($deliveryExecution)) {
+	        $deliveryExecution = taoDelivery_models_classes_DeliveryExecutionService::singleton()->initDeliveryExecution(
+	            $compiledDelivery,
+	            $userId
+	        );
+	        $this->linkDeliveryExecution($remoteLink, $userId, $deliveryExecution);
+	    }
+	    //The result server from LTI context depend on call parameters rather than static result server definition
+	    $this->initLtiResultServer($compiledDelivery, $deliveryExecution);
+	    // lis_outcome_service_url This value should not change from one launch to the next and in general,
+        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
+        return $deliveryExecution;
+        
+	}
+	
+
+	private function initLtiResultServer($compiledDelivery, $deliveryExecution) {
+	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+	    $resultServerCallOptions = array(
+	        "type" =>"LTI_Basic_1.1.1",
+	        "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
+	        "consumer_key" => $launchData->getOauthKey(),
+	        "service_url" => $launchData->getVariable("lis_outcome_service_url"),
+	        "user_identifier" => common_session_SessionManager::getSession()->getUserUri()
+	    );
+	    //starts or resume a taoResultServerStateFull session for results submission
+	
+	    //retrieve the resultServer definition that is related to this delivery to be used
+	    $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
+	    //retrieve the result server definition
+	    $resultServer = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
+	    //callOptions are required in the case of a LTI basic storage
+	
+	    taoResultServer_models_classes_ResultServerStateFull::singleton()->initResultServer($resultServer->getUri(), $resultServerCallOptions);
+	
+	    //a unique identifier for data collected through this delivery execution
+	    //in the case of LTI, we should use the sourceId
+	    $resultIdentifier = (isset($resultServerCallOptions["result_identifier"])) ? $resultServerCallOptions["result_identifier"] :$deliveryExecution->getUri();
+	    //the dependency to taoResultServer should be re-thinked with respect to a delivery level proxy
+	    taoResultServer_models_classes_ResultServerStateFull::singleton()->spawnResult($deliveryExecution->getUri(), $resultIdentifier);
+	    common_Logger::i("Spawning".$resultIdentifier ."related to process execution ".$deliveryExecution->getUri());
+	    $userIdentifier = (isset($resultServerCallOptions["user_identifier"])) ? $resultServerCallOptions["user_identifier"] :wfEngine_models_classes_UserService::singleton()->getCurrentUser()->getUri();
+	    //set up the related test taker
+	    //a unique identifier for the test taker
+	    taoResultServer_models_classes_ResultServerStateFull::singleton()->storeRelatedTestTaker( $userIdentifier);
+	
+	    //a unique identifier for the delivery
+	    taoResultServer_models_classes_ResultServerStateFull::singleton()->storeRelatedDelivery($delivery->getUri());
 	}
 	
 }

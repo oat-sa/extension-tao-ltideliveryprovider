@@ -32,6 +32,7 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
 	public function __construct() {
 		parent::__construct(ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton());
 	}
+	
     /**
      * Displays the LTI link for the consumer with respect to the currently selected delviery
      * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome service impelmentation
