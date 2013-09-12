@@ -7,6 +7,5 @@
   <rdf:Description rdf:about="http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor">
   	<funcacl:grantAccessModule rdf:resource="http://www.tao.lu/Ontologies/taoFuncACL.rdf#m_ltiDeliveryProvider_LinkConfiguration" />
   	<funcacl:grantAccessAction rdf:resource="http://www.tao.lu/Ontologies/taoFuncACL.rdf#a_taoDelivery_Delivery_getOntologyData" />
-  	<funcacl:grantAccessAction rdf:resource="http://www.tao.lu/Ontologies/taoFuncACL.rdf#a_ltiDeliveryProvider_DeliveryTool_showDelivery" />
   </rdf:Description>
  </rdf:RDF>
