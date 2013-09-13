@@ -94,7 +94,8 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
         
         $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
 	    //The result server from LTI context depend on call parameters rather than static result server definition
-	    ltiDeliveryProvider_helpers_ResultServer::initLtiResultServer($delivery, $deliveryExecution, taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData());
+	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        ltiDeliveryProvider_helpers_ResultServer::initLtiResultServer($delivery, $deliveryExecution, $launchData);
 	    // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
         return $deliveryExecution;

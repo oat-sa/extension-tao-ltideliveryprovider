@@ -31,8 +31,8 @@ class ltiDeliveryProvider_helpers_ResultServer
                 "consumer_key" => $launchData->getOauthKey(),
                 "service_url" => $launchData->getVariable("lis_outcome_service_url"),
                 "user_identifier" => common_session_SessionManager::getSession()->getUserUri(),
-	            "user_givenName" => ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_GIVEN)
-	                ? $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_GIVEN)
+	            "user_fullName" => ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_FULL)
+	                ? $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_FULL)
 	                : '')
                 )
             )
@@ -49,7 +49,7 @@ class ltiDeliveryProvider_helpers_ResultServer
         $storage = current($storageImplFromLaunch);
         $storageParameters = $storage["parameters"];
         $launchResultIdentifier = $storageParameters["result_identifier"];
-        $launchUserIdentifier = $storageParameters["user_identifier"];
+        $launchUserIdentifier = ($storageParameters["user_identifier"]=="") ? $storageParameters["user_identifier"] : $storageParameters["user_fullName"];
 
 	    taoResultServer_models_classes_ResultServerStateFull::singleton()->initResultServer($resultServer->getUri(), $storageImplFromLaunch);
 	    $resultIdentifier = (isset($launchResultIdentifier)) ? $launchResultIdentifier :$deliveryExecution->getUri();
