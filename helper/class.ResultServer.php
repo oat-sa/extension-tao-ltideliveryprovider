@@ -23,7 +23,6 @@ class ltiDeliveryProvider_helpers_ResultServer
 {
 
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution, $launchData) {
-	    common_Logger::d("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	    $storageImplFromLaunch = array(
             array(
 	        "implementation" =>"taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
@@ -31,7 +30,10 @@ class ltiDeliveryProvider_helpers_ResultServer
                 "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
                 "consumer_key" => $launchData->getOauthKey(),
                 "service_url" => $launchData->getVariable("lis_outcome_service_url"),
-                "user_identifier" => common_session_SessionManager::getSession()->getUserUri()
+                "user_identifier" => common_session_SessionManager::getSession()->getUserUri(),
+	            "user_givenName" => ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_GIVEN)
+	                ? $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_GIVEN)
+	                : '')
                 )
             )
 	    );
