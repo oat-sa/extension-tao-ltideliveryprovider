@@ -23,7 +23,7 @@ class ltiDeliveryProvider_helpers_ResultServer
 {
 
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution, $launchData) {
-	    $storageImplFromLaunch = array(
+	      $storageImplFromLaunch = array(
             array(
 	        "implementation" =>"taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
 	        "parameters" => array(
@@ -37,7 +37,7 @@ class ltiDeliveryProvider_helpers_ResultServer
                 )
             )
 	    );
-        
+
 	    try {
         $resultServer = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
         } catch (Exception $e) {
@@ -50,13 +50,15 @@ class ltiDeliveryProvider_helpers_ResultServer
         $storageParameters = $storage["parameters"];
         $launchResultIdentifier = $storageParameters["result_identifier"];
         $launchUserIdentifier = ($storageParameters["user_identifier"]=="") ? $storageParameters["user_identifier"] : $storageParameters["user_fullName"];
+       
 
 	    taoResultServer_models_classes_ResultServerStateFull::singleton()->initResultServer($resultServer->getUri(), $storageImplFromLaunch);
 	    $resultIdentifier = (isset($launchResultIdentifier)) ? $launchResultIdentifier :$deliveryExecution->getUri();
 	    taoResultServer_models_classes_ResultServerStateFull::singleton()->spawnResult($deliveryExecution->getUri(), $resultIdentifier);
 	    common_Logger::i("Spawning".$resultIdentifier ."related to process execution ".$deliveryExecution->getUri());
 	    $userIdentifier = (isset($launchUserIdentifier)) ? $launchUserIdentifier :wfEngine_models_classes_UserService::singleton()->getCurrentUser()->getUri();
-	    taoResultServer_models_classes_ResultServerStateFull::singleton()->storeRelatedTestTaker( $userIdentifier);
+	  
+        taoResultServer_models_classes_ResultServerStateFull::singleton()->storeRelatedTestTaker( $userIdentifier);
 	    taoResultServer_models_classes_ResultServerStateFull::singleton()->storeRelatedDelivery($delivery->getUri());
 	}
 
