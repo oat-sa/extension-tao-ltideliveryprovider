@@ -9,7 +9,7 @@
 	
 	<link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>tao/views/css/reset.css" />
 	<link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>tao/views/css/custom-theme/jquery-ui-1.8.22.custom.css" />
-    <link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/style.css" />	
+    <link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/thankyou.css" />	
 </head>
 
 <body>

@@ -38,12 +38,11 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 		if ($ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
 		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
 		}
-		 
-		$this->setData('dataUrl', tao_helpers_Uri::url('getOntologyData', 'Delivery', 'taoDelivery'));
-		$this->setData('editInstanceUrl', tao_helpers_Uri::url('setDelivery', null, null, array('link' => $ltiSession->getLtiLinkResource()->getUri())));
-		$this->setData('editClassUrl', false);
+		$this->setData('link', $ltiSession->getLtiLinkResource()->getUri());
+		$this->setData('submitUrl', _url('setDelivery'));
 		
-		$this->setData('linkTitle', $ltiSession->getLaunchData()->getResourceLinkTitle());
+		$deliveries = taoDelivery_models_classes_DeliveryServerService::singleton()->getAllActiveCompilations();
+		$this->setData('deliveries', $deliveries);
 		
 		$this->setView('selectDelivery.tpl');
 	}
@@ -53,11 +52,9 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 	 */
 	public function setDelivery() {
 		$link = new core_kernel_classes_Resource($this->getRequestParameter('link'));
-		$delivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-		$compiled = taoDelivery_models_classes_CompilationService::singleton()->getActiveCompilation($delivery);
+		$compiled = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 		$link->editPropertyValues(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY), $compiled);
-		echo '<script language="javascript">document.location.reload()</script>';
-		//echo json_encode(array('message' => __('Sequence saved successfully')));;
+		$this->redirect(_url('showDelivery', null, null, array('uri' => $compiled->getUri())));
 	}
 	
 	/**
