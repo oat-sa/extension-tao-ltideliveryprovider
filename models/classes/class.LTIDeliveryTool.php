@@ -91,6 +91,7 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	        $this->linkDeliveryExecution($remoteLink, $userId, $deliveryExecution);
 	    }
 
+        
         $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
 	    //The result server from LTI context depend on call parameters rather than static result server definition
 	    ltiDeliveryProvider_helpers_ResultServer::initLtiResultServer($delivery, $deliveryExecution, taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData());

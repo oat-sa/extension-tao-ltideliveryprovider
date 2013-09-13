@@ -23,7 +23,7 @@ class ltiDeliveryProvider_helpers_ResultServer
 {
 
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution, $launchData) {
-	    
+	    common_Logger::d("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	    $storageImplFromLaunch = array(
             array(
 	        "implementation" =>"taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
@@ -35,6 +35,7 @@ class ltiDeliveryProvider_helpers_ResultServer
                 )
             )
 	    );
+        
 	    try {
         $resultServer = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
         } catch (Exception $e) {
