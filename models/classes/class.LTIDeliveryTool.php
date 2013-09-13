@@ -90,8 +90,10 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	        );
 	        $this->linkDeliveryExecution($remoteLink, $userId, $deliveryExecution);
 	    }
+
+        $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
 	    //The result server from LTI context depend on call parameters rather than static result server definition
-	    $this->initLtiResultServer($compiledDelivery, $deliveryExecution);
+	    $this->initLtiResultServer($delivery, $deliveryExecution);
 	    // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
         return $deliveryExecution;
@@ -99,23 +101,32 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	}
 	
 
-	private function initLtiResultServer($compiledDelivery, $deliveryExecution) {
+	private function initLtiResultServer(core_kernel_classes_Resource $delivery, $deliveryExecution) {
 	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
 	    $resultServerCallOptions = array(
-	        "type" =>"LTI_Basic_1.1.1",
-	        "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
-	        "consumer_key" => $launchData->getOauthKey(),
-	        "service_url" => $launchData->getVariable("lis_outcome_service_url"),
-	        "user_identifier" => common_session_SessionManager::getSession()->getUserUri()
+            array(
+	        "implementation" =>"taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
+	        "parameters" => array(
+                "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
+                "consumer_key" => $launchData->getOauthKey(),
+                "service_url" => $launchData->getVariable("lis_outcome_service_url"),
+                "user_identifier" => common_session_SessionManager::getSession()->getUserUri()
+                )
+            )
 	    );
 	    //starts or resume a taoResultServerStateFull session for results submission
 	
 	    //retrieve the resultServer definition that is related to this delivery to be used
-	    $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
+	    
 	    //retrieve the result server definition
-	    $resultServer = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
+	    try {
+        $resultServer = $delivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
+        } catch (Exception $e) {
+            //No static result server was associated with the delivery
+            $resultServer = new core_kernel_classes_Resource(TAO_VOID_RESULT_SERVER);
+        }
 	    //callOptions are required in the case of a LTI basic storage
-	
+
 	    taoResultServer_models_classes_ResultServerStateFull::singleton()->initResultServer($resultServer->getUri(), $resultServerCallOptions);
 	
 	    //a unique identifier for data collected through this delivery execution

@@ -47,8 +47,10 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
         }
+        /* todo ppl to be upgraded for multiple results storage*/
+        /*
         try {
-        $resultServerModel = $resultServer->getUniquePropertyValue(new core_kernel_classes_Property(TAO_RESULTSERVER_MODEL_PROP));
+        $resultServerModels = $resultServer->getPropertyValues(new core_kernel_classes_Property(TAO_RESULTSERVER_MODEL_PROP));
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is associated to an unconfigured result server storage policy ");
         }
@@ -58,7 +60,7 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
         } else {
             $feedBackMessage = __("Notice : In order to use this delivery from an external LTI consumer tool, you will need to configure it with a LTI Basic outcome result server");
         }
-        
+        */
         $compiledDelivery = taoDelivery_models_classes_CompilationService::singleton()->getActiveCompilation($selectedDelivery);
         if (is_null($compiledDelivery)) {
             $feedBackMessage = __('Delivery has not been compiled yet');
