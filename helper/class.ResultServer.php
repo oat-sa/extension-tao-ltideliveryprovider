@@ -22,8 +22,8 @@
 class ltiDeliveryProvider_helpers_ResultServer
 {
 
-    public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution) {
-	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+    public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution, $launchData) {
+	    
 	    $storageImplFromLaunch = array(
             array(
 	        "implementation" =>"taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
