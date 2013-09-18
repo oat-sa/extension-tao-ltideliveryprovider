@@ -90,11 +90,11 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
                 $this->returnError(__('This tool has not yet been configured, please contact your instructor'), false);
             }
         } else {
-            if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'DeliveryRunner', 'runDeliveryExecution')) {
+            if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
+                $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
+            } elseif (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'DeliveryRunner', 'runDeliveryExecution')) {
                 $deliveryExecution = $this->getTool()->startResumeDelivery($compiledDelivery);
                 $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, array('uri' => $deliveryExecution->getUri())));
-            } elseif (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
-                $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
             } else {
                 $this->returnError(__('Access to this functionality is restricted to students'), false);
             }
