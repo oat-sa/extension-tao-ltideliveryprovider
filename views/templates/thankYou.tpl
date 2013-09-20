@@ -28,6 +28,11 @@
         			<?=__('Back');?>
         			</a>
 <?php endif; ?>
+<?php if (get_data('allowRepeat')) :?>
+        		  <a href="<?=get_data('returnUrl')?>" class="button" title="<?=_('Repeat the test')?>">
+        			<?=__('Repeat');?>
+        			</a>
+<?php endif; ?>
     		</div>
 </body>
 

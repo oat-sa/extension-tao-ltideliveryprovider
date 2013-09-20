@@ -61,13 +61,14 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	    ), array(
 	    	'like' => false
 	    ));
-	    if (count($candidates) > 0) {
-	        if (count($candidates) > 1) {
-	            throw new common_exception_InconsistentData();
+	    foreach ($candidates as $link) {
+	        $deliveryExecution = $link->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC));
+	        $status = $deliveryExecution->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_DELVIERYEXECUTION_STATUS));
+	        if ($status->getUri() == INSTANCE_DELIVERYEXEC_ACTIVE) {
+	           $returnValue = $deliveryExecution;
+	           break;
 	        }
-	        $link = current($candidates);
-	        $returnValue = $link->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC)); 
-	    } 
+	    }
 	    return $returnValue;
 	}
 	
@@ -100,9 +101,5 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
         return $deliveryExecution;
         
-	}
-	
-
-	
-	
+	}	
 }

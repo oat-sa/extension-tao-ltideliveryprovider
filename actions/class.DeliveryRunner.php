@@ -48,6 +48,7 @@ class ltiDeliveryProvider_actions_DeliveryRunner extends taoDelivery_actions_Del
         if ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
             $this->setData('returnUrl', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL));
         }
+        $this->setData('allowRepeat', false);
         $this->setView('thankYou.tpl');
     }
     
