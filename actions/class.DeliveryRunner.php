@@ -40,7 +40,6 @@ class ltiDeliveryProvider_actions_DeliveryRunner extends taoDelivery_actions_Del
         $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
         
         if ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
-            echo $launchData->getVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME);
             $this->setData('consumerLabel', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
         }
         $this->setData('consumerLabel', 'Bosten University Information System');
