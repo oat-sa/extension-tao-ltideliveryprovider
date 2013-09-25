@@ -47,32 +47,19 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
         }
-        /* todo ppl to be upgraded for multiple results storage*/
-        /*
-        try {
-        $resultServerModels = $resultServer->getPropertyValues(new core_kernel_classes_Property(TAO_RESULTSERVER_MODEL_PROP));
-        } catch (Exception $e) {
-            $feedBackMessage = __("The delivery is associated to an unconfigured result server storage policy ");
-        }
-
-        if ($resultServerModel->getUri() == "http://www.tao.lu/Ontologies/taoLtiBasicOutcome.rdf#LtiResultServerModel") {
-            //$feedBackMessage = __("This is delivery is correctly configured for returning results using LTI Basic outcome Service");
-        } else {
-            $feedBackMessage = __("Notice : In order to use this delivery from an external LTI consumer tool, you will need to configure it with a LTI Basic outcome result server");
-        }
-        */
         $compiledDelivery = taoDelivery_models_classes_CompilationService::singleton()->getActiveCompilation($selectedDelivery);
         if (is_null($compiledDelivery)) {
-            $feedBackMessage = __('Delivery has not been compiled yet');
+            $feedBackMessage = __('%s has not been published yet', $selectedDelivery->getLabel());
         } else {
             $this->setData('launchUrl', $this->service->getLaunchUrl(array('delivery' => $compiledDelivery->getUri())));
         }
 
         if (!empty($feedBackMessage)) {
-            $this->setData('feedback', $feedBackMessage);
+            $this->setData('warning', $feedBackMessage);
         }
         $class = new core_kernel_classes_Class(CLASS_LTI_CONSUMER);
         $this->setData('consumers', $class->getInstances());
+        $this->setData('deliveryLabel', $selectedDelivery->getLabel());
         $this->setView('linkManagement.tpl', 'ltiDeliveryProvider');
 
     }

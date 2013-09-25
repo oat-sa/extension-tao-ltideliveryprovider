@@ -1,34 +1,44 @@
+<link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/linkManagement.css" />	
+<script type="text/javascript">
+$("#copyPasteBox").select();
+</script>
+
 <div class="main-container">
     <div id="form-title"
         class="ui-widget-header ui-corner-top ui-state-default">
-		<?=get_data('formTitle')?>
+		<?=__('%s Tool Provider', get_data('deliveryLabel'))?>
 	</div>
     <div id="form-container" class="ui-widget-content ui-corner-bottom">
-        <table>
-		
-			<?if (has_data('feedback')) :?>
-    			<tr>
-                <th colspan="2"><?= get_data('feedback')?></th>
-            </tr>
-			<?php else:?>
-            <tr>
-                <th><?= __('Launch URL')?></th>
-                <td><a href="<?= get_data('launchUrl')?>"><?= get_data('launchUrl')?></a></td>
-            </tr>
-			<?php endif;?>
-			<tr>
-                <th><?= __('Consumers')?></th>
-                <td>
-				<?if (count(get_data('consumers')) > 0) :?>
-    				<?foreach (get_data('consumers') as $consumer) :?>
-    				    <?= $consumer->getLabel()?><br />
-    		        <?endforeach;?>
-    		    <?php else:?>
-    		      <div><?= __('No LTI consumers defined')?></div>
-    		    <?php endif;?>
-				</td>
-            </tr>
-        </table>
+		<?php if (has_data('warning')) :?>
+            <div class='warning'>
+                <?= get_data('warning')?>
+            </div>
+        <?php endif;?>    
+		<?php if (has_data('launchUrl')) :?>
+        <div class='description'>
+            <?=_('Copy and paste the following URL into your LTI compatible tool consumer.')?>
+        </div>
+        <div class="row">
+            <label><?= __('Launch URL')?></label>
+            <div>
+                <textarea rows="3" id="copyPasteBox"><?= get_data('launchUrl')?></textarea>
+                </div>
+        </div>
+        <?php endif;?>
+        <div class="row">
+            <label><?= __('Tool consumer(s)')?></label>
+            <div>
+    		<?php if (count(get_data('consumers')) > 0) :?>
+            <ul class="consumerList">
+                <?foreach (get_data('consumers') as $consumer) :?>
+    			    <li><?= $consumer->getLabel()?></li>
+    	        <?endforeach;?>
+    	    </ul>
+    		<?php else:?>
+    	      <span class="emptyList"><?= __('No LTI consumers defined')?></span>
+    	    <?php endif;?>
+    	    </div>
+	    </div>
     </div>
 </div>
 <?include(TAO_TPL_PATH . 'footer.tpl');?>
