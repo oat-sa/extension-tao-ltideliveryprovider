@@ -16,7 +16,7 @@ $("#copyPasteBox").select();
         <?php endif;?>    
 		<?php if (has_data('launchUrl')) :?>
         <div class='description'>
-            <?=_('Copy and paste the following URL into your LTI compatible tool consumer.')?>
+            <?=__('Copy and paste the following URL into your LTI compatible tool consumer.')?>
         </div>
         <div class="row">
             <label><?= __('Launch URL')?></label>
