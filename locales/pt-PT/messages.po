@@ -1,25 +1,28 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO v2.5-alpha\n"
-"PO-Revision-Date: 2013-06-18T15:46:21\n"
-"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"PO-Revision-Date: 2013-11-10 16:48-0000\n"
+"Last-Translator: Paulo Amorim <paulo@amorims.com>\n"
 "MIME-Version: 1.0\n"
 "Language: pt-PT\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.7\n"
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "O acesso a esta função é restrito a estudantes"
 
 msgid "Delivery of this tool: "
-msgstr ""
+msgstr "Distribuição desta ferramenta:"
 
 msgid "Please select a delivery for %s', get_data('linkTitle"
-msgstr ""
+msgstr "Por favor seleccione a distribuição para %s', get_data('linkTitle"
 
 msgid "Sequence saved successfully"
-msgstr ""
+msgstr "Sequência guardada com sucesso"
 
 msgid "This tool has not yet been configured, please contact your instructor"
 msgstr ""
-
+"Esta ferramenta ainda não foi configurada, por favor contacte o seu professor"
