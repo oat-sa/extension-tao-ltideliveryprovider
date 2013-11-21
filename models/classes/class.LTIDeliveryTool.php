@@ -23,16 +23,13 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
 	
-	public function getToolResource() {
-		return new core_kernel_classes_Resource(INSTANCE_LTITOOL_DELIVERY);
-	}
+    const EXTENSION = 'ltiDeliveryProvider';
+	const MODULE = 'DeliveryTool';
+	const ACTION = 'launch';
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see taoLti_models_classes_LtiTool::getRemoteLinkClass()
-	 */
-	public function getRemoteLinkClass() {
-		return new core_kernel_classes_Class(CLASS_LTI_DELIVERYTOOL_LINK);
+	public function getLaunchUrl($parameters = array()) {
+		$fullAction = self::ACTION.'/'.base64_encode(serialize($parameters));
+		return _url($fullAction, self::MODULE, self::EXTENSION);
 	}
 	
 	public function getDeliveryFromLink() {

@@ -38,11 +38,17 @@ return array(
 			array('type' => 'CheckFileSystemComponent', 'value' => array('id' => 'fs_ltiDeliveryProvider_includes', 'location' => 'ltiDeliveryProvider/includes', 'rights' => 'rw'))
 		),
 		'rdf' => array(
-			dirname(__FILE__). '/models/ontology/deliverytool.rdf',
-			dirname(__FILE__). '/models/ontology/ims_membership.rdf',
-		    dirname(__FILE__). '/models/ontology/aclrole.rdf'
+			dirname(__FILE__). '/models/ontology/deliverytool.rdf'
 		)
 	),
+    'managementRole' => 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole',
+    'acl' => array(
+        array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', array('ext'=>'ltiDeliveryProvider')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch')),
+        array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Learner', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryRunner')),
+        array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'ltiDeliveryProvider', 'mod' => 'LinkConfiguration')),
+        array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'taoDelivery', 'mod'=>'Delivery', 'act'=>'getOntologyData'))
+    ),
 	'constants' => array(
 		# actions directory
 		"DIR_ACTIONS"			=> $extpath."actions".DIRECTORY_SEPARATOR,

@@ -28,7 +28,7 @@
  */
 class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
 {
-
+    
     /**
      * (non-PHPdoc)
      * @see taoLti_actions_ToolModule::getTool()
@@ -82,7 +82,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
         $compiledDelivery = $this->getDelivery();
         
         if (is_null($compiledDelivery)) {
-            if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
+            if (tao_models_classes_accessControl_AclProxy::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
                 // user authorised to select the Delivery
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
             } else {
@@ -90,11 +90,23 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
                 $this->returnError(__('This tool has not yet been configured, please contact your instructor'), false);
             }
         } else {
-            if (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
+            $isLearner = false;
+            foreach (core_kernel_classes_Session::singleton()->getUserRoles() as $role) {
+                if ($role->getUri() == INSTANCE_ROLE_CONTEXT_LEARNER) {
+                    $isLearner = true;
+                    break;
+                }
+            }
+            if ($isLearner) {
+                if (tao_models_classes_accessControl_AclProxy::hasAccess('ltiDeliveryProvider', 'DeliveryRunner', 'runDeliveryExecution')) {
+                    $deliveryExecution = $this->getTool()->startResumeDelivery($compiledDelivery);
+                    $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, array('uri' => $deliveryExecution->getUri())));
+                } else {
+                    common_Logger::e('Lti learner has no access to delivery runner');
+                    $this->returnError(__('Access to this functionality is restricted'), false);
+                }   
+            } elseif (tao_models_classes_accessControl_AclProxy::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
                 $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
-            } elseif (tao_helpers_funcACL_funcACL::hasAccess('ltiDeliveryProvider', 'DeliveryRunner', 'runDeliveryExecution')) {
-                $deliveryExecution = $this->getTool()->startResumeDelivery($compiledDelivery);
-                $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, array('uri' => $deliveryExecution->getUri())));
             } else {
                 $this->returnError(__('Access to this functionality is restricted to students'), false);
             }

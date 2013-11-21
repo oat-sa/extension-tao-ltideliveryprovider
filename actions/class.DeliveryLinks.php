@@ -27,11 +27,7 @@
  * @package filemanager
  * @subpackage action
  */
-class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManagement {
-	
-	public function __construct() {
-		parent::__construct(ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton());
-	}
+class ltiDeliveryProvider_actions_DeliveryLinks extends tao_actions_CommonModule {
 	
     /**
      * Displays the LTI link for the consumer with respect to the currently selected delviery
@@ -51,7 +47,7 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends taoLti_actions_LinkManag
         if (is_null($compiledDelivery)) {
             $feedBackMessage = __('%s has not been published yet', $selectedDelivery->getLabel());
         } else {
-            $this->setData('launchUrl', $this->service->getLaunchUrl(array('delivery' => $compiledDelivery->getUri())));
+            $this->setData('launchUrl', ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $compiledDelivery->getUri())));
         }
 
         if (!empty($feedBackMessage)) {
