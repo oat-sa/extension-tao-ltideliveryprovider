@@ -53,14 +53,9 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
             // encoded in url
-            $rootUrlPath = parse_url(ROOT_URL, PHP_URL_PATH);
-            $absPath = parse_url('/' . ltrim($_SERVER['REQUEST_URI'], '/'), PHP_URL_PATH);
-            if (substr($absPath, 0, strlen($rootUrlPath)) != $rootUrlPath) {
-                throw new ResolverException('Request Uri ' . $request . ' outside of TAO path ' . ROOT_URL);
-            }
-            $relPath = substr($absPath, strlen($rootUrlPath));
-            $parts = explode('/', $relPath, 4);
-            ;
+            $relUrl = tao_helpers_Request::getRelativeUrl();
+            $parts = explode('/', $relUrl, 4);
+            
             if (count($parts) == 4) {
                 list ($extension, $module, $action, $codedUri) = $parts;
                 $params = unserialize(base64_decode($codedUri));
