@@ -82,7 +82,7 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	    $userId = common_session_SessionManager::getSession()->getUserUri();
 	    $deliveryExecution = $this->getLinkedDeliveryExecution($remoteLink, $userId);
 	    if (is_null($deliveryExecution)) {
-	        $deliveryExecution = taoDelivery_models_classes_DeliveryExecutionService::singleton()->initDeliveryExecution(
+	        $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
 	            $compiledDelivery,
 	            $userId
 	        );

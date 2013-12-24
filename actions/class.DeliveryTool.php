@@ -95,7 +95,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('ltiDeliveryProvider', 'DeliveryRunner', 'runDeliveryExecution')) {
                     $deliveryExecution = $this->getTool()->startResumeDelivery($compiledDelivery);
-                    $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, array('uri' => $deliveryExecution->getUri())));
+                    $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $deliveryExecution->getUri())));
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
                     $this->returnError(__('Access to this functionality is restricted'), false);
