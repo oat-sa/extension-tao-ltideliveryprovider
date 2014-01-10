@@ -87,7 +87,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
         } else {
             $isLearner = false;
             foreach (core_kernel_classes_Session::singleton()->getUserRoles() as $role) {
-                if ($role->getUri() == INSTANCE_ROLE_CONTEXT_LEARNER) {
+                if ($role == INSTANCE_ROLE_CONTEXT_LEARNER) {
                     $isLearner = true;
                     break;
                 }
