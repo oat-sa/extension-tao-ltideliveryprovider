@@ -80,6 +80,15 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 	public function showDelivery() {
 	    $delivery = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
 	    $this->setData('delivery', $delivery);
+	    
+	    $ltiSession = taoLti_models_classes_LtiService::singleton()->getLtiSession();
+		if ($ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
+		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
+		}
+		
+		$executionCount = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getTotalExecutionCount($delivery);
+		$this->setData('executionCount', $executionCount);
+		
 	    $this->setView('viewDelivery.tpl');
 	}
 }
