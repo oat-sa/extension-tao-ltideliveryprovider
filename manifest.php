@@ -40,9 +40,6 @@ return array(
 		'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
 	 ),
 	'install' => array(
-		'checks' => array(
-			array('type' => 'CheckFileSystemComponent', 'value' => array('id' => 'fs_ltiDeliveryProvider_includes', 'location' => 'ltiDeliveryProvider/includes', 'rights' => 'rw'))
-		),
 		'rdf' => array(
 			dirname(__FILE__). '/models/ontology/deliverytool.rdf'
 		)
