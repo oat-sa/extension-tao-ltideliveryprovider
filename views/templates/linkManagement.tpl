@@ -1,3 +1,6 @@
+<?php
+use oat\tao\helpers\Template;
+?>
 <link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/linkManagement.css" />	
 <script type="text/javascript">
 $("#copyPasteBox").select();
@@ -41,4 +44,6 @@ $("#copyPasteBox").select();
 	    </div>
     </div>
 </div>
-<?include(TAO_TPL_PATH . 'footer.tpl');?>
+<?php
+Template::inc('footer.tpl', 'tao')
+?>

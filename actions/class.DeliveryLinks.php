@@ -43,12 +43,7 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends tao_actions_CommonModule
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
         }
-        $compiledDelivery = taoDelivery_models_classes_CompilationService::singleton()->getActiveCompilation($selectedDelivery);
-        if (is_null($compiledDelivery)) {
-            $feedBackMessage = __('%s has not been published yet', $selectedDelivery->getLabel());
-        } else {
-            $this->setData('launchUrl', ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $compiledDelivery->getUri())));
-        }
+        $this->setData('launchUrl', ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
 
         if (!empty($feedBackMessage)) {
             $this->setData('warning', $feedBackMessage);

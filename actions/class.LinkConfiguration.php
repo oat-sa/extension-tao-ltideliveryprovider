@@ -41,7 +41,7 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 		$this->setData('link', $ltiSession->getLtiLinkResource()->getUri());
 		$this->setData('submitUrl', _url('setDelivery'));
 		
-		$deliveries = taoDelivery_models_classes_DeliveryServerService::singleton()->getAllActiveCompilations();
+		$deliveries = taoDelivery_models_classes_DeliveryAssemblyService::singleton()->getAllAssemblies();
 		if (count($deliveries) > 0) {
             $this->setData('deliveries', $deliveries);
     		$this->setView('selectDelivery.tpl');

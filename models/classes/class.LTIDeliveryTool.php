@@ -76,21 +76,19 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	 * @param core_kernel_classes_Resource $compiledDelivery
 	 * @return core_kernel_classes_Resource
 	 */
-	public function startResumeDelivery(core_kernel_classes_Resource $compiledDelivery) {
+	public function startResumeDelivery(core_kernel_classes_Resource $delivery) {
 	    
 	    $remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
 	    $userId = common_session_SessionManager::getSession()->getUserUri();
 	    $deliveryExecution = $this->getLinkedDeliveryExecution($remoteLink, $userId);
 	    if (is_null($deliveryExecution)) {
 	        $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
-	            $compiledDelivery,
+	            $delivery,
 	            $userId
 	        );
 	        $this->linkDeliveryExecution($remoteLink, $userId, $deliveryExecution);
 	    }
 
-        
-        $delivery = taoDelivery_models_classes_DeliveryServerService::singleton()->getDeliveryFromCompiledDelivery($compiledDelivery);
 	    //The result server from LTI context depend on call parameters rather than static result server definition
 	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
         ltiDeliveryProvider_helpers_ResultServer::initLtiResultServer($delivery, $deliveryExecution, $launchData);
