@@ -48,6 +48,7 @@ return array(
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', array('ext'=>'ltiDeliveryProvider')),
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run')),
         array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Learner', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryRunner')),
         array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'ltiDeliveryProvider', 'mod' => 'LinkConfiguration')),
         array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'taoDelivery', 'mod'=>'Delivery', 'act'=>'getOntologyData'))

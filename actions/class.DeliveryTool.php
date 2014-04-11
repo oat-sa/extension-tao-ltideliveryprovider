@@ -28,51 +28,11 @@
  */
 class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
 {
-    
-    /**
-     * (non-PHPdoc)
-     * @see taoLti_actions_ToolModule::getTool()
-     */
-    protected function getTool()
-    {
-        return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton();
-    }
-
-    /**
-     * Returns the delivery associated with the current link
-     * either from url or from the remote_link if configured
-     * returns null if none found
-     *
-     * @return core_kernel_classes_Resource
-     */
-    private function getDelivery()
-    {
-        $returnValue = null;
-        //passed as aprameter
-        if ($this->hasRequestParameter('delivery')) {
-            $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
-        } else {
-            // encoded in url
-            $relUrl = tao_helpers_Request::getRelativeUrl();
-            $parts = explode('/', $relUrl, 4);
-            
-            if (count($parts) == 4) {
-                list ($extension, $module, $action, $codedUri) = $parts;
-                $params = unserialize(base64_decode($codedUri));
-                $returnValue = new core_kernel_classes_Resource($params['delivery']);
-            } else {
-                // stored in link
-                $returnValue = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
-            }
-        }
-        return $returnValue;
-    }
-
     /**
      * (non-PHPdoc)
      * @see taoLti_actions_ToolModule::run()
      */
-    protected function run()
+    public function run()
     {
         $compiledDelivery = $this->getDelivery();
         
@@ -107,4 +67,42 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
             }
         }
     }
+    
+    /**
+     * (non-PHPdoc)
+     * @see taoLti_actions_ToolModule::getTool()
+     */
+    protected function getTool()
+    {
+        return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton();
+    }
+    
+    /**
+     * Returns the delivery associated with the current link
+     * either from url or from the remote_link if configured
+     * returns null if none found
+     *
+     * @return core_kernel_classes_Resource
+     */
+    private function getDelivery()
+    {
+        $returnValue = null;
+        //passed as aprameter
+        if ($this->hasRequestParameter('delivery')) {
+            $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
+        } else {
+            
+            $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+            $deliveryUri = $launchData->getCustomParameter('delivery');
+            
+            if (!is_null($deliveryUri)) {
+                $returnValue = new core_kernel_classes_Resource($deliveryUri);
+            } else {
+                // stored in link
+                $returnValue = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
+            }
+        }
+        return $returnValue;
+    }
+    
 }

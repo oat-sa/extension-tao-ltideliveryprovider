@@ -28,7 +28,7 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 	const ACTION = 'launch';
 	
 	public function getLaunchUrl($parameters = array()) {
-		$fullAction = self::ACTION.'/'.base64_encode(serialize($parameters));
+		$fullAction = self::ACTION.'/'.base64_encode(json_encode($parameters));
 		return _url($fullAction, self::MODULE, self::EXTENSION);
 	}
 	
