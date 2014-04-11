@@ -19,6 +19,17 @@
  *
  */
 
+namespace oat\ltiDeliveryProvider\controller;
+
+use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use \taoLti_actions_ToolModule;
+use \tao_models_classes_accessControl_AclProxy;
+use \tao_helpers_Uri;
+use \core_kernel_classes_Session;
+use \common_Logger;
+use \core_kernel_classes_Resource;
+use \taoLti_models_classes_LtiService;
+
 /**
  * 
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
@@ -26,7 +37,7 @@
  * @package ltiDeliveryProvider
  
  */
-class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
+class DeliveryTool extends taoLti_actions_ToolModule
 {
     /**
      * (non-PHPdoc)
@@ -74,7 +85,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
      */
     protected function getTool()
     {
-        return ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton();
+        return LTIDeliveryTool::singleton();
     }
     
     /**
@@ -99,7 +110,7 @@ class ltiDeliveryProvider_actions_DeliveryTool extends taoLti_actions_ToolModule
                 $returnValue = new core_kernel_classes_Resource($deliveryUri);
             } else {
                 // stored in link
-                $returnValue = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
+                $returnValue = LTIDeliveryTool::singleton()->getDeliveryFromLink();
             }
         }
         return $returnValue;

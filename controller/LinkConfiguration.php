@@ -19,6 +19,18 @@
  * 
  */
 
+namespace oat\ltiDeliveryProvider\controller;
+
+use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use \tao_actions_CommonModule;
+use \taoLti_models_classes_LtiService;
+use \taoLti_models_classes_LtiLaunchData;
+use \taoDelivery_models_classes_DeliveryAssemblyService;
+use \core_kernel_classes_Resource;
+use \tao_helpers_Uri;
+use \core_kernel_classes_Property;
+use \taoDelivery_models_classes_execution_ServiceProxy;
+
 /**
  * Allows instructors to configure the LTI remote_link
  * 
@@ -27,7 +39,7 @@
  * @package ltiDeliveryProvider
  
  */
-class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonModule {
+class LinkConfiguration extends tao_actions_CommonModule {
 	
 	/**
 	 * Displays the form to select a delivery
@@ -67,7 +79,7 @@ class ltiDeliveryProvider_actions_LinkConfiguration extends tao_actions_CommonMo
 	 * Only accessible to LTI instructors
 	 */
 	public function configureDelivery() {
-		$compiledDelivery = ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getDeliveryFromLink();
+		$compiledDelivery = LTIDeliveryTool::singleton()->getDeliveryFromLink();
 		if (is_null($compiledDelivery)) {
 			$this->selectDelivery();
 		} else {

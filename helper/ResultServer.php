@@ -20,7 +20,16 @@
  * 
  */
 
-class ltiDeliveryProvider_helpers_ResultServer
+namespace oat\ltiDeliveryProvider\helper;
+
+use \core_kernel_classes_Resource;
+use \core_kernel_classes_Property;
+use \common_session_SessionManager;
+use \taoLti_models_classes_LtiLaunchData;
+use \common_Logger;
+use \taoResultServer_models_classes_ResultServerStateFull;
+
+class ResultServer
 {
 
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution, $launchData) {

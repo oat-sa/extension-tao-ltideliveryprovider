@@ -41,9 +41,17 @@ return array(
 	 ),
 	'install' => array(
 		'rdf' => array(
-			dirname(__FILE__). '/models/ontology/deliverytool.rdf'
+			dirname(__FILE__). '/install/ontology/deliverytool.rdf'
 		)
 	),
+    'autoload' => array (
+        'psr-4' => array(
+            'oat\\ltiDeliveryProvider\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
+        )
+    ),
+    'routes' => array(
+        '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
+    ),
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', array('ext'=>'ltiDeliveryProvider')),
@@ -54,8 +62,6 @@ return array(
         array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'taoDelivery', 'mod'=>'Delivery', 'act'=>'getOntologyData'))
     ),
 	'constants' => array(
-		# actions directory
-		"DIR_ACTIONS"			=> $extpath."actions".DIRECTORY_SEPARATOR,
 	
 		# views directory
 		"DIR_VIEWS"				=> $extpath."views".DIRECTORY_SEPARATOR,
@@ -78,9 +84,5 @@ return array(
 	
 		#TAO extension Paths
 		'TAOBASE_WWW'			=> ROOT_URL  . 'tao/views/',
-		'TAOVIEW_PATH'			=> $taopath.'views'.DIRECTORY_SEPARATOR,
-		'TAO_TPL_PATH'			=> $taopath.'views'.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR,
-
 	)
 );
-?>

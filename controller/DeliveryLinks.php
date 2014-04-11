@@ -18,6 +18,16 @@
  *               
  * 
  */
+namespace oat\ltiDeliveryProvider\controller;
+
+use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use \tao_actions_CommonModule;
+use \core_kernel_classes_Resource;
+use \tao_helpers_Uri;
+use \core_kernel_classes_Property;
+use \Exception;
+use \core_kernel_classes_Class;
+
 ?>
 <?php
 /**
@@ -27,7 +37,7 @@
  * @package filemanager
  
  */
-class ltiDeliveryProvider_actions_DeliveryLinks extends tao_actions_CommonModule {
+class DeliveryLinks extends tao_actions_CommonModule {
 	
     /**
      * Displays the LTI link for the consumer with respect to the currently selected delviery
@@ -43,7 +53,7 @@ class ltiDeliveryProvider_actions_DeliveryLinks extends tao_actions_CommonModule
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
         }
-        $this->setData('launchUrl', ltiDeliveryProvider_models_classes_LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
+        $this->setData('launchUrl', LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
 
         if (!empty($feedBackMessage)) {
             $this->setData('warning', $feedBackMessage);

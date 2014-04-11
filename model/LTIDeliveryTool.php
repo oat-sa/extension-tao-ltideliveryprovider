@@ -19,7 +19,18 @@
  * 
  */
 
-class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_classes_LtiTool {
+namespace oat\ltiDeliveryProvider\model;
+
+use oat\ltiDeliveryProvider\helper\ResultServer;
+use \taoLti_models_classes_LtiTool;
+use \taoLti_models_classes_LtiService;
+use \core_kernel_classes_Property;
+use \core_kernel_classes_Resource;
+use \core_kernel_classes_Class;
+use \common_session_SessionManager;
+use \taoDelivery_models_classes_execution_ServiceProxy;
+
+class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
 	
@@ -91,7 +102,7 @@ class ltiDeliveryProvider_models_classes_LTIDeliveryTool extends taoLti_models_c
 
 	    //The result server from LTI context depend on call parameters rather than static result server definition
 	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-        ltiDeliveryProvider_helpers_ResultServer::initLtiResultServer($delivery, $deliveryExecution, $launchData);
+        ResultServer::initLtiResultServer($delivery, $deliveryExecution, $launchData);
 	    // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
         return $deliveryExecution;

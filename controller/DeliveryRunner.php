@@ -19,6 +19,12 @@
  *
  */
 
+namespace oat\ltiDeliveryProvider\controller;
+
+use \taoDelivery_actions_DeliveryServer;
+use \taoLti_models_classes_LtiService;
+use \taoLti_models_classes_LtiLaunchData;
+
 /**
  * 
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
@@ -26,7 +32,7 @@
  * @package ltiDeliveryProvider
  
  */
-class ltiDeliveryProvider_actions_DeliveryRunner extends taoDelivery_actions_DeliveryServer
+class DeliveryRunner extends taoDelivery_actions_DeliveryServer
 {
     protected function showControls() {
         return false;
