@@ -49,63 +49,63 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
+	    
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
 	    $link = $class->createInstanceWithProperties(array(
 	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
 	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-            PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC => $deliveryExecution
+            PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution
 	    ));
 	    return $link instanceof core_kernel_classes_Resource;
 	}
+
+	/**
+	 * Start a new delivery execution
+	 * 
+	 * @param core_kernel_classes_Resource $delivery
+	 * @param core_kernel_classes_Resource $link
+	 * @param string $userUri
+	 * @return \taoDelivery_models_classes_execution_DeliveryExecution
+	 */
+	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
+	    $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
+	        $delivery,
+	        $userId
+	    );
+	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+	    $class->createInstanceWithProperties(array(
+	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
+	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier()
+	    ));
+	    return $deliveryExecution;
+	}
 	
-	protected function getLinkedDeliveryExecution(core_kernel_classes_Resource $link, $userUri) {
-	    
-	    $returnValue = null;
+	/**
+	 * Returns an array of taoDelivery_models_classes_execution_DeliveryExecution
+	 * 
+	 * @param core_kernel_classes_Resource $delivery
+	 * @param core_kernel_classes_Resource $link
+	 * @param string $userId
+	 * @return array
+	 */
+	public function getLinkedDeliveryExecutions(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
 	    
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
-	    $candidates = $class->searchInstances(array(
-	    	PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
+	    $links = $class->searchInstances(array(
+	    	PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
 	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
 	    ), array(
 	    	'like' => false
 	    ));
-	    foreach ($candidates as $link) {
-	        $deliveryExecution = $link->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_DELIVERYEXEC));
-	        $status = $deliveryExecution->getUniquePropertyValue(new core_kernel_classes_Property(PROPERTY_DELVIERYEXECUTION_STATUS));
-	        if ($status->getUri() == INSTANCE_DELIVERYEXEC_ACTIVE) {
-	           $returnValue = $deliveryExecution;
-	           break;
+	    $returnValue = array();
+	    foreach ($links as $link) {
+	        $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
+	        $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($execId);
+	        if ($delivery->equals($deliveryExecution->getDelivery())) {
+	            $returnValue[] = $deliveryExecution;
 	        }
 	    }
 	    return $returnValue;
 	}
-	
-	/**
-	 * Starts or resumes a compiled Delivery and returns
-	 * the active Delivery Execution
-	 * 
-	 * @param core_kernel_classes_Resource $compiledDelivery
-	 * @return core_kernel_classes_Resource
-	 */
-	public function startResumeDelivery(core_kernel_classes_Resource $delivery) {
-	    
-	    $remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-	    $userId = common_session_SessionManager::getSession()->getUserUri();
-	    $deliveryExecution = $this->getLinkedDeliveryExecution($remoteLink, $userId);
-	    if (is_null($deliveryExecution)) {
-	        $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
-	            $delivery,
-	            $userId
-	        );
-	        $this->linkDeliveryExecution($remoteLink, $userId, $deliveryExecution);
-	    }
-
-	    //The result server from LTI context depend on call parameters rather than static result server definition
-	    $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-        ResultServer::initLtiResultServer($delivery, $deliveryExecution, $launchData);
-	    // lis_outcome_service_url This value should not change from one launch to the next and in general,
-        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
-        return $deliveryExecution;
-        
-	}	
 }

@@ -47,7 +47,7 @@ class LinkConfiguration extends tao_actions_CommonModule {
 	protected function selectDelivery() {
 		
 		$ltiSession = taoLti_models_classes_LtiService::singleton()->getLtiSession();
-		if ($ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
+		if ($ltiSession->getLaunchData()->hasVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
 		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
 		}
 		$this->setData('link', $ltiSession->getLtiLinkResource()->getUri());
@@ -56,7 +56,7 @@ class LinkConfiguration extends tao_actions_CommonModule {
 		$deliveries = taoDelivery_models_classes_DeliveryAssemblyService::singleton()->getAllAssemblies();
 		if (count($deliveries) > 0) {
             $this->setData('deliveries', $deliveries);
-    		$this->setView('selectDelivery.tpl');
+    		$this->setView('instructor/selectDelivery.tpl');
 		} else {
 		    $this->returnError(__('No deliveries available'));
 		}
@@ -97,13 +97,15 @@ class LinkConfiguration extends tao_actions_CommonModule {
 	    $this->setData('delivery', $delivery);
 	    
 	    $ltiSession = taoLti_models_classes_LtiService::singleton()->getLtiSession();
-		if ($ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
+		if ($ltiSession->getLaunchData()->hasVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE)) {
 		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
 		}
 		
-		$executionCount = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getTotalExecutionCount($delivery);
-		$this->setData('executionCount', $executionCount);
+		if (taoDelivery_models_classes_execution_ServiceProxy::implementsMonitoring()) {
+		    $executionCount = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getTotalExecutionCount($delivery);
+		    $this->setData('executionCount', $executionCount);
+		}
 		
-	    $this->setView('viewDelivery.tpl');
+	    $this->setView('instructor/viewDelivery.tpl');
 	}
 }

@@ -20,7 +20,11 @@
             <table class="matrix">
                 <tbody>
                 <tr><th><?=__('Selected Delivery');?></th><td><?= get_data('delivery')->getLabel()?></td></tr>
+                <?php if(has_data('executionCount')) :?>
                 <tr><th><?=__('Executions');?></th><td><?= get_data('executionCount')?></td></tr>
+                <?php else :?>
+                <tr><th><?=__('Executions');?></th><td><?= __('no monitoring')?></td></tr>
+                <?php endif;?>
                 </tbody>
             </table>
         </div>

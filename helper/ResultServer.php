@@ -32,7 +32,7 @@ use \taoResultServer_models_classes_ResultServerStateFull;
 class ResultServer
 {
 
-    public static function initLtiResultServer(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $deliveryExecution, $launchData) {
+    public static function initLtiResultServer(core_kernel_classes_Resource $delivery, $executionIdentifier, $launchData) {
         
         $resultServer = $delivery->getOnePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
         if (empty($resultServer)) {
@@ -59,13 +59,13 @@ class ResultServer
     	    $resultIdentifier = $launchData->getVariable("lis_result_sourcedid");
         } else {
             $options = array();
-            $resultIdentifier = $deliveryExecution->getUri();
+            $resultIdentifier = $executionIdentifier;
         }
 
-        common_Logger::i("Spawning '".$resultIdentifier ."' related to delivery execution ".$deliveryExecution->getUri());
+        common_Logger::i("Spawning '".$resultIdentifier ."' related to delivery execution ".$executionIdentifier);
         $resultServerState = taoResultServer_models_classes_ResultServerStateFull::singleton(); 
         $resultServerState->initResultServer($resultServer->getUri(), $options);
-        $resultServerState->spawnResult($deliveryExecution->getUri(), $resultIdentifier);
+        $resultServerState->spawnResult($executionIdentifier, $resultIdentifier);
          
         $resultServerState->storeRelatedTestTaker(common_session_SessionManager::getSession()->getUserUri());
         $resultServerState->storeRelatedDelivery($delivery->getUri());

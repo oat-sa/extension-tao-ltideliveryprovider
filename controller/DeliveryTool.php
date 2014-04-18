@@ -46,8 +46,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
     public function run()
     {
         $compiledDelivery = $this->getDelivery();
-        
-        if (is_null($compiledDelivery)) {
+        if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if (tao_models_classes_accessControl_AclProxy::hasAccess('ltiDeliveryProvider', 'LinkConfiguration', 'configureDelivery')) {
                 // user authorised to select the Delivery
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
@@ -65,8 +64,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
             }
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('ltiDeliveryProvider', 'DeliveryRunner', 'runDeliveryExecution')) {
-                    $deliveryExecution = $this->getTool()->startResumeDelivery($compiledDelivery);
-                    $this->redirect(_url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $deliveryExecution->getUri())));
+                    $this->redirect($this->getLearnerUrl($compiledDelivery));
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
                     $this->returnError(__('Access to this functionality is restricted'), false);
@@ -75,6 +73,30 @@ class DeliveryTool extends taoLti_actions_ToolModule
                 $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
             } else {
                 $this->returnError(__('Access to this functionality is restricted to students'), false);
+            }
+        }
+    }
+    
+    protected function getLearnerUrl(\core_kernel_classes_Resource $delivery) {
+        $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+        $userId = \common_session_SessionManager::getSession()->getUserUri();
+         
+        $active = null;
+        $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $userId);
+        if (empty($executions)) {
+            $active = $this->getTool()->startDelivery($delivery, $remoteLink, $userId);
+            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
+        } else {
+            foreach ($executions as $deliveryExecution) {
+                if ($deliveryExecution->getStatus()->getUri() == INSTANCE_DELIVERYEXEC_ACTIVE) {
+                    $active = $deliveryExecution;
+                    break;
+                }
+            }
+            if (is_null($active)) {
+                return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
+            } else {
+                return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
             }
         }
     }

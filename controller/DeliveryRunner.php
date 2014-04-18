@@ -24,6 +24,8 @@ namespace oat\ltiDeliveryProvider\controller;
 use \taoDelivery_actions_DeliveryServer;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
+use oat\ltiDeliveryProvider\helper\ResultServer;
+use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 
 /**
  * 
@@ -42,6 +44,44 @@ class DeliveryRunner extends taoDelivery_actions_DeliveryServer
         return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
+    public function ltiOverview() {
+        //creates the URL of the action used to configure the client side
+        $context = \Context::getInstance();
+        $clientConfigParameters = array(
+                    'extension'         => $context->getExtensionName(),
+                    'module'            => $context->getModuleName(),
+                    'action'            => $context->getActionName()
+        );
+        $this->setData('client_config_url', _url('config', 'ClientConfig', 'tao', $clientConfigParameters));
+        
+        $this->setData('delivery', $this->getRequestParameter('delivery'));
+        
+        $this->setData('allowRepeat', true);
+        $this->setView('learner/overview.tpl');
+    }
+    
+    public function repeat() {
+        $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
+        
+        // is allowed?
+        // is active?
+        
+        $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+        $userId = \common_session_SessionManager::getSession()->getUserUri();
+         
+        $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $userId);
+            
+        $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+    }
+    
+    protected function initResultServer($compiledDelivery, $executionIdentifier) {
+        //The result server from LTI context depend on call parameters rather than static result server definition
+        // lis_outcome_service_url This value should not change from one launch to the next and in general,
+        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
+        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        ResultServer::initLtiResultServer($compiledDelivery, $executionIdentifier, $launchData);
+    }
+    
     public function thankYou() {
         $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
         
@@ -53,7 +93,7 @@ class DeliveryRunner extends taoDelivery_actions_DeliveryServer
             $this->setData('returnUrl', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL));
         }
         $this->setData('allowRepeat', false);
-        $this->setView('thankYou.tpl');
+        $this->setView('learner/thankYou.tpl');
     }
     
 }

@@ -28,8 +28,6 @@ use \core_kernel_classes_Property;
 use \Exception;
 use \core_kernel_classes_Class;
 
-?>
-<?php
 /**
  * 
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
