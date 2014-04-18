@@ -14,9 +14,9 @@ use oat\tao\helpers\Template;
         data-main="<?=Template::js('controller/overview')?>"
         data-config="<?=get_data('client_config_url')?>">
     </script>
-	<link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>tao/views/css/reset.css" />
-	<link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>tao/views/css/custom-theme/jquery-ui-1.8.22.custom.css" />
-    <link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/thankyou.css" />	
+	<link rel="stylesheet" type="text/css" href="<?= Template::css('reset.css','tao') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
+    <link rel="stylesheet" type="text/css" href="<?= Template::css('thankyou.css') ?>" />	
 </head>
 
 <body>
@@ -25,7 +25,7 @@ use oat\tao\helpers\Template;
         <div class="continer2">
         <?php if (get_data('allowRepeat')) :?>
         <a href="<?= _url('repeat', 'DeliveryRunner', null, array('delivery' => get_data('delivery')))?>" class="button" title="<?=__('Repeat the test')?>" >
-            <?=__('Repeat');?>
+            <?=__('Retake the test');?>
     	</a>
         <?php endif; ?>
         </div>
