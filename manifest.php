@@ -24,8 +24,8 @@ $extpath = dirname(__FILE__).DIRECTORY_SEPARATOR;
 $taopath = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'tao'.DIRECTORY_SEPARATOR;
 
 return array(
-	'id' => 'ltiDeliveryProvider',
-    'name' => 'LTI Delivery Tool Provider',
+	'name' => 'ltiDeliveryProvider',
+    'label' => 'LTI Delivery Tool Provider',
 	'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
     'version' => '1.0',
