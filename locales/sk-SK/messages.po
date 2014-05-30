@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO v2.6-beta2\n"
-"PO-Revision-Date: 2014-05-24T15:15:11\n"
+"PO-Revision-Date: 2014-05-30T15:55:39\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sk-SK\n"
@@ -12,6 +12,12 @@ msgid "\"%s\" has been configured:', get_data('linkTitle"
 msgstr ""
 
 msgid "%s Tool Provider', get_data('deliveryLabel"
+msgstr ""
+
+msgid "Access to this functionality is restricted"
+msgstr ""
+
+msgid "Access to this functionality is restricted to students"
 msgstr ""
 
 msgid "Available Deliveries"
@@ -36,6 +42,9 @@ msgid "Executions"
 msgstr ""
 
 msgid "Launch URL"
+msgstr ""
+
+msgid "No deliveries available"
 msgstr ""
 
 msgid "No LTI consumers defined"
@@ -74,7 +83,13 @@ msgstr ""
 msgid "Thank you"
 msgstr ""
 
+msgid "The delivery is not associated to a Result server storage policy"
+msgstr ""
+
 msgid "This tool has been configured:"
+msgstr ""
+
+msgid "This tool has not yet been configured, please contact your instructor"
 msgstr ""
 
 msgid "Tool consumer(s)"

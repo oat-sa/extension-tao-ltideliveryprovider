@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
 -->
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xml:base="http://www.tao.lu/Ontologies/TAOLTI.rdf#">
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery">
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source LTI Delivery Execution Tool
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
@@ -14,7 +14,7 @@
     -->
     <rdfs:label xml:lang="sk-SK"><![CDATA[LTI Delivery Execution Tool]]></rdfs:label>
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source Tool to allow test takers to take a delivery from within an tool consumer.
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
@@ -24,7 +24,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery">
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source Linked delivery
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery
@@ -34,7 +34,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution">
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source LTI Delivery Link Execution
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
@@ -42,7 +42,7 @@
     -->
     <rdfs:label xml:lang="sk-SK"><![CDATA[LTI Delivery Link Execution]]></rdfs:label>
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source Link between delivery Tool and Consumer
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
@@ -52,7 +52,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink">
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source Linked delivery
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink
@@ -62,7 +62,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser">
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source Linked delivery
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser
@@ -72,7 +72,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution">
     <!--
-    @sourceLanguage EN
+    @sourceLanguage en-US
     @targetLanguage sk-SK
     @source Linked delivery
     @subject http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
