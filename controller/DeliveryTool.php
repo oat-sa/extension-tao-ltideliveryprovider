@@ -88,7 +88,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         } else {
             foreach ($executions as $deliveryExecution) {
-                if ($deliveryExecution->getStatus()->getUri() == INSTANCE_DELIVERYEXEC_ACTIVE) {
+                if ($deliveryExecution->getState()->getUri() == INSTANCE_DELIVERYEXEC_ACTIVE) {
                     $active = $deliveryExecution;
                     break;
                 }
