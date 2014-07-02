@@ -102,8 +102,8 @@ class LinkConfiguration extends tao_actions_CommonModule {
 		}
 		
 		if (taoDelivery_models_classes_execution_ServiceProxy::implementsMonitoring()) {
-		    $executionCount = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getTotalExecutionCount($delivery);
-		    $this->setData('executionCount', $executionCount);
+		    $executions = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
+		    $this->setData('executionCount', count($executions));
 		}
 		
 	    $this->setView('instructor/viewDelivery.tpl');
