@@ -1,7 +1,7 @@
 {
 
     "name": "oat-sa/extension-tao-ltideliveryprovider",
-    "description" : "extension that gather developement tools for TAO",
+    "description" : "extension to manage LTI delivery provider for TAO",
     "type" : "tao-extension",
     "authors" : [
 		{
