@@ -44,11 +44,6 @@ return array(
 			dirname(__FILE__). '/install/ontology/deliverytool.rdf'
 		)
 	),
-    'autoload' => array (
-        'psr-4' => array(
-            'oat\\ltiDeliveryProvider\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
-        )
-    ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
     ),
