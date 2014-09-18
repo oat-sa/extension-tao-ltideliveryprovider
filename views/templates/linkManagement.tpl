@@ -33,9 +33,9 @@ $("#copyPasteBox").select();
             <div>
     		<?php if (count(get_data('consumers')) > 0) :?>
             <ul class="consumerList">
-                <?foreach (get_data('consumers') as $consumer) :?>
+                <?php foreach (get_data('consumers') as $consumer) :?>
     			    <li><?= $consumer->getLabel()?></li>
-    	        <?endforeach;?>
+    	        <?php endforeach;?>
     	    </ul>
     		<?php else:?>
     	      <span class="emptyList"><?= __('No LTI consumers defined')?></span>
