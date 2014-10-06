@@ -5,7 +5,7 @@
         <sections>
             <section id="manage_delivery_assembly" name="Deliveries" url="/taoDelivery/Delivery/index">
                 <actions>
-                    <action name="LTI" url="/ltiDeliveryProvider/DeliveryLinks/index" context="instance" group="tree">
+                    <action id="lti-delivery-link" name="LTI" url="/ltiDeliveryProvider/DeliveryLinks/index" context="instance" group="tree">
                         <icon id="icon-link"/>
                     </action>
                 </actions>
