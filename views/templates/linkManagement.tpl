@@ -1,49 +1,46 @@
 <?php
 use oat\tao\helpers\Template;
 ?>
-<link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/linkManagement.css" />	
-<script type="text/javascript">
-$("#copyPasteBox").select();
-</script>
 
-<div class="main-container">
-    <div id="form-title"
-        class="ui-widget-header ui-corner-top ui-state-default">
-		<?=__('%s Tool Provider', get_data('deliveryLabel'))?>
-	</div>
-    <div id="form-container" class="ui-widget-content ui-corner-bottom">
-		<?php if (has_data('warning')) :?>
-            <div class='warning'>
-                <?= get_data('warning')?>
-            </div>
-        <?php endif;?>    
-		<?php if (has_data('launchUrl')) :?>
-        <div class='description'>
-            <?=__('Copy and paste the following URL into your LTI compatible tool consumer.')?>
-        </div>
-        <div class="row">
-            <label><?= __('Launch URL')?></label>
-            <div>
-                <textarea rows="3" id="copyPasteBox"><?= get_data('launchUrl')?></textarea>
+
+<div class="main-container flex-container-main-form">
+    <h2><?=__('%s Tool Provider', get_data('deliveryLabel'))?></h2>
+    <div id="form-container" class="form-content">
+        <div class="xhtml_form">
+            <form>
+                <?php if (has_data('warning')) :?>
+                    <div class='feedback-warning'>
+                        <?= get_data('warning')?>
+                    </div>
+                <?php endif;?>    
+                <?php if (has_data('launchUrl')) :?>
+
+                <div>
+                    <label class="form_desc" for="copyPasteBox"><?= __('Launch URL')?></label>
+                    <textarea id="copyPasteBox" name="copyPasteBox" rows="3"><?= get_data('launchUrl')?></textarea>
+                <br>
+                <em><?=__('Copy and paste the following URL into your LTI compatible tool consumer.')?></em>
                 </div>
+                <?php endif;?>
+                <h3><?= __('Tool consumer(s)')?></h3>
+                    <?php if (count(get_data('consumers')) > 0) :?>
+                    <ul class="consumerList">
+                        <?php foreach (get_data('consumers') as $consumer) :?>
+                            <li><?= $consumer->getLabel()?></li>
+                        <?php endforeach;?>
+                    </ul>
+                    <?php else:?>
+                      <em><?= __('No LTI consumers defined')?></em>
+                    <?php endif;?>
+                    </div>
+                </div>
+            </form>
         </div>
-        <?php endif;?>
-        <div class="row">
-            <label><?= __('Tool consumer(s)')?></label>
-            <div>
-    		<?php if (count(get_data('consumers')) > 0) :?>
-            <ul class="consumerList">
-                <?php foreach (get_data('consumers') as $consumer) :?>
-    			    <li><?= $consumer->getLabel()?></li>
-    	        <?php endforeach;?>
-    	    </ul>
-    		<?php else:?>
-    	      <span class="emptyList"><?= __('No LTI consumers defined')?></span>
-    	    <?php endif;?>
-    	    </div>
-	    </div>
     </div>
 </div>
+<script type="text/javascript">
+document.getElementById("copyPasteBox").select();
+</script>
 <?php
-Template::inc('footer.tpl', 'tao')
+Template::inc('form-footer.tpl', 'tao')
 ?>
