@@ -42,5 +42,5 @@ use oat\tao\helpers\Template;
 document.getElementById("copyPasteBox").select();
 </script>
 <?php
-Template::inc('form-footer.tpl', 'tao')
+Template::inc('footer.tpl', 'tao')
 ?>
