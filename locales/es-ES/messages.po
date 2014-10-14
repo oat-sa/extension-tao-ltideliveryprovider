@@ -1,12 +1,17 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO v2.6-beta2\n"
-"PO-Revision-Date: 2014-05-30T15:55:39\n"
+"Project-Id-Version: TAO v2.7\n"
+"PO-Revision-Date: 2014-10-14T10:43:37\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es-ES\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: es-ES\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
 
 msgid "\"%s\" has been configured:', get_data('linkTitle"
 msgstr ""
@@ -38,10 +43,17 @@ msgstr ""
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
 msgstr ""
 
+#, tao-public
+msgid "Deliveries"
+msgstr ""
+
 msgid "Executions"
 msgstr ""
 
 msgid "Launch URL"
+msgstr ""
+
+msgid "LTI"
 msgstr ""
 
 msgid "No deliveries available"
