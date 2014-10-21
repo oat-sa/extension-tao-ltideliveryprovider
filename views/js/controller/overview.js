@@ -24,7 +24,7 @@ require([appConfig], function(){
 		$('#repeatButton').click(function(e) {
 			e.preventDefault();
 			$.ajax({
-				url: helpers._url('repeat', 'DeliveryRunner'),
+				url: helpers._url('repeat', 'DeliveryRunner', 'repeat'),
 	            type: "POST",
 	            data: {
 	            	uri : $(this).data('uri')
