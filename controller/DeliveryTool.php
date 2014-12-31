@@ -25,7 +25,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use \taoLti_actions_ToolModule;
 use \tao_models_classes_accessControl_AclProxy;
 use \tao_helpers_Uri;
-use \core_kernel_classes_Session;
+use \common_session_SessionManager;
 use \common_Logger;
 use \core_kernel_classes_Resource;
 use \taoLti_models_classes_LtiService;
@@ -55,13 +55,8 @@ class DeliveryTool extends taoLti_actions_ToolModule
                 $this->returnError(__('This tool has not yet been configured, please contact your instructor'), false);
             }
         } else {
-            $isLearner = false;
-            foreach (core_kernel_classes_Session::singleton()->getUserRoles() as $role) {
-                if ($role == INSTANCE_ROLE_CONTEXT_LEARNER) {
-                    $isLearner = true;
-                    break;
-                }
-            }
+            $user = common_session_SessionManager::getSession()->getUser();
+            $isLearner = !is_null($user) && in_array(INSTANCE_ROLE_CONTEXT_LEARNER, $user->getRoles());
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('runDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider')) {
                     $this->redirect($this->getLearnerUrl($compiledDelivery));
