@@ -7,13 +7,6 @@ use oat\tao\helpers\Template;
 
 <head>
 	<title><?=__('Thank you');?></title>
-	
-    <script id='amd-loader' 
-        type="text/javascript" 
-        src="<?=Template::js('lib/require.js', 'tao')?>" 
-        data-main="<?=Template::js('controller/overview')?>"
-        data-config="<?=get_data('client_config_url')?>">
-    </script>
 	<link rel="stylesheet" type="text/css" href="<?= Template::css('reset.css','tao') ?>" />
 	<link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= Template::css('thankyou.css') ?>" />	
