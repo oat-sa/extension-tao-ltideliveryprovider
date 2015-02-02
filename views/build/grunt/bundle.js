@@ -7,11 +7,12 @@ module.exports = function(grunt) {
     var root        = grunt.option('root');
     var libs        = grunt.option('mainlibs');
     var ext         = require(root + '/tao/views/build/tasks/helpers/extensions')(grunt, root);
+    var out         = 'output/ltiDeliveryProvider';
 
     /**
      * Remove bundled and bundling files
      */
-    clean.ltideliveryproviderbundle = ['output',  root + '/ltiDeliveryProvider/views/js/controllers.min.js'];
+    clean.ltideliveryproviderbundle = [out,  root + '/ltiDeliveryProvider/views/js/controllers.min.js'];
     
     /**
      * Compile tao files into a bundle 
@@ -19,7 +20,7 @@ module.exports = function(grunt) {
     requirejs.ltideliveryproviderbundle = {
         options: {
             baseUrl : '../js',
-            dir : 'output',
+            dir : out,
             mainConfigFile : './config/requirejs.build.js',
             paths : { 'ltiDeliveryProvider' : root + '/ltiDeliveryProvider/views/js' },
             modules : [{
@@ -35,8 +36,8 @@ module.exports = function(grunt) {
      */
     copy.ltideliveryproviderbundle = {
         files: [
-            { src: ['output/ltiDeliveryProvider/controller/routes.js'],  dest: root + '/ltiDeliveryProvider/views/js/controllers.min.js' },
-            { src: ['output/ltiDeliveryProvider/controller/routes.js.map'],  dest: root + '/ltiDeliveryProvider/views/js/controllers.min.js.map' }
+            { src: [out + '/ltiDeliveryProvider/controller/routes.js'],  dest: root + '/ltiDeliveryProvider/views/js/controllers.min.js' },
+            { src: [out + '/ltiDeliveryProvider/controller/routes.js.map'],  dest: root + '/ltiDeliveryProvider/views/js/controllers.min.js.map' }
         ]
     };
 
