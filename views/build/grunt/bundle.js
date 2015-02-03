@@ -12,7 +12,7 @@ module.exports = function(grunt) {
     /**
      * Remove bundled and bundling files
      */
-    clean.ltideliveryproviderbundle = [out,  root + '/ltiDeliveryProvider/views/js/controllers.min.js'];
+    clean.ltideliveryproviderbundle = [out];
     
     /**
      * Compile tao files into a bundle 
