@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.0-RC04\n"
-"PO-Revision-Date: 2015-03-06T16:14:29\n"
+"PO-Revision-Date: 2015-03-12T08:30:30\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: pt-PT\n"
+"Language: zh-TW\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: pt-PT\n"
+"targetLanguage: zh-TW\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "LTI Delivery Execution Tool"
-msgstr "LTI Delivery Execution Tool"
+msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
@@ -23,25 +23,15 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Linked delivery"
-msgstr "Linked delivery"
+msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "LTI Delivery Link Execution"
-msgstr "LTI Delivery Link Execution"
+msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Link between delivery Tool and Consumer"
 msgstr ""
-
-# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "LTI Delivery Execution Tool"
-msgstr "Tool to allow test takers to take a delivery from within an tool consumer."
-
-# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
-msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "LTI Delivery Link Execution"
-msgstr "Link between delivery Tool and Consumer"
 

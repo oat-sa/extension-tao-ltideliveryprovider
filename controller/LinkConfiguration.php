@@ -101,7 +101,7 @@ class LinkConfiguration extends tao_actions_CommonModule {
 		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
 		}
 		
-		if (taoDelivery_models_classes_execution_ServiceProxy::implementsMonitoring()) {
+		if (taoDelivery_models_classes_execution_ServiceProxy::singleton()->implementsMonitoring()) {
 		    $executions = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
 		    $this->setData('executionCount', count($executions));
 		}
