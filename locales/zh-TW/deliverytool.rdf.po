@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.0-RC05\n"
-"PO-Revision-Date: 2015-04-09T09:26:38\n"
+"Project-Id-Version: TAO 3.0.0\n"
+"PO-Revision-Date: 2015-04-30T09:20:41\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: zh-TW\n"
@@ -13,25 +13,25 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "LTI Delivery Execution Tool"
-msgstr ""
+msgstr "LTI 遞送執行工具"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Tool to allow test takers to take a delivery from within an tool consumer."
-msgstr ""
+msgstr "這個工具讓考生在工具消費者之中使用一個考試遞送。"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Linked delivery"
-msgstr ""
+msgstr "已連結的遞送"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "LTI Delivery Link Execution"
-msgstr ""
+msgstr "LTI遞送連結執行"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Link between delivery Tool and Consumer"
-msgstr ""
+msgstr "遞送工具和消費者之間的鏈接"
 
