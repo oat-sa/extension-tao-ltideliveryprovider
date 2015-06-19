@@ -32,8 +32,8 @@ return array(
 	'author' => 'Open Assessment Technologies',
 	'requires' => array(
 	    'taoDelivery' => '>=2.6',
-	    'taoLti' => '2.6',
-        'taoLtiBasicOutcome' => '2.6'
+	    'taoLti' => '>=2.6',
+        'taoLtiBasicOutcome' => '>=2.6'
 	),
 	'models' => array(
 	 	'http://www.tao.lu/Ontologies/TAOLTI.rdf',
