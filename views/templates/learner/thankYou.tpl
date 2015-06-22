@@ -1,15 +1,15 @@
 <?php
 use oat\tao\helpers\Template;
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+?><!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 	<title><?=__('Thank you');?></title>
 	
-    <link rel="stylesheet" type="text/css" href="<?= Template::css('reset.css','tao') ?>" />
-	<link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= Template::css('thankyou.css') ?>" />	
+    <link rel="stylesheet" href="<?= Template::css('reset.css','tao') ?>" />
+	<link rel="stylesheet" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
+    <link rel="stylesheet" href="<?= Template::css('thankyou.css') ?>" />	
 </head>
 
 <body>
