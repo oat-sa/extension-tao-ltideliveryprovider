@@ -1,15 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php
+use oat\tao\helpers\Template;
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 	<title><?=__('Thank you');?></title>
-	<script type="text/javascript" src="<?= ROOT_URL ?>tao/views/js/lib/jquery-1.8.0.min.js "></script>
-	<script type="text/javascript" src="<?= ROOT_URL ?>tao/views/js/lib/jquery-ui-1.8.23.custom.min.js"></script>
 	
-	<link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>tao/views/css/reset.css" />
-	<link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>tao/views/css/custom-theme/jquery-ui-1.8.22.custom.css" />
-    <link rel="stylesheet" type="text/css" href="<?= BASE_WWW ?>css/thankyou.css" />	
+    <link rel="stylesheet" type="text/css" href="<?= Template::css('reset.css','tao') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
+    <link rel="stylesheet" type="text/css" href="<?= Template::css('thankyou.css') ?>" />	
 </head>
 
 <body>
@@ -17,10 +17,10 @@
 			<h1><?=__('You have finished the test!');?></h1>
 <?php if (has_data('returnUrl')) :?>
 			<div class='message'>
-            		<?=has_data('consumerLabel')
-            		  ? __('Click on the back button to return to %s.', get_data('consumerLabel'))
-            		  : __('Click on the back button to return.');?>
-        		  </div>
+    		<?=has_data('consumerLabel')
+    		  ? __('Click on the back button to return to %s.', get_data('consumerLabel'))
+    		  : __('Click on the back button to return.');?>
+		  </div>
 <?php endif; ?>
         		  <div class="continer2">
 <?php if (has_data('returnUrl')) :?>
@@ -34,6 +34,7 @@
         			</a>
 <?php endif; ?>
     		</div>
+		</div>
 </body>
 
 </html>
