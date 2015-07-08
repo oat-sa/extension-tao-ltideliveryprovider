@@ -32,7 +32,7 @@ msgid "Back"
 msgstr "返回"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "單擊返回按鈕可以返回到 %s."
 
 msgid "Click on the back button to return."
 msgstr "單擊返回按鈕可以返回。"
@@ -70,7 +70,7 @@ msgid "Please select a delivery"
 msgstr "請選擇一個遞送"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "請為\"%s\"選擇一個遞送"
 
 msgid "Repeat"
 msgstr "重複"
@@ -82,7 +82,7 @@ msgid "Retake the test"
 msgstr "重新考試"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "返回到 %s."
 
 msgid "Select"
 msgstr "選擇"
