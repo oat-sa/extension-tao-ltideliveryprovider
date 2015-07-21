@@ -16,11 +16,11 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-POOTLE-MTIME: 1430413908.000000\n"
 
-msgid "\"%s\" has been configured:', get_data('linkTitle"
-msgstr "\"%s\"已设置:', get_data('linkTitle"
+msgid "%s Tool Provider"
+msgstr "%s 工具提供者"
 
-msgid "%s Tool Provider', get_data('deliveryLabel"
-msgstr "%s工具提供者', get_data('deliveryLabel"
+msgid "%s\" has been configured:"
+msgstr "%s工具提供者"
 
 msgid "Access to this functionality is restricted"
 msgstr "这个功能被限制使用"
@@ -34,8 +34,8 @@ msgstr "可用的递送"
 msgid "Back"
 msgstr "返回"
 
-msgid "Click on the back button to return to %s.', get_data('consumerLabel"
-msgstr "单击返回按钮可以返回到%s.', get_data('consumerLabel"
+msgid "Click on the back button to return to %s."
+msgstr "单击返回按钮可以返回到%s."
 
 msgid "Click on the back button to return."
 msgstr "单击返回按钮可以返回。"
@@ -72,8 +72,8 @@ msgstr "无监控"
 msgid "Please select a delivery"
 msgstr "请选择一个递送"
 
-msgid "Please select a delivery for \"%s\"', get_data('linkTitle"
-msgstr "请为\"%s\"选择一个递送, get_data('linkTitle"
+msgid "Please select a delivery for \"%s"
+msgstr "请为\"%s\"选择一个递送"
 
 msgid "Repeat"
 msgstr "重复"
@@ -84,8 +84,8 @@ msgstr "重复考试"
 msgid "Retake the test"
 msgstr "重新考试"
 
-msgid "Return to %s.',get_data('consumerLabel"
-msgstr "返回到%s.',get_data('消费者标签"
+msgid "Return to %s."
+msgstr "返回到%s."
 
 msgid "Select"
 msgstr "选择"
