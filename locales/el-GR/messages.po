@@ -1,20 +1,17 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-rc01\n"
-"PO-Revision-Date: 2015-06-22 13:21+0000\n"
-"Last-Translator: christofili <christofili@gmail.com>\n"
-"Language: el-GR\n"
+"Project-Id-Version: TAO v3.1.0-sprint03\n"
+"PO-Revision-Date: 2015-07-21T14:52:55\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.5.1-rc1\n"
+"Language: el-GR\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: el-GR\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-POOTLE-MTIME: 1434979286.000000\n"
 
 msgid "%s Tool Provider"
 msgstr ""
@@ -44,9 +41,7 @@ msgid "Configured LTI Link"
 msgstr "Διαμορφωμένος LTI σύνδεσμος"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
-"Αντέγραψε και επικόλλησε τον ακόλουθο σύνδεσμο στο συμβατό LTI εργαλείο-"
-"καταναλωτή. "
+msgstr "Αντέγραψε και επικόλλησε τον ακόλουθο σύνδεσμο στο συμβατό LTI εργαλείο-καταναλωτή. "
 
 #, tao-public
 msgid "Deliveries"
@@ -55,7 +50,6 @@ msgstr "Διανομές"
 msgid "Executions"
 msgstr "Εκτελέσεις"
 
-#, fuzzy
 msgid "Launch URL"
 msgstr "Έναρξη URL"
 
@@ -81,7 +75,6 @@ msgstr ""
 msgid "Repeat"
 msgstr "Επανάλαβε"
 
-# Επανάλαβε την εξέταση
 msgid "Repeat the test"
 msgstr "Επανάλαβε το τεστ"
 
@@ -104,9 +97,7 @@ msgid "Thank you"
 msgstr "Σας ευχαριστούμε"
 
 msgid "The delivery is not associated to a Result server storage policy"
-msgstr ""
-"Η διανομή δεν σχετίζεται με την πολιτική αποθήκευσης ενός διακομιστή "
-"αποτελεσμάτων"
+msgstr "Η διανομή δεν σχετίζεται με την πολιτική αποθήκευσης ενός διακομιστή αποτελεσμάτων"
 
 msgid "This tool has been configured:"
 msgstr ""
@@ -122,3 +113,4 @@ msgstr ""
 
 msgid "You have finished the test!"
 msgstr ""
+
