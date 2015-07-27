@@ -94,6 +94,11 @@ class DeliveryRunner extends taoDelivery_actions_DeliveryServer
         if ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
             $this->setData('returnUrl', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL));
         }
+        
+        if ($launchData->hasVariable('custom_message')) {
+            $this->setData('message', $launchData->getVariable('custom_message'));
+        }
+        
         $this->setData('allowRepeat', false);
         $this->setView('learner/thankYou.tpl');
     }
