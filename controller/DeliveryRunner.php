@@ -41,6 +41,12 @@ class DeliveryRunner extends taoDelivery_actions_DeliveryServer
     }
     
     protected function getReturnUrl() {
+        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        
+        if ($launchData->hasVariable('custom_skip_thankyou') && $launchData->getVariable('custom_skip_thankyou') == 'true'
+            && $launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
+            return $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
+        }
         return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
