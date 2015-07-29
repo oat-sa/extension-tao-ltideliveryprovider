@@ -39,6 +39,8 @@ use \taoLti_models_classes_LtiService;
  */
 class DeliveryTool extends taoLti_actions_ToolModule
 {
+    const PARAM_FORCE_RESTART = 'custom_force_restart';
+    
     /**
      * (non-PHPdoc)
      * @see taoLti_actions_ToolModule::run()
@@ -75,13 +77,20 @@ class DeliveryTool extends taoLti_actions_ToolModule
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery) {
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $userId = \common_session_SessionManager::getSession()->getUserUri();
-         
-        $active = null;
-        $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $userId);
+
+        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        if ($launchData->hasVariable(self::PARAM_FORCE_RESTART) && $launchData->getVariable(self::PARAM_FORCE_RESTART) == 'true') {
+            // ignore existing executions to force restart
+            $executions = array();
+        } else {
+            $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $userId);
+        }
+        
         if (empty($executions)) {
             $active = $this->getTool()->startDelivery($delivery, $remoteLink, $userId);
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         } else {
+            $active = null;
             foreach ($executions as $deliveryExecution) {
                 if ($deliveryExecution->getState()->getUri() == INSTANCE_DELIVERYEXEC_ACTIVE) {
                     $active = $deliveryExecution;
