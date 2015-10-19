@@ -45,14 +45,7 @@ class DeliveryRunner extends taoDelivery_actions_DeliveryServer
     }
 
     public function ltiOverview() {
-        //creates the URL of the action used to configure the client side
-        $context = \Context::getInstance();
-        $clientConfigParameters = array(
-                    'extension'         => $context->getExtensionName(),
-                    'module'            => $context->getModuleName(),
-                    'action'            => $context->getActionName()
-        );
-        $this->setData('client_config_url', _url('config', 'ClientConfig', 'tao', $clientConfigParameters));
+        $this->setData('client_config_url', $this->getClientConfigUrl());
         
         $this->setData('delivery', $this->getRequestParameter('delivery'));
         
