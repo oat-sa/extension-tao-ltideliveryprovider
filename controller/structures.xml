@@ -3,7 +3,7 @@
 <structures>
     <structure id="delivery" name="Deliveries" level="4" group="main">
         <sections>
-            <section id="manage_delivery_assembly" name="Deliveries" url="/taoDelivery/Delivery/index">
+            <section id="manage_delivery_assembly" name="Deliveries" url="/taoDeliveryRdf/DeliveryMgmt/index">
                 <actions>
                     <action id="lti-delivery-link" name="LTI" url="/ltiDeliveryProvider/DeliveryLinks/index" context="instance" group="tree">
                         <icon id="icon-link"/>
