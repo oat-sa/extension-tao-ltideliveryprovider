@@ -21,11 +21,12 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
-use \taoDelivery_actions_DeliveryServer;
+use oat\taoDelivery\controller\DeliveryServer;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDelivery\controller\DeliveryServer;
 
 /**
  * 
@@ -34,7 +35,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
  * @package ltiDeliveryProvider
  
  */
-class DeliveryRunner extends taoDelivery_actions_DeliveryServer
+class DeliveryRunner extends DeliveryServer
 {
     protected function showControls() {
         return false;

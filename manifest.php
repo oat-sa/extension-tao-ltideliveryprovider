@@ -31,7 +31,7 @@ return array(
     'version' => '1.0.4',
 	'author' => 'Open Assessment Technologies',
 	'requires' => array(
-	    'taoDeliveryRdf' => '>=0.2',
+	    'taoDeliveryRdf' => '>=1.0',
 	    'taoLti' => '>=2.6',
         'taoLtiBasicOutcome' => '>=2.6'
 	),
