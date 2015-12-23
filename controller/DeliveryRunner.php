@@ -26,7 +26,7 @@ use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
-use oat\taoDelivery\controller\DeliveryServer;
+
 
 /**
  * 
