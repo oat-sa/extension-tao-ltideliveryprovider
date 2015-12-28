@@ -42,7 +42,8 @@ class DeliveryLinks extends tao_actions_CommonModule {
      * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome service impelmentation
      * @author patrick <patrick@taotesting.com>
      */
-	public function index(){
+	public function index()
+	{
         $feedBackMessage = '';
         //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
         $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
