@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO v3.1.0-sprint03\n"
-"PO-Revision-Date: 2015-07-21T14:52:55\n"
+"Project-Id-Version: TAO 3.1.0-sprint15\n"
+"PO-Revision-Date: 2016-02-19T14:22:05\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -14,103 +14,103 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Tool Provider"
-msgstr ""
+msgstr " Fornitore di Tool %s "
 
 msgid "%s\" has been configured:"
-msgstr ""
+msgstr "%s\" è stato configurato"
 
 msgid "Access to this functionality is restricted"
-msgstr ""
+msgstr "L'accesso a questa funzionalità è limitato"
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "L'accesso a questa funzionalità è riservato agli studenti"
 
 msgid "Available Deliveries"
-msgstr ""
+msgstr "Somministrazioni disponibili"
 
 msgid "Back"
-msgstr ""
+msgstr "Indietro"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "Premi sul bottone 'indietro' per ritornare a %s"
 
 msgid "Click on the back button to return."
-msgstr ""
+msgstr "Premi il bottone 'indietro' per tornare indietro"
 
 msgid "Configured LTI Link"
-msgstr ""
+msgstr "Link LTI configurato"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
+msgstr "Copia e incolla il seguente URL all'interno del tuo consumer tool compatibile LTI"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Somministrazioni"
 
 msgid "Executions"
-msgstr ""
+msgstr "Esecuzioni"
 
 msgid "Launch URL"
-msgstr ""
+msgstr "Lancia l' URL"
 
 #, tao-public
 msgid "LTI"
-msgstr ""
+msgstr "LTI"
 
 msgid "No deliveries available"
-msgstr ""
+msgstr "Nessuna somministrazione disponibile"
 
 msgid "No LTI consumers defined"
-msgstr ""
+msgstr "Non sono stati definiti i consumer LTI"
 
 msgid "no monitoring"
-msgstr ""
+msgstr "nessun controllo"
 
 msgid "Please select a delivery"
-msgstr ""
+msgstr "Prego, selezionare una somministrazione"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "Prego selezionare una somministrazione per \"%s"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Ripeti"
 
 msgid "Repeat the test"
-msgstr ""
+msgstr "Ripeti il test"
 
 msgid "Retake the test"
-msgstr ""
+msgstr "Riprendi il test"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "Torna a %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Seleziona"
 
 msgid "Select Delivery"
-msgstr ""
+msgstr "Somministrazione selezionata"
 
 msgid "Selected Delivery"
-msgstr ""
+msgstr "Somministrazione selezionata"
 
 msgid "Thank you"
-msgstr ""
+msgstr "Grazie"
 
 msgid "The delivery is not associated to a Result server storage policy"
-msgstr ""
+msgstr "Questa somministrazione non è associata ad un criterio di archiviazione 'Result server' "
 
 msgid "This tool has been configured:"
-msgstr ""
+msgstr " Questo strumento è stato configurato : "
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Questa funzionalità non è ancora stata configurata, si prega di contattare il proprio istruttore"
 
 msgid "Tool consumer(s)"
-msgstr ""
+msgstr "Tool consumer(s)"
 
 msgid "You have already taken this test."
-msgstr ""
+msgstr "Hai già preso questo test"
 
 msgid "You have finished the test!"
-msgstr ""
+msgstr "Hai finito il test!"
 

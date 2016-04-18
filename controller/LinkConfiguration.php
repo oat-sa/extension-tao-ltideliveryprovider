@@ -25,11 +25,11 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use \tao_actions_CommonModule;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
-use \taoDelivery_models_classes_DeliveryAssemblyService;
 use \core_kernel_classes_Resource;
 use \tao_helpers_Uri;
 use \core_kernel_classes_Property;
 use \taoDelivery_models_classes_execution_ServiceProxy;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 /**
  * Allows instructors to configure the LTI remote_link
@@ -53,7 +53,7 @@ class LinkConfiguration extends tao_actions_CommonModule {
 		$this->setData('link', $ltiSession->getLtiLinkResource()->getUri());
 		$this->setData('submitUrl', _url('setDelivery'));
 		
-		$deliveries = taoDelivery_models_classes_DeliveryAssemblyService::singleton()->getAllAssemblies();
+		$deliveries = DeliveryAssemblyService::singleton()->getAllAssemblies();
 		if (count($deliveries) > 0) {
             $this->setData('deliveries', $deliveries);
     		$this->setView('instructor/selectDelivery.tpl');
