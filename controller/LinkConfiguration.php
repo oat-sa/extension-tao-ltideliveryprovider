@@ -67,7 +67,7 @@ class LinkConfiguration extends tao_actions_CommonModule {
 	 */
 	public function setDelivery() {
 		$link = new core_kernel_classes_Resource($this->getRequestParameter('link'));
-		$compiled = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+		$compiled = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
 		$link->editPropertyValues(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY), $compiled);
 		$this->redirect(_url('showDelivery', null, null, array('uri' => $compiled->getUri())));
 	}
