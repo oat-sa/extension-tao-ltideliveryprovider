@@ -37,7 +37,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
  */
 class DeliveryRunner extends DeliveryServer
 {
-    const PARAM_SKIP_MESSAGE = 'custom_message';
+    const PARAM_THANKYOU_MESSAGE = 'custom_message';
     
     const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
     
@@ -98,8 +98,8 @@ class DeliveryRunner extends DeliveryServer
             $this->setData('returnUrl', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL));
         }
         
-        if ($launchData->hasVariable('custom_message')) {
-            $this->setData('message', $launchData->getVariable(self::PARAM_SKIP_MESSAGE));
+        if ($launchData->hasVariable(self::PARAM_THANKYOU_MESSAGE)) {
+            $this->setData('message', $launchData->getVariable(self::PARAM_THANKYOU_MESSAGE));
         }
         
         $this->setData('allowRepeat', false);
