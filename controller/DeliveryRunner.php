@@ -51,18 +51,11 @@ class DeliveryRunner extends DeliveryServer
         return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
+    /**
+     * Shown uppon returning to a finished delivery execution
+     */
     public function ltiOverview() {
-        //creates the URL of the action used to configure the client side
-        $context = \Context::getInstance();
-        $clientConfigParameters = array(
-                    'extension'         => $context->getExtensionName(),
-                    'module'            => $context->getModuleName(),
-                    'action'            => $context->getActionName()
-        );
-        $this->setData('client_config_url', _url('config', 'ClientConfig', 'tao', $clientConfigParameters));
-        
         $this->setData('delivery', $this->getRequestParameter('delivery'));
-        
         $this->setData('allowRepeat', true);
         $this->setView('learner/overview.tpl');
     }
