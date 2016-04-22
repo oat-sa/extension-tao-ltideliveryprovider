@@ -29,18 +29,14 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 
 
 /**
+ * Called by the DeliveryTool to override DeliveryServer settings
  * 
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package ltiDeliveryProvider
- 
  */
 class DeliveryRunner extends DeliveryServer
 {
-    const PARAM_THANKYOU_MESSAGE = 'custom_message';
-    
-    const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
-    
     protected function showControls() {
         return false;
     }
@@ -48,7 +44,7 @@ class DeliveryRunner extends DeliveryServer
     protected function getReturnUrl() {
         $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
         
-        if ($launchData->hasVariable(self::PARAM_SKIP_THANKYOU) && $launchData->getVariable(self::PARAM_SKIP_THANKYOU) == 'true'
+        if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
             && $launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
             return $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
         }
@@ -98,8 +94,8 @@ class DeliveryRunner extends DeliveryServer
             $this->setData('returnUrl', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL));
         }
         
-        if ($launchData->hasVariable(self::PARAM_THANKYOU_MESSAGE)) {
-            $this->setData('message', $launchData->getVariable(self::PARAM_THANKYOU_MESSAGE));
+        if ($launchData->hasVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE)) {
+            $this->setData('message', $launchData->getVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE));
         }
         
         $this->setData('allowRepeat', false);
