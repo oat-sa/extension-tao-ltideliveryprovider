@@ -44,11 +44,11 @@ class DeliveryRunner extends taoDelivery_actions_DeliveryServer
         return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
+    /**
+     * Shown uppon returning to a finished delivery execution
+     */
     public function ltiOverview() {
-        $this->setData('client_config_url', $this->getClientConfigUrl());
-        
         $this->setData('delivery', $this->getRequestParameter('delivery'));
-        
         $this->setData('allowRepeat', true);
         $this->setView('learner/overview.tpl');
     }
