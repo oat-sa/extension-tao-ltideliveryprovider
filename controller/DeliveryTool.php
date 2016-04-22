@@ -40,7 +40,29 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
  */
 class DeliveryTool extends taoLti_actions_ToolModule
 {
+    /**
+     * Setting this parameter to 'true' will prevent resuming a testsession in progress
+     * and will start a new testsession whenever the lti tool is launched 
+     * 
+     * @var string
+     */
     const PARAM_FORCE_RESTART = 'custom_force_restart';
+    
+    /**
+     * Setting this parameter to 'true' will prevent the thank you screen to be shown after
+     * the test and skip directly to the return url
+     *
+     * @var string
+     */
+    const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+
+    /**
+     * Setting this parameter to a string will show this string as the title of the thankyou
+     * page. (no effect if PARAM_SKIP_THANKYOU is set to 'true')
+     *
+     * @var string
+     */
+    const PARAM_THANKYOU_MESSAGE = 'custom_message';
     
     /**
      * (non-PHPdoc)
