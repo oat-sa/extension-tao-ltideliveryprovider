@@ -41,6 +41,30 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 class DeliveryTool extends taoLti_actions_ToolModule
 {
     /**
+     * Setting this parameter to 'true' will prevent resuming a testsession in progress
+     * and will start a new testsession whenever the lti tool is launched 
+     * 
+     * @var string
+     */
+    const PARAM_FORCE_RESTART = 'custom_force_restart';
+    
+    /**
+     * Setting this parameter to 'true' will prevent the thank you screen to be shown after
+     * the test and skip directly to the return url
+     *
+     * @var string
+     */
+    const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+
+    /**
+     * Setting this parameter to a string will show this string as the title of the thankyou
+     * page. (no effect if PARAM_SKIP_THANKYOU is set to 'true')
+     *
+     * @var string
+     */
+    const PARAM_THANKYOU_MESSAGE = 'custom_message';
+    
+    /**
      * (non-PHPdoc)
      * @see taoLti_actions_ToolModule::run()
      */
@@ -76,13 +100,20 @@ class DeliveryTool extends taoLti_actions_ToolModule
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery) {
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $userId = \common_session_SessionManager::getSession()->getUserUri();
-         
-        $active = null;
-        $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $userId);
+
+        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        if ($launchData->hasVariable(self::PARAM_FORCE_RESTART) && $launchData->getVariable(self::PARAM_FORCE_RESTART) == 'true') {
+            // ignore existing executions to force restart
+            $executions = array();
+        } else {
+            $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $userId);
+        }
+        
         if (empty($executions)) {
             $active = $this->getTool()->startDelivery($delivery, $remoteLink, $userId);
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         } else {
+            $active = null;
             foreach ($executions as $deliveryExecution) {
                 if ($deliveryExecution->getState()->getUri() == DeliveryExecution::STATE_ACTIVE) {
                     $active = $deliveryExecution;

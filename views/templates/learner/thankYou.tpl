@@ -14,7 +14,7 @@ use oat\tao\helpers\Template;
 
 <body>
 	<div id="main" class="ui-widget-content ui-corner-all">
-			<h1><?=__('You have finished the test!');?></h1>
+			<h1><?=has_data('message')? get_data('message') : __('You have finished the test!');?></h1>
 <?php if (has_data('returnUrl')) :?>
 			<div class='message'>
     		<?=has_data('consumerLabel')

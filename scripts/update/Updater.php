@@ -18,22 +18,18 @@
  *
  *
  */
-
 namespace oat\ltiDeliveryProvider\scripts\update;
-
 
 class Updater extends \common_ext_ExtensionUpdater
 {
+
     /**
-     * 
      * @param string $currentVersion
-     * @return string $versionUpdatedTo
      */
     public function update($initialVersion)
     {
-        if ($this->isBetween('0', '1.2.1')){          
-	    	$this->setVersion('1.2.1');
+        if ($this->isBetween('0', '1.3.0')) {
+            $this->setVersion('1.3.0');
 		}
-		return null;
 	}
 }
