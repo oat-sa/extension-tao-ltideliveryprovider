@@ -40,7 +40,6 @@ class RestService extends \tao_actions_CommonRestModule
 
     /**
      * End point to get common user uri by lti user id
-     * @throws \oat\taoLti\models\classes\taoLti_models_classes_LtiException
      */
     public function getUserId()
     {
