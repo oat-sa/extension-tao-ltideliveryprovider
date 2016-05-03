@@ -60,10 +60,6 @@ class RestService extends \tao_actions_CommonRestModule
             $id = $parameters[self::LTI_USER_ID];
             $key = $parameters[self::LTI_CONSUMER_KEY];
 
-            if ((int) $parameters[self::LTI_USER_ID]==0) {
-                throw new \common_exception_InvalidArgumentType(__CLASS__, __FUNCTION__, '', 'integer', $id);
-            }
-
             $data = $this->service->getUserId($id, $key);
             if (!$data) {
                 \common_Logger::i('Id ' . $id . ' is not found.');
