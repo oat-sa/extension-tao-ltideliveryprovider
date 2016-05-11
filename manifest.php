@@ -24,26 +24,26 @@ $extpath = dirname(__FILE__).DIRECTORY_SEPARATOR;
 $taopath = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'tao'.DIRECTORY_SEPARATOR;
 
 return array(
-	'name' => 'ltiDeliveryProvider',
+    'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
-	'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
+    'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '1.3.0',
-	'author' => 'Open Assessment Technologies',
-	'requires' => array(
-	    'taoDeliveryRdf' => '>=1.0',
-	    'taoLti' => '>=2.6',
+    'version' => '1.3.1',
+    'author' => 'Open Assessment Technologies',
+    'requires' => array(
+        'taoDeliveryRdf' => '>=1.0',
+        'taoLti' => '>=2.6',
         'taoLtiBasicOutcome' => '>=2.6'
-	),
-	'models' => array(
-	 	'http://www.tao.lu/Ontologies/TAOLTI.rdf',
-		'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
-	 ),
-	'install' => array(
-		'rdf' => array(
-			dirname(__FILE__). '/install/ontology/deliverytool.rdf'
-		)
-	),
+    ),
+    'models' => array(
+         'http://www.tao.lu/Ontologies/TAOLTI.rdf',
+        'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
+     ),
+    'install' => array(
+        'rdf' => array(
+            dirname(__FILE__). '/install/ontology/deliverytool.rdf'
+        )
+    ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
     ),
@@ -57,26 +57,26 @@ return array(
         array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'ltiDeliveryProvider', 'mod' => 'LinkConfiguration')),
         array('grant', 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Instructor', array('ext'=>'taoDelivery', 'mod'=>'Delivery', 'act'=>'getOntologyData'))
     ),
-	'constants' => array(
-	
-		# views directory
-		"DIR_VIEWS"				=> $extpath."views".DIRECTORY_SEPARATOR,
-	
-		# default module name
-		'DEFAULT_MODULE_NAME'	=> 'Browser',
-	
-		#default action name
-		'DEFAULT_ACTION_NAME'	=> 'index',
-	
-		#BASE PATH: the root path in the file system (usually the document root)
-		'BASE_PATH'				=> $extpath ,
-	
-		#BASE URL (usually the domain root)
-		'BASE_URL'				=> ROOT_URL . 'ltiDeliveryProvider/',
-	
-		#BASE WWW the web resources path
-		'BASE_WWW'				=> ROOT_URL . 'ltiDeliveryProvider/views/',
-	),
+    'constants' => array(
+    
+        # views directory
+        "DIR_VIEWS"                => $extpath."views".DIRECTORY_SEPARATOR,
+    
+        # default module name
+        'DEFAULT_MODULE_NAME'    => 'Browser',
+    
+        #default action name
+        'DEFAULT_ACTION_NAME'    => 'index',
+    
+        #BASE PATH: the root path in the file system (usually the document root)
+        'BASE_PATH'                => $extpath ,
+    
+        #BASE URL (usually the domain root)
+        'BASE_URL'                => ROOT_URL . 'ltiDeliveryProvider/',
+    
+        #BASE WWW the web resources path
+        'BASE_WWW'                => ROOT_URL . 'ltiDeliveryProvider/views/',
+    ),
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
     )

@@ -26,7 +26,7 @@ module.exports = function(grunt) {
             modules : [{
                 name: 'ltiDeliveryProvider/controller/routes',
                 include : ext.getExtensionsControllers(['ltiDeliveryProvider']),
-                exclude : ['mathJax', 'mediaElement'].concat(libs)
+                exclude : ['mathJax'].concat(libs)
             }]
         }
     };
