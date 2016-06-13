@@ -69,6 +69,7 @@ class ResultServer
          
         $resultServerState->storeRelatedTestTaker(common_session_SessionManager::getSession()->getUserUri());
         $resultServerState->storeRelatedDelivery($delivery->getUri());
+        $resultServerState->storeRelatedDeliveryExecution($executionIdentifier);
 	}
 
 
