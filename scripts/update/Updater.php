@@ -20,9 +20,6 @@
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
 
-use oat\tao\model\accessControl\func\AclProxy;
-use oat\tao\model\accessControl\func\AccessRule;
-
 class Updater extends \common_ext_ExtensionUpdater
 {
 
