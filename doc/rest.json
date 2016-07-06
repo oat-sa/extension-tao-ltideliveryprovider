@@ -6,10 +6,6 @@
         "version": "1.0.0",
         "title": "LTI delivery service REST API"
     },
-    "schemes": [
-        "http",
-        "https"
-    ],
     "tags": [
         {
             "name": "LtiService",
