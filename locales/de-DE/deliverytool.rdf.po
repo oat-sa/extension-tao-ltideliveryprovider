@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint03\n"
-"PO-Revision-Date: 2015-08-11T13:24:02\n"
+"Project-Id-Version: TAO 3.1.0-sprint33\n"
+"PO-Revision-Date: 2016-08-25T14:35:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de-DE\n"
@@ -13,35 +13,35 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "LTI Delivery Execution Tool"
-msgstr "LTI Delivery Execution Tool"
+msgstr "LTI Delivery Execution Werkzeug"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Tool to allow test takers to take a delivery from within an tool consumer."
-msgstr ""
+msgstr "Werkzeug, das es Test-Teilnehmern erlaubt einen Test mit einem LTI Consumer zu schreiben."
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Linked delivery"
-msgstr "Linked delivery"
+msgstr "Verknüpftes Delivery"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "LTI Delivery Link Execution"
-msgstr "LTI Delivery Link Execution"
+msgstr "LTI Delivery Ausführungsverknüpfung"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Link between delivery Tool and Consumer"
-msgstr ""
+msgstr "Verknüpfung zwischen Bereitstellungswerkzeug und LTI Consumer"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "LTI Delivery Execution Tool"
-msgstr "Tool to allow test takers to take a delivery from within an tool consumer."
+msgstr "LTI Ausführungswerkzeug zur Bereitstellung"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "LTI Delivery Link Execution"
-msgstr "Link between delivery Tool and Consumer"
+msgstr "LTI Linkausführung der Bereitstellung"
 

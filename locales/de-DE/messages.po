@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint03\n"
-"PO-Revision-Date: 2015-08-11T13:24:02\n"
+"Project-Id-Version: TAO 3.1.0-sprint33\n"
+"PO-Revision-Date: 2016-08-25T14:35:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de-DE\n"
@@ -14,103 +14,103 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Tool Provider"
-msgstr ""
+msgstr "%s Werkzeuganbieter"
 
 msgid "%s\" has been configured:"
-msgstr ""
+msgstr "%s\" wurde konfiguriert:"
 
 msgid "Access to this functionality is restricted"
-msgstr ""
+msgstr "Zugriff auf diese Funktion ist beschränkt."
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "Zugriff auf diese Funktion ist auf Testteilnehmer beschränkt"
 
 msgid "Available Deliveries"
-msgstr ""
+msgstr "Verfügbare Bereitstellungen"
 
 msgid "Back"
-msgstr ""
+msgstr "Zurück"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "Klicken Sie auf den Zurück-Button klicken, um zu %s zurückzukehren."
 
 msgid "Click on the back button to return."
-msgstr ""
+msgstr "Klicken Sie auf den Zurück-Button, um zurück zu gehen."
 
 msgid "Configured LTI Link"
-msgstr ""
+msgstr "Konfigurierter LTI-Link"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
+msgstr "Kopieren Sie folgende URL und fügen Sie diese in das LTI kompatible Tool ein."
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Bereitstellungen"
 
 msgid "Executions"
-msgstr ""
+msgstr "Ausführungen"
 
 msgid "Launch URL"
-msgstr ""
+msgstr "URL aufrufen"
 
 #, tao-public
 msgid "LTI"
-msgstr ""
+msgstr "LTI"
 
 msgid "No deliveries available"
-msgstr ""
+msgstr "Keine Bereitstellungen verfügbar"
 
 msgid "No LTI consumers defined"
-msgstr ""
+msgstr "Keine LTI-Nutzer definiert."
 
 msgid "no monitoring"
-msgstr ""
+msgstr "keine Überwachung"
 
 msgid "Please select a delivery"
-msgstr ""
+msgstr "Bitte Bereitstellung auswählen"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "Bitte Bereitstellung für \"%s auswählen"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Wiederholen"
 
 msgid "Repeat the test"
-msgstr ""
+msgstr "Test wiederholen"
 
 msgid "Retake the test"
-msgstr ""
+msgstr "Test neu starten"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "Zu %s zurück kehren."
 
 msgid "Select"
-msgstr ""
+msgstr "Auswählen"
 
 msgid "Select Delivery"
-msgstr ""
+msgstr "Bereitstellung auswählen"
 
 msgid "Selected Delivery"
-msgstr ""
+msgstr "Ausgewählte Bereitstellung"
 
 msgid "Thank you"
-msgstr ""
+msgstr "Vielen Dank"
 
 msgid "The delivery is not associated to a Result server storage policy"
-msgstr ""
+msgstr "Die Bereitstellung steht nicht mit einer Server-Speichermethode für Ergebnisse in Verbindung"
 
 msgid "This tool has been configured:"
-msgstr ""
+msgstr "Dieses Werkzeug wurde konfiguriert:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Dieses Werkzeug wurde noch nicht konfiguriert, Bitte kontaktieren Sie ihren Vorgesetzten."
 
 msgid "Tool consumer(s)"
-msgstr ""
+msgstr "Werkzeug-Nutzer"
 
 msgid "You have already taken this test."
-msgstr ""
+msgstr "Sie haben an diesem Test schon teilgenommen."
 
 msgid "You have finished the test!"
-msgstr ""
+msgstr "Sie haben diesen Test abgeschlossen!"
 
