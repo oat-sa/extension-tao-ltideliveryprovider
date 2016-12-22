@@ -56,8 +56,7 @@ return array(
         array('grant', TaoRoles::ANONYMOUS, array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch')),
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run')),
         array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class),
-        array('grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class),
-        array('grant', LtiRoles::CONTEXT_INSTRUCTOR, DeliveryMgmt::class.'@getOntologyData'),
+        array('grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class)
     ),
     'constants' => array(
     
