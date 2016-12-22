@@ -21,7 +21,6 @@
  */
 
 $extpath = dirname(__FILE__).DIRECTORY_SEPARATOR;
-$taopath = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'tao'.DIRECTORY_SEPARATOR;
 
 return array(
     'name' => 'ltiDeliveryProvider',
@@ -41,12 +40,12 @@ return array(
         'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
      ),
     'install' => array(
+        'php' => array(
+            \oat\ltiDeliveryProvider\install\InstallAssignmentServiceRegistry::class,
+        ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
         ),
-        'php' => [
-            \oat\ltiDeliveryProvider\install\InstallAssignmentServiceRegistry::class,
-        ]
     ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
