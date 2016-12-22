@@ -14,30 +14,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
  *
  */
-namespace oat\ltiDeliveryProvider\scripts\update;
+
+namespace oat\ltiDeliveryProvider\install;
+
 use oat\taoDelivery\model\AssignmentServiceRegistry;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 
-class Updater extends \common_ext_ExtensionUpdater
+class InstallAssignmentServiceRegistry extends \oat\oatbox\extension\InstallAction
 {
 
     /**
-     * @param string $initialVersion
-     * @return null
+     * @param $params
      */
-    public function update($initialVersion)
+    public function __invoke($params)
     {
-        $this->skip('0', '1.5.1');
-
-        if ($this->isVersion('1.5.1')) {
-            $registry = AssignmentServiceRegistry::getRegistry();
-            $service = new LtiAssignment([]);
-            $registry->register('lti', $service);
-            $this->setVersion('1.6.0');
-        }
+        $assignmentService = new LtiAssignment([]);
+        $registry = AssignmentServiceRegistry::getRegistry();
+        $registry->register('lti', $assignmentService);
     }
 }

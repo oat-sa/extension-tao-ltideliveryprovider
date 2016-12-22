@@ -28,10 +28,11 @@ return array(
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '1.5.1',
+    'version' => '1.6.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'taoDeliveryRdf' => '>=1.0',
+        'taoDelivery' => '>=4.7.0',
         'taoLti' => '>=2.6',
         'taoLtiBasicOutcome' => '>=2.6'
     ),
@@ -42,7 +43,10 @@ return array(
     'install' => array(
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
-        )
+        ),
+        'php' => [
+            \oat\ltiDeliveryProvider\install\InstallAssignmentServiceRegistry::class,
+        ]
     ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
