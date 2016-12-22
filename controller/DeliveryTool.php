@@ -30,6 +30,7 @@ use \common_Logger;
 use \core_kernel_classes_Resource;
 use \taoLti_models_classes_LtiService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoLti\models\classes\LtiRoles;
 
 /**
  * 
@@ -81,7 +82,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
             }
         } else {
             $user = common_session_SessionManager::getSession()->getUser();
-            $isLearner = !is_null($user) && in_array(INSTANCE_ROLE_CONTEXT_LEARNER, $user->getRoles());
+            $isLearner = !is_null($user) && in_array(LtiRoles::CONTEXT_LEARNER, $user->getRoles());
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('runDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider')) {
                     $this->redirect($this->getLearnerUrl($compiledDelivery));
