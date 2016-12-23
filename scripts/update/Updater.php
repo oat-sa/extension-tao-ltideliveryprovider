@@ -19,8 +19,8 @@
  *
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
-use oat\taoDelivery\model\AssignmentServiceRegistry;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
+use oat\oatbox\service\ServiceNotFoundException;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -34,9 +34,13 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('0', '1.5.1');
 
         if ($this->isVersion('1.5.1')) {
-            $registry = AssignmentServiceRegistry::getRegistry();
-            $service = new LtiAssignment([]);
-            $registry->register('lti', $service);
+            try {
+                $this->getServiceManager()->get(LtiAssignment::CONFIG_ID);
+            } catch (ServiceNotFoundException $e) {
+                $service = new LtiAssignment();
+                $service->setServiceManager($this->getServiceManager());
+                $this->getServiceManager()->register(LtiAssignment::CONFIG_ID, $service);
+            }
             $this->setVersion('1.6.0');
         }
     }

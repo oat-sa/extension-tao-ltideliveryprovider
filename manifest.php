@@ -31,7 +31,6 @@ return array(
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'taoDeliveryRdf' => '>=1.0',
-        'taoDelivery' => '>=4.7.0',
         'taoLti' => '>=2.6',
         'taoLtiBasicOutcome' => '>=2.6'
     ),
@@ -41,7 +40,7 @@ return array(
      ),
     'install' => array(
         'php' => array(
-            \oat\ltiDeliveryProvider\install\InstallAssignmentServiceRegistry::class,
+            \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'

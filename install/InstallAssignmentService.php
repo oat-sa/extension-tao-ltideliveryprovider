@@ -20,10 +20,9 @@
 
 namespace oat\ltiDeliveryProvider\install;
 
-use oat\taoDelivery\model\AssignmentServiceRegistry;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 
-class InstallAssignmentServiceRegistry extends \oat\oatbox\extension\InstallAction
+class InstallAssignmentService extends \oat\oatbox\extension\InstallAction
 {
 
     /**
@@ -31,8 +30,8 @@ class InstallAssignmentServiceRegistry extends \oat\oatbox\extension\InstallActi
      */
     public function __invoke($params)
     {
-        $assignmentService = new LtiAssignment([]);
-        $registry = AssignmentServiceRegistry::getRegistry();
-        $registry->register('lti', $assignmentService);
+        $ltiAssignment = new LtiAssignment();
+        $this->getServiceManager()->register(LtiAssignment::CONFIG_ID, $ltiAssignment);
+
     }
 }
