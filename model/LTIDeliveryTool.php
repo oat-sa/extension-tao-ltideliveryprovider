@@ -70,7 +70,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
      * @throws \common_exception_Unauthorized
 	 */
 	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
-        $assignmentService = $this->getAssignmentService();
+        $assignmentService = $this->getServiceLocator()->get(LtiAssignment::LTI_CONFIG_ID);
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }
@@ -114,13 +114,4 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    }
 	    return $returnValue;
 	}
-
-    /**
-     * @return AssignmentService
-     */
-    protected function getAssignmentService()
-    {
-        $registry = AssignmentServiceRegistry::getRegistry();
-        return $registry->get('lti');
-    }
 }

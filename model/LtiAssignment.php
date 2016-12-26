@@ -33,7 +33,7 @@ use oat\oatbox\user\User;
 class LtiAssignment extends GroupAssignment implements AssignmentService
 {
     const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
-    const CONFIG_ID = 'ltiDeliveryProvider/assignment';
+    const LTI_CONFIG_ID = 'ltiDeliveryProvider/assignment';
 
     /**
      * @param string $deliveryIdentifier
