@@ -29,6 +29,7 @@ use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
 use \common_session_SessionManager;
 use \taoDelivery_models_classes_execution_ServiceProxy;
+use oat\taoDelivery\model\execution\DeliveryExecution;
 
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	
@@ -64,17 +65,17 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	 * 
 	 * @param core_kernel_classes_Resource $delivery
 	 * @param core_kernel_classes_Resource $link
-	 * @param string $userUri
-	 * @return \taoDelivery_models_classes_execution_DeliveryExecution
+	 * @param User $user
+	 * @return DeliveryExecution
 	 */
-	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
+	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $user) {
 	    $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
 	        $delivery,
-	        $userId
+	        $user
 	    );
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
 	    $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
+	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
 	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
 	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier()
 	    ));
@@ -82,7 +83,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	}
 	
 	/**
-	 * Returns an array of taoDelivery_models_classes_execution_DeliveryExecution
+	 * Returns an array of DeliveryExecution
 	 * 
 	 * @param core_kernel_classes_Resource $delivery
 	 * @param core_kernel_classes_Resource $link
