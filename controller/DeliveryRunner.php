@@ -67,9 +67,9 @@ class DeliveryRunner extends DeliveryServer
         // is active?
         
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-        $userId = \common_session_SessionManager::getSession()->getUserUri();
+        $user = \common_session_SessionManager::getSession()->getUser();
          
-        $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $userId);
+        $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
             
         $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
     }

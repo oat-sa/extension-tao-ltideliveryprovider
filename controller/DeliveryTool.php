@@ -100,18 +100,18 @@ class DeliveryTool extends taoLti_actions_ToolModule
     
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery) {
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-        $userId = \common_session_SessionManager::getSession()->getUserUri();
+        $user = \common_session_SessionManager::getSession()->getUser();
 
         $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
         if ($launchData->hasVariable(self::PARAM_FORCE_RESTART) && $launchData->getVariable(self::PARAM_FORCE_RESTART) == 'true') {
             // ignore existing executions to force restart
             $executions = array();
         } else {
-            $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $userId);
+            $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $user->getIdentifier());
         }
         
         if (empty($executions)) {
-            $active = $this->getTool()->startDelivery($delivery, $remoteLink, $userId);
+            $active = $this->getTool()->startDelivery($delivery, $remoteLink, $user);
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         } else {
             $active = null;
