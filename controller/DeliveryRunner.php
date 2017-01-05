@@ -26,7 +26,7 @@ use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
-
+use oat\taoLti\actions\traits\LtiModuleTrait;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -37,6 +37,8 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
  */
 class DeliveryRunner extends DeliveryServer
 {
+    use LtiModuleTrait;
+
     protected function showControls() {
         return false;
     }
@@ -49,6 +51,18 @@ class DeliveryRunner extends DeliveryServer
             return $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
         }
         return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function runDeliveryExecution()
+    {
+        try{
+            parent::runDeliveryExecution();
+        } catch (\taoLti_models_classes_LtiException $e) {
+            $this->returnError($e->getMessage());
+        }
     }
 
     /**
