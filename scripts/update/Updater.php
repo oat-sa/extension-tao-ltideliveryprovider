@@ -28,6 +28,6 @@ class Updater extends \common_ext_ExtensionUpdater
      */
     public function update($initialVersion)
     {
-        $this->skip('0', '1.7.0');
+        $this->skip('0', '1.7.1');
     }
 }
