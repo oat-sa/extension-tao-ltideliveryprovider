@@ -21,18 +21,17 @@
  */
 
 $extpath = dirname(__FILE__).DIRECTORY_SEPARATOR;
-$taopath = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'tao'.DIRECTORY_SEPARATOR;
 
 return array(
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '1.5.1',
+    'version' => '1.6.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'taoDeliveryRdf' => '>=1.0',
-        'taoLti' => '>=2.6',
+        'taoLti' => '>=1.7.0',
         'taoLtiBasicOutcome' => '>=2.6'
     ),
     'models' => array(
@@ -40,9 +39,12 @@ return array(
         'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
      ),
     'install' => array(
+        'php' => array(
+            \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
+        ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
-        )
+        ),
     ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
