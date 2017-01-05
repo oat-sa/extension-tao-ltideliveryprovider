@@ -35,11 +35,11 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('1.5.1')) {
             try {
-                $this->getServiceManager()->get(LtiAssignment::LTI_CONFIG_ID);
+                $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
             } catch (ServiceNotFoundException $e) {
                 $service = new LtiAssignment();
                 $service->setServiceManager($this->getServiceManager());
-                $this->getServiceManager()->register(LtiAssignment::LTI_CONFIG_ID, $service);
+                $this->getServiceManager()->register(LtiAssignment::LTI_SERVICE_ID, $service);
             }
             $this->setVersion('1.6.0');
         }
