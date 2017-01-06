@@ -24,6 +24,8 @@ use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\taoDeliveryRdf\controller\DeliveryMgmt;
 
+$extpath = dirname(__FILE__).DIRECTORY_SEPARATOR;
+
 return array(
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
@@ -34,7 +36,7 @@ return array(
     'requires' => array(
         'tao' => '>=7.45.5',
         'taoDeliveryRdf' => '>=1.0',
-        'taoLti' => '>=1.6.1',
+        'taoLti' => '>=1.7.0',
         'taoLtiBasicOutcome' => '>=2.6'
     ),
     'models' => array(
@@ -42,9 +44,12 @@ return array(
         'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
      ),
     'install' => array(
+        'php' => array(
+            \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
+        ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
-        )
+        ),
     ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'

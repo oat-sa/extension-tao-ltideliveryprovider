@@ -21,18 +21,18 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\ltiDeliveryProvider\helper\ResultServer;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
-use \common_session_SessionManager;
+use oat\oatbox\user\User;
 use \taoDelivery_models_classes_execution_ServiceProxy;
-use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\AssignmentService;
+use oat\taoDelivery\model\AssignmentServiceRegistry;
 
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
-	
+
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
 	
     const EXTENSION = 'ltiDeliveryProvider';
@@ -66,12 +66,17 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	 * @param core_kernel_classes_Resource $delivery
 	 * @param core_kernel_classes_Resource $link
 	 * @param User $user
-	 * @return DeliveryExecution
+	 * @return \taoDelivery_models_classes_execution_DeliveryExecution
+     * @throws \common_exception_Unauthorized
 	 */
-	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $user) {
+	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
+        $assignmentService = $this->getServiceLocator()->get(LtiAssignment::LTI_SERVICE_ID);
+        if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
+            throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
+        }
 	    $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
 	        $delivery,
-	        $user
+            $user->getIdentifier()
 	    );
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
 	    $class->createInstanceWithProperties(array(

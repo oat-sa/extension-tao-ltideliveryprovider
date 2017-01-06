@@ -37,7 +37,9 @@ use oat\taoLti\actions\traits\LtiModuleTrait;
  */
 class DeliveryRunner extends DeliveryServer
 {
-    use LtiModuleTrait;
+    use LtiModuleTrait {
+        returnError as returnLtiError;
+    }
 
     protected function showControls() {
         return false;
@@ -76,16 +78,16 @@ class DeliveryRunner extends DeliveryServer
     
     public function repeat() {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
-        
-        // is allowed?
-        // is active?
-        
+
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
-         
-        $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
-            
-        $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+
+        try {
+            $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
+            $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+        } catch (\common_exception_Unauthorized $e) {
+            $this->returnLtiError($e->getMessage(), false);
+        }
     }
     
     public function thankYou() {
