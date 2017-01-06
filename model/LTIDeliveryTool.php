@@ -88,7 +88,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	}
 	
 	/**
-	 * Returns an array of taoDelivery_models_classes_execution_DeliveryExecution
+	 * Returns an array of DeliveryExecution
 	 * 
 	 * @param core_kernel_classes_Resource $delivery
 	 * @param core_kernel_classes_Resource $link
