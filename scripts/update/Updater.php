@@ -31,9 +31,9 @@ class Updater extends \common_ext_ExtensionUpdater
      */
     public function update($initialVersion)
     {
-        $this->skip('0', '1.5.1');
+        $this->skip('0', '1.7.1');
 
-        if ($this->isVersion('1.5.1')) {
+        if ($this->isVersion('1.7.1')) {
             try {
                 $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
             } catch (ServiceNotFoundException $e) {
@@ -41,10 +41,8 @@ class Updater extends \common_ext_ExtensionUpdater
                 $service->setServiceManager($this->getServiceManager());
                 $this->getServiceManager()->register(LtiAssignment::LTI_SERVICE_ID, $service);
             }
-            $this->setVersion('1.6.0');
+            $this->setVersion('2.0.0');
         }
-
-	      $this->skip('1.6.0', '1.7.1');
 
     }
 }
