@@ -26,7 +26,7 @@ use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
-
+use oat\taoLti\actions\traits\LtiModuleTrait;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -37,6 +37,10 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
  */
 class DeliveryRunner extends DeliveryServer
 {
+    use LtiModuleTrait {
+        returnError as returnLtiError;
+    }
+
     protected function showControls() {
         return false;
     }
@@ -52,6 +56,18 @@ class DeliveryRunner extends DeliveryServer
     }
 
     /**
+     * @inheritdoc
+     */
+    public function runDeliveryExecution()
+    {
+        try{
+            parent::runDeliveryExecution();
+        } catch (\taoLti_models_classes_LtiException $e) {
+            $this->returnError($e->getMessage());
+        }
+    }
+
+    /**
      * Shown uppon returning to a finished delivery execution
      */
     public function ltiOverview() {
@@ -62,16 +78,16 @@ class DeliveryRunner extends DeliveryServer
     
     public function repeat() {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
-        
-        // is allowed?
-        // is active?
-        
+
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
-         
-        $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
-            
-        $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+
+        try {
+            $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
+            $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+        } catch (\common_exception_Unauthorized $e) {
+            $this->returnLtiError($e->getMessage(), false);
+        }
     }
     
     public function thankYou() {

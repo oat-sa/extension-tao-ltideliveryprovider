@@ -19,15 +19,29 @@
  *
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
+use oat\oatbox\service\ServiceNotFoundException;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
 
     /**
-     * @param string $currentVersion
+     * @param string $initialVersion
      */
     public function update($initialVersion)
     {
         $this->skip('0', '1.7.1');
+
+        if ($this->isVersion('1.7.1')) {
+            try {
+                $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
+            } catch (ServiceNotFoundException $e) {
+                $service = new LtiAssignment();
+                $service->setServiceManager($this->getServiceManager());
+                $this->getServiceManager()->register(LtiAssignment::LTI_SERVICE_ID, $service);
+            }
+            $this->setVersion('2.0.0');
+        }
+        $this->skip('2.0.0', '2.0.1');
     }
 }
