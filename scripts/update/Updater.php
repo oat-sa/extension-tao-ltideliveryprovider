@@ -43,5 +43,17 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.0.0');
         }
         $this->skip('2.0.0', '2.0.1');
+
+        if ($this->isVersion('2.0.1')) {
+            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider');
+
+            $config = $extension->getConfig('deliveryRunner');
+
+            $config['showControls'] = false;
+
+            $extension->setConfig('deliveryRunner', $config);
+
+            $this->setVersion('2.1.0');
+        }
     }
 }
