@@ -47,9 +47,11 @@ class DeliveryRunner extends DeliveryServer
      * @return boolean
      */
     protected function showControls() {
-        $config = \common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider')->getConfig('deliveryRunner');
-        if ($config && array_key_exists('showControls', $config)) {
-            return $config['showControls'];
+        if ($this->getServiceManager()->has('ltiDeliveryProvider/deliveryRunner')) {
+            $config = $this->getServiceManager()->get('ltiDeliveryProvider/deliveryRunner');
+            if ($config && array_key_exists('showControls', $config)) {
+                return $config['showControls'];
+            }
         }
         return false;
     }
