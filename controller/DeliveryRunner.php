@@ -41,7 +41,18 @@ class DeliveryRunner extends DeliveryServer
         returnError as returnLtiError;
     }
 
+    /**
+     * Defines if the top and bottom action menu should be displayed or not
+     *
+     * @return boolean
+     */
     protected function showControls() {
+        if ($this->getServiceManager()->has('ltiDeliveryProvider/deliveryRunner')) {
+            $config = $this->getServiceManager()->get('ltiDeliveryProvider/deliveryRunner');
+            if ($config && array_key_exists('showControls', $config)) {
+                return $config['showControls'];
+            }
+        }
         return false;
     }
     
