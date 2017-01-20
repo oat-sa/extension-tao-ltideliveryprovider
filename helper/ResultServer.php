@@ -40,6 +40,10 @@ class ResultServer
             $resultServer = new core_kernel_classes_Resource(TAO_VOID_RESULT_SERVER);
         }
         
+        $resultIdentifier = $launchData->hasVariable("lis_result_sourcedid")
+            ? $launchData->getVariable("lis_result_sourcedid")
+            : $executionIdentifier;
+
         if ($launchData->hasVariable("lis_result_sourcedid") && $launchData->hasVariable("lis_outcome_service_url")) {
                 
             $options = array(
@@ -56,10 +60,8 @@ class ResultServer
                     )
                 )
     	    );
-    	    $resultIdentifier = $launchData->getVariable("lis_result_sourcedid");
         } else {
             $options = array();
-            $resultIdentifier = $executionIdentifier;
         }
 
         common_Logger::i("Spawning '".$resultIdentifier ."' related to delivery execution ".$executionIdentifier);

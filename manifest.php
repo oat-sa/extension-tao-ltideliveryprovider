@@ -24,14 +24,12 @@ use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\taoDeliveryRdf\controller\DeliveryMgmt;
 
-$extpath = dirname(__FILE__).DIRECTORY_SEPARATOR;
-
 return array(
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '1.7.1',
+    'version' => '2.1.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'tao' => '>=7.45.5',
@@ -49,7 +47,7 @@ return array(
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
-        ),
+        )
     ),
     'routes' => array(
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
