@@ -26,7 +26,7 @@ use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
-
+use oat\taoLti\actions\traits\LtiModuleTrait;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -37,7 +37,22 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
  */
 class DeliveryRunner extends DeliveryServer
 {
+    use LtiModuleTrait {
+        returnError as returnLtiError;
+    }
+
+    /**
+     * Defines if the top and bottom action menu should be displayed or not
+     *
+     * @return boolean
+     */
     protected function showControls() {
+        if ($this->getServiceManager()->has('ltiDeliveryProvider/deliveryRunner')) {
+            $config = $this->getServiceManager()->get('ltiDeliveryProvider/deliveryRunner');
+            if ($config && array_key_exists('showControls', $config)) {
+                return $config['showControls'];
+            }
+        }
         return false;
     }
     
@@ -52,6 +67,18 @@ class DeliveryRunner extends DeliveryServer
     }
 
     /**
+     * @inheritdoc
+     */
+    public function runDeliveryExecution()
+    {
+        try{
+            parent::runDeliveryExecution();
+        } catch (\taoLti_models_classes_LtiException $e) {
+            $this->returnError($e->getMessage());
+        }
+    }
+
+    /**
      * Shown uppon returning to a finished delivery execution
      */
     public function ltiOverview() {
@@ -62,16 +89,16 @@ class DeliveryRunner extends DeliveryServer
     
     public function repeat() {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
-        
-        // is allowed?
-        // is active?
-        
+
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-        $userId = \common_session_SessionManager::getSession()->getUserUri();
-         
-        $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $userId);
-            
-        $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+        $user = \common_session_SessionManager::getSession()->getUser();
+
+        try {
+            $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
+            $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+        } catch (\common_exception_Unauthorized $e) {
+            $this->returnLtiError($e->getMessage(), false);
+        }
     }
     
     public function thankYou() {
