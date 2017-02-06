@@ -108,9 +108,13 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    foreach ($links as $link) {
 	        $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
 	        $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($execId);
-	        if ($delivery->equals($deliveryExecution->getDelivery())) {
-	            $returnValue[] = $deliveryExecution;
-	        }
+	        try{
+                if ($delivery->equals($deliveryExecution->getDelivery())) {
+                    $returnValue[] = $deliveryExecution;
+                }
+            } catch (\common_exception_NotFound $e) {
+	            \common_Logger::w('Delivery not found for delivery execution ' . $deliveryExecution->getIdentifier());
+            }
 	    }
 	    return $returnValue;
 	}
