@@ -18,19 +18,23 @@
  *
  */
 
-namespace oat\ltiDeliveryProvider\model\execution;
+namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 
 /**
- * Interface LtiDeliveryExecutionService
+ * Class LtiDeliveryExecutionService
+ * @author Aleh Hutnikau, <hutnikau@1pt.com>
  * @package oat\ltiDeliveryProvider\model\execution
  */
-interface LtiDeliveryExecutionService
+class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeliveryExecutionServiceInterface
 {
     /**
-     * @param DeliveryExecution $deliveryExecution
-     * @return boolean
+     * @inheritdoc
      */
-    public function isFinished(DeliveryExecution $deliveryExecution);
+    public function isFinished(DeliveryExecution $deliveryExecution)
+    {
+        return $deliveryExecution->getState()->getUri() === DeliveryExecution::STATE_FINISHIED;
+    }
 }
