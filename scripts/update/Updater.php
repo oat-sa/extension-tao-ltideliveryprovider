@@ -57,10 +57,10 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.1.0');
         }
 
-        if ($this->isVersion('0.2.1')) {
+        if ($this->isVersion('2.1.0')) {
             $service = new LtiDeliveryExecutionService([]);
             $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $service);
-            $this->setVersion('0.3.0');
+            $this->setVersion('2.2.0');
         }
     }
 }
