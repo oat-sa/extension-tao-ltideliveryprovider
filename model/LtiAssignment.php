@@ -68,7 +68,7 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
                 if (!is_numeric($val)) {
                     throw new \taoLti_models_classes_LtiException(
                         __('"max_attempts" variable must me numeric.'),
-                        LtiErrorMessage::ERROR_WRONG_PARAMETER_VALUE
+                        LtiErrorMessage::ERROR_INVALID_PARAMETER
                     );
                 }
                 $maxExec = (integer) $val;
