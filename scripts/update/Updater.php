@@ -21,7 +21,7 @@
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
-use oat\ltiProctoring\model\execution\LtiDeliveryExecutionService;
+use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
