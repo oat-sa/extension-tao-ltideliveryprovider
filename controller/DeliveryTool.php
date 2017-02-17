@@ -31,6 +31,7 @@ use \core_kernel_classes_Resource;
 use \taoLti_models_classes_LtiService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiRoles;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 
 /**
  * 
@@ -114,9 +115,10 @@ class DeliveryTool extends taoLti_actions_ToolModule
             $active = $this->getTool()->startDelivery($delivery, $remoteLink, $user);
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         } else {
+            $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
             $active = null;
             foreach ($executions as $deliveryExecution) {
-                if ($deliveryExecution->getState()->getUri() == DeliveryExecution::STATE_ACTIVE) {
+                if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
                     $active = $deliveryExecution;
                     break;
                 }
