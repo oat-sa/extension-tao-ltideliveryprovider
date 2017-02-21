@@ -6,7 +6,7 @@ The endpoint for this service to proctor a specific delivery is:
 
 or
 
-`https://YOUR_DOMAIN/ltiProctoring/ltiDeliveryProvider/DeliveryTool/{"delivery":"YOUR_URI"}(base64 encoded)`
+`https://YOUR_DOMAIN/ltiDeliveryProvider/DeliveryTool/{"delivery":"YOUR_URI"}(base64 encoded)`
 
 This link can retrieved using the LTI button in the deliveries section in the TAO admin user-interface.
 
