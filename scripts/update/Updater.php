@@ -21,7 +21,6 @@
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
-use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -62,5 +61,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $service);
             $this->setVersion('2.2.0');
         }
+
+        $this->skip('2.2.0', '2.3.0');
     }
 }
