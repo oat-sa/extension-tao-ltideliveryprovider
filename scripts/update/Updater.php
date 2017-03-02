@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
+use oat\taoLti\models\classes\theme\LtiThemeSwitcher;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -63,5 +64,13 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('2.2.0', '2.3.0');
+
+        if ($this->isVersion('2.3.0')) {
+            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider');
+
+            $extension->unsetConfig('deliveryRunner');
+
+            $this->setVersion('2.4.0');
+        }
     }
 }
