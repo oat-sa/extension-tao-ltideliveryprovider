@@ -21,12 +21,15 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use oat\tao\model\theme\ThemeService;
 use oat\taoDelivery\controller\DeliveryServer;
+use oat\taoLti\models\classes\theme\LtiHeadless;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\actions\traits\LtiModuleTrait;
+use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -37,9 +40,7 @@ use oat\taoLti\actions\traits\LtiModuleTrait;
  */
 class DeliveryRunner extends DeliveryServer
 {
-    use LtiModuleTrait {
-        returnError as returnLtiError;
-    }
+    use LtiModuleTrait;
 
     /**
      * Defines if the top and bottom action menu should be displayed or not
@@ -47,11 +48,9 @@ class DeliveryRunner extends DeliveryServer
      * @return boolean
      */
     protected function showControls() {
-        if ($this->getServiceManager()->has('ltiDeliveryProvider/deliveryRunner')) {
-            $config = $this->getServiceManager()->get('ltiDeliveryProvider/deliveryRunner');
-            if ($config && array_key_exists('showControls', $config)) {
-                return $config['showControls'];
-            }
+        $themeService = $this->getServiceManager()->get(ThemeService::SERVICE_ID);
+        if ($themeService instanceof LtiHeadless) {
+            return !$themeService->isHeadless(); 
         }
         return false;
     }
@@ -74,7 +73,7 @@ class DeliveryRunner extends DeliveryServer
         try{
             parent::runDeliveryExecution();
         } catch (\taoLti_models_classes_LtiException $e) {
-            $this->returnError($e->getMessage());
+            $this->returnLtiError($e);
         }
     }
 
@@ -97,7 +96,13 @@ class DeliveryRunner extends DeliveryServer
             $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
             $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
         } catch (\common_exception_Unauthorized $e) {
-            $this->returnLtiError($e->getMessage(), false);
+            $ltiException = new \taoLti_models_classes_LtiException(
+                $e->getMessage(),
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            );
+            $this->returnLtiError($ltiException);
+        } catch (\taoLti_models_classes_LtiException $ltiException) {
+            $this->returnLtiError($ltiException);
         }
     }
     
