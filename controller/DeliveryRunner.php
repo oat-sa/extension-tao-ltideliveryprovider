@@ -21,7 +21,9 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use oat\tao\model\theme\ThemeService;
 use oat\taoDelivery\controller\DeliveryServer;
+use oat\taoLti\models\classes\theme\LtiHeadless;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
@@ -46,11 +48,9 @@ class DeliveryRunner extends DeliveryServer
      * @return boolean
      */
     protected function showControls() {
-        if ($this->getServiceManager()->has('ltiDeliveryProvider/deliveryRunner')) {
-            $config = $this->getServiceManager()->get('ltiDeliveryProvider/deliveryRunner');
-            if ($config && array_key_exists('showControls', $config)) {
-                return $config['showControls'];
-            }
+        $themeService = $this->getServiceManager()->get(ThemeService::SERVICE_ID);
+        if ($themeService instanceof LtiHeadless) {
+            return !$themeService->isHeadless(); 
         }
         return false;
     }
