@@ -101,8 +101,6 @@ class DeliveryRunner extends DeliveryServer
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
             $this->returnLtiError($ltiException);
-        } catch (\taoLti_models_classes_LtiException $ltiException) {
-            $this->returnLtiError($ltiException);
         }
     }
     
