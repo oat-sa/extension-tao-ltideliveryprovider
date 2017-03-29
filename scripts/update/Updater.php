@@ -70,7 +70,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $extension->unsetConfig('deliveryRunner');
 
-            $this->setVersion('2.4.0');
+            $this->setVersion('2.4.1');
         }
     }
 }
