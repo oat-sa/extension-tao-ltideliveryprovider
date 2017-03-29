@@ -34,7 +34,7 @@ return array(
     'requires' => array(
         'tao' => '>=7.45.5',
         'taoDeliveryRdf' => '>=1.0',
-        'taoLti' => '>=1.9.0',
+        'taoLti' => '>=1.13.0',
         'taoLtiBasicOutcome' => '>=2.6'
     ),
     'models' => array(
