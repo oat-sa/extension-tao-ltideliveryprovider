@@ -66,18 +66,6 @@ class DeliveryRunner extends DeliveryServer
     }
 
     /**
-     * @inheritdoc
-     */
-    public function runDeliveryExecution()
-    {
-        try{
-            parent::runDeliveryExecution();
-        } catch (\taoLti_models_classes_LtiException $e) {
-            $this->returnLtiError($e);
-        }
-    }
-
-    /**
      * Shown uppon returning to a finished delivery execution
      */
     public function ltiOverview() {
