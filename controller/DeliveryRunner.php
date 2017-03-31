@@ -66,18 +66,6 @@ class DeliveryRunner extends DeliveryServer
     }
 
     /**
-     * @inheritdoc
-     */
-    public function runDeliveryExecution()
-    {
-        try{
-            parent::runDeliveryExecution();
-        } catch (\taoLti_models_classes_LtiException $e) {
-            $this->returnLtiError($e);
-        }
-    }
-
-    /**
      * Shown uppon returning to a finished delivery execution
      */
     public function ltiOverview() {
@@ -100,8 +88,6 @@ class DeliveryRunner extends DeliveryServer
                 $e->getMessage(),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
-            $this->returnLtiError($ltiException);
-        } catch (\taoLti_models_classes_LtiException $ltiException) {
             $this->returnLtiError($ltiException);
         }
     }
