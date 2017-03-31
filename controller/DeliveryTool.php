@@ -29,8 +29,8 @@ use \common_session_SessionManager;
 use \common_Logger;
 use \core_kernel_classes_Resource;
 use \taoLti_models_classes_LtiService;
-use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiRoles;
+use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 
 /**
@@ -79,7 +79,9 @@ class DeliveryTool extends taoLti_actions_ToolModule
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
             } else {
                 // user NOT authorised to select the Delivery
-                $this->returnError(__('This tool has not yet been configured, please contact your instructor'), false);
+                throw new \taoLti_models_classes_LtiException(
+                    __('This tool has not yet been configured, please contact your instructor'),
+                    LtiErrorMessage::ERROR_INVALID_PARAMETER);
             }
         } else {
             $user = common_session_SessionManager::getSession()->getUser();
