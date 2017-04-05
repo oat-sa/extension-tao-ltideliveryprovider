@@ -138,11 +138,9 @@ class DeliveryRunner extends DeliveryServer
             parse_str($urlParts['query'], $params);
             $params = array_merge($params, $this->getLtiMessage($deliveryExecution)->getUrlParams());
             $urlParts['query'] = http_build_query($params);
-            $url = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
-            $this->redirect($url);
-        } else {
-            $this->redirect( _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider'));
+            $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
         }
+        $this->redirect($redirectUrl);
     }
 
     /**
