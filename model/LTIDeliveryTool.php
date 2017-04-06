@@ -76,7 +76,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         }
 	    $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
 	        $delivery,
-            $user->getIdentifier()
+            $user
 	    );
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
 	    $class->createInstanceWithProperties(array(
