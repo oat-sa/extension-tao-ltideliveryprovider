@@ -35,7 +35,8 @@ return array(
         'tao' => '>=7.45.5',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=1.13.0',
-        'taoLtiBasicOutcome' => '>=2.6'
+        'taoLtiBasicOutcome' => '>=2.6',
+        'taoDelivery' => '>=4.7'
     ),
     'models' => array(
          'http://www.tao.lu/Ontologies/TAOLTI.rdf',
