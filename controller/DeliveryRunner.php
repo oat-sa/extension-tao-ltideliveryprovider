@@ -30,6 +30,10 @@ use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\actions\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
+use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoLti\models\classes\LtiMessages\LtiMessage;
+use oat\taoProctoring\model\deliveryLog\DeliveryLog;
+use oat\taoProctoring\model\execution\DeliveryExecution as ProctoredDeliveryExecution;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -56,13 +60,10 @@ class DeliveryRunner extends DeliveryServer
     }
     
     protected function getReturnUrl() {
-        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-        
-        if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
-            && $launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
-            return $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
-        }
-        return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+        $deliveryExecution = $this->getCurrentDeliveryExecution();
+        return _url('finishDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider',
+            ['deliveryExecution' => $deliveryExecution->getIdentifier()]
+        );
     }
 
     /**
@@ -112,6 +113,82 @@ class DeliveryRunner extends DeliveryServer
         $this->setData('allowRepeat', false);
         $this->setView('learner/thankYou.tpl');
     }
+
+    /**
+     * Redirect user to return URL
+     */
+    public function finishDeliveryExecution()
+    {
+        $session = \common_session_SessionManager::getSession();
+        $launchData = $session->getLaunchData();
+        if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
+            && $launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
+            $redirectUrl = $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
+        } else {
+            $redirectUrl = _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+        }
+        if ($this->hasRequestParameter('deliveryExecution')) {
+            $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution(
+                $this->getRequestParameter('deliveryExecution')
+            );
+            $urlParts = parse_url($redirectUrl);
+            if (!isset($urlParts['query'])) {
+                $urlParts['query'] = '';
+            }
+            parse_str($urlParts['query'], $params);
+            $params = array_merge($params, $this->getLtiMessage($deliveryExecution)->getUrlParams());
+            $urlParts['query'] = http_build_query($params);
+            $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
+        }
+        $this->redirect($redirectUrl);
+    }
+
+    /**
+     * @param DeliveryExecution $deliveryExecution
+     * @return LtiMessage
+     */
+    protected function getLtiMessage(DeliveryExecution $deliveryExecution)
+    {
+        $state = $deliveryExecution->getState()->getLabel();
+        /** @var DeliveryLog $deliveryLog */
+        $deliveryLog = $this->getServiceManager()->get(DeliveryLog::SERVICE_ID);
+        $reason = '';
+        $reasons = null;
+        switch ($deliveryExecution->getState()->getUri()) {
+            case ProctoredDeliveryExecution::STATE_FINISHED:
+                $log = $deliveryLog->get($deliveryExecution->getIdentifier(), 'TEST_EXIT_CODE');
+                if ($log) {
+                    $reason .= 'Exit code: ' . $log[count($log) - 1]['data']['exitCode'] . PHP_EOL;
+                }
+                break;
+            case ProctoredDeliveryExecution::STATE_TERMINATED:
+                $log = $deliveryLog->get($deliveryExecution->getIdentifier(), 'TEST_TERMINATE');
+                if ($log) {
+                    $reasons = $log[count($log) - 1]['data'];
+                }
+                break;
+            case ProctoredDeliveryExecution::STATE_PAUSED:
+                $log = $deliveryLog->get($deliveryExecution->getIdentifier(), 'TEST_PAUSE');
+                if ($log) {
+                    $reasons = $log[count($log) - 1]['data'];
+                }
+            case ProctoredDeliveryExecution::STATE_CANCELED:
+                $log = $deliveryLog->get($deliveryExecution->getIdentifier(), 'TEST_CANCEL');
+                if ($log) {
+                    $reasons = $log[count($log) - 1]['data'];
+                }
+                break;
+        }
+
+        if ($reasons !== null) {
+            $reason .= isset($reasons['reason']['reasons']['category']) ? $reasons['reason']['reasons']['category'] : '';
+            $reason .= isset($reasons['reason']['reasons']['subCategory']) ? '; ' . $reasons['reason']['reasons']['subCategory'] : '';
+            $reason .= isset($reasons['reason']['comment']) ? ' - ' . $reasons['reason']['comment'] : '';
+        }
+
+        return new LtiMessage($state, $reason);
+    }
+
 
     protected function initResultServer($compiledDelivery, $executionIdentifier) {
         //The result server from LTI context depend on call parameters rather than static result server definition
