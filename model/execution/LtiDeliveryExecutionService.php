@@ -40,4 +40,14 @@ interface LtiDeliveryExecutionService
      * @return boolean
      */
     public function isFinished(DeliveryExecution $deliveryExecution);
+
+    /**
+     * Get delivery executions linked to user and $link resource
+     *
+     * @param \core_kernel_classes_Resource $delivery
+     * @param \core_kernel_classes_Resource $link
+     * @param string $userId
+     * @return DeliveryExecution[]
+     */
+    public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId);
 }

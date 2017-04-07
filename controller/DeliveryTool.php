@@ -113,26 +113,26 @@ class DeliveryTool extends taoLti_actions_ToolModule
         } else {
             $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $user->getIdentifier());
         }
-        
+
+        $active = null;
+
         if (empty($executions)) {
             $active = $this->getTool()->startDelivery($delivery, $remoteLink, $user);
-            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
-        }
-
-        $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        $active = null;
-        foreach ($executions as $deliveryExecution) {
-            if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
-                $active = $deliveryExecution;
-                break;
+        } else {
+            $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            foreach ($executions as $deliveryExecution) {
+                if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
+                    $active = $deliveryExecution;
+                    break;
+                }
             }
         }
 
-        $assignmentService = $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
         if ($active !== null) {//resume delivery execution
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         }
 
+        $assignmentService = $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
         } else {
