@@ -30,6 +30,7 @@ use oat\oatbox\user\User;
 use \taoDelivery_models_classes_execution_ServiceProxy;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\AssignmentServiceRegistry;
+use oat\taoDelivery\model\execution\StateServiceInterface;
 
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
@@ -74,10 +75,9 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }
-	    $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
-	        $delivery,
-            $user
-	    );
+        $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
+        $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
+
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
 	    $class->createInstanceWithProperties(array(
 	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
