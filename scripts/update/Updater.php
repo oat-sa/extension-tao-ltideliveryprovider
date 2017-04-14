@@ -19,6 +19,7 @@
  *
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
+use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\taoLti\models\classes\theme\LtiThemeSwitcher;
@@ -73,6 +74,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.4.1');
         }
 
-        $this->skip('2.4.1', '2.4.2');
+        $this->skip('2.4.1', '2.8.0');
     }
 }

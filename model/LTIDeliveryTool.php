@@ -28,8 +28,9 @@ use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
 use oat\oatbox\user\User;
 use \taoDelivery_models_classes_execution_ServiceProxy;
-use oat\taoDelivery\model\AssignmentService;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\AssignmentServiceRegistry;
+use oat\taoDelivery\model\execution\StateServiceInterface;
 
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
@@ -74,10 +75,9 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }
-	    $deliveryExecution = taoDelivery_models_classes_execution_ServiceProxy::singleton()->initDeliveryExecution(
-	        $delivery,
-            $user->getIdentifier()
-	    );
+        $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
+        $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
+
 	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
 	    $class->createInstanceWithProperties(array(
 	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
@@ -96,22 +96,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	 * @return array
 	 */
 	public function getLinkedDeliveryExecutions(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
-	    
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
-	    $links = $class->searchInstances(array(
-	    	PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-	    ), array(
-	    	'like' => false
-	    ));
-	    $returnValue = array();
-	    foreach ($links as $link) {
-	        $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
-	        $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($execId);
-	        if ($delivery->equals($deliveryExecution->getDelivery())) {
-	            $returnValue[] = $deliveryExecution;
-	        }
-	    }
-	    return $returnValue;
-	}
+        $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+        return $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+    }
 }

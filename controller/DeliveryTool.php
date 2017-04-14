@@ -32,6 +32,7 @@ use \taoLti_models_classes_LtiService;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
 
 /**
  * 
@@ -112,24 +113,33 @@ class DeliveryTool extends taoLti_actions_ToolModule
         } else {
             $executions = $this->getTool()->getLinkedDeliveryExecutions($delivery, $remoteLink, $user->getIdentifier());
         }
-        
+
+        $active = null;
+
         if (empty($executions)) {
             $active = $this->getTool()->startDelivery($delivery, $remoteLink, $user);
-            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
         } else {
             $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-            $active = null;
             foreach ($executions as $deliveryExecution) {
                 if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
                     $active = $deliveryExecution;
                     break;
                 }
             }
-            if (is_null($active)) {
-                return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
-            } else {
-                return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
-            }
+        }
+
+        if ($active !== null) {//resume delivery execution
+            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
+        }
+
+        $assignmentService = $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
+        if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
+            return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
+        } else {
+            throw new \taoLti_models_classes_LtiException(
+                __('User is not authorized to run this delivery'),
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            );
         }
     }
     
