@@ -21,6 +21,7 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\oatbox\user\User;
@@ -76,7 +77,10 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
         }
 
         //check Tokens
-        $usedTokens = count(\taoDelivery_models_classes_execution_ServiceProxy::singleton()->getUserExecutions($delivery, $user->getIdentifier()));
+        /** @var LtiDeliveryExecutionService $executionService */
+        $executionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+
+        $usedTokens = count($executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier()));
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). " without tokens");
