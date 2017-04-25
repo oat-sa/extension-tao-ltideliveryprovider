@@ -29,10 +29,10 @@ return array(
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '2.8.2',
+    'version' => '3.0.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
-        'tao' => '>=7.45.5',
+        'tao' => '>=9.0.0',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=1.13.0',
         'taoLtiBasicOutcome' => '>=2.6',
@@ -78,9 +78,6 @@ return array(
     
         #BASE URL (usually the domain root)
         'BASE_URL'                => ROOT_URL . 'ltiDeliveryProvider/',
-    
-        #BASE WWW the web resources path
-        'BASE_WWW'                => ROOT_URL . 'ltiDeliveryProvider/views/',
     ),
     'extra' => array(
         'structures' => __DIR__.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
