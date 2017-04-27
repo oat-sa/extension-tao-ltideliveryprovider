@@ -31,6 +31,8 @@ use \taoDelivery_models_classes_execution_ServiceProxy;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\AssignmentServiceRegistry;
 use oat\taoDelivery\model\execution\StateServiceInterface;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
+use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
@@ -60,6 +62,30 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    ));
 	    return $link instanceof core_kernel_classes_Resource;
 	}
+
+	public function getFinishUrl(LtiMessage $ltiMessage, $deliveryExecution = null)
+    {
+        $session = \common_session_SessionManager::getSession();
+        $launchData = $session->getLaunchData();
+        if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
+            && $launchData->hasVariable(\taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
+            $redirectUrl = $launchData->getVariable(\taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
+        } else {
+            $redirectUrl = _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+        }
+
+        if ($deliveryExecution !== null) {
+            $urlParts = parse_url($redirectUrl);
+            if (!isset($urlParts['query'])) {
+                $urlParts['query'] = '';
+            }
+            parse_str($urlParts['query'], $params);
+            $params = array_merge($params, $ltiMessage->getUrlParams());
+            $urlParts['query'] = http_build_query($params);
+            $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
+        }
+        return $redirectUrl;
+    }
 
 	/**
 	 * Start a new delivery execution
