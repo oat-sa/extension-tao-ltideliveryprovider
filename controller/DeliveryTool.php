@@ -129,7 +129,9 @@ class DeliveryTool extends taoLti_actions_ToolModule
         }
 
         if ($active !== null) {//resume delivery execution
-            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
+            return _url('awaitingAuthorization', 'DeliveryServer', 'ltiProctoring', [
+                'deliveryExecution' => $active->getIdentifier()
+            ]);
         }
 
         $assignmentService = $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
