@@ -15,13 +15,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use oat\ltiDeliveryProvider\model\event\DeliveryRunEvent;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\oatbox\event\EventManager;
 use \taoLti_actions_ToolModule;
 use \tao_models_classes_accessControl_AclProxy;
 use \tao_helpers_Uri;
@@ -39,7 +39,6 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package ltiDeliveryProvider
- 
  */
 class DeliveryTool extends taoLti_actions_ToolModule
 {
@@ -87,6 +86,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
         } else {
             $user = common_session_SessionManager::getSession()->getUser();
             $isLearner = !is_null($user) && in_array(LtiRoles::CONTEXT_LEARNER, $user->getRoles());
+            $this->getServiceManager()->get(EventManager::SERVICE_ID)->trigger(new DeliveryRunEvent($compiledDelivery, $user, $isLearner));
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('runDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider')) {
                     $this->redirect($this->getLearnerUrl($compiledDelivery));
@@ -101,7 +101,12 @@ class DeliveryTool extends taoLti_actions_ToolModule
             }
         }
     }
-    
+
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     * @return string
+     * @throws \taoLti_models_classes_LtiException
+     */
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery) {
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
