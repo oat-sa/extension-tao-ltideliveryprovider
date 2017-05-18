@@ -58,7 +58,8 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    $link = $class->createInstanceWithProperties(array(
 	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
 	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-            PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution
+            PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution,
+            PROPERTY_LTI_DEL_EXEC_LINK_DELIVERY_ID => $deliveryExecution->getDelivery()->getUri(),
 	    ));
 	    return $link instanceof core_kernel_classes_Resource;
 	}
@@ -108,7 +109,8 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    $class->createInstanceWithProperties(array(
 	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
 	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier()
+	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier(),
+            PROPERTY_LTI_DEL_EXEC_LINK_DELIVERY_ID => $delivery->getUri(),
 	    ));
 	    return $deliveryExecution;
 	}

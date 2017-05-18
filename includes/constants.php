@@ -30,5 +30,6 @@ $todefine = array(
     'PROPERTY_LTI_DEL_EXEC_LINK_USER'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser',
     'PROPERTY_LTI_DEL_EXEC_LINK_LINK'	=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink',
     'PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID'=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution',
+    'PROPERTY_LTI_DEL_EXEC_LINK_DELIVERY_ID'=> 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery',
 );
 ?>
