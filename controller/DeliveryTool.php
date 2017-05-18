@@ -33,6 +33,7 @@ use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
+use oat\taoDelivery\model\execution\StateServiceInterface;
 
 /**
  * 
@@ -89,6 +90,11 @@ class DeliveryTool extends taoLti_actions_ToolModule
             $isLearner = !is_null($user) && in_array(LtiRoles::CONTEXT_LEARNER, $user->getRoles());
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('runDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider')) {
+                    $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+                    if ($activeExecution) {
+                        $deliveryExecutionStateService = $this->getServiceManager()->get(StateServiceInterface::SERVICE_ID);
+                        $deliveryExecutionStateService->pauseExecution($activeExecution);
+                    }
                     $this->redirect($this->getLearnerUrl($compiledDelivery));
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
@@ -102,7 +108,27 @@ class DeliveryTool extends taoLti_actions_ToolModule
         }
     }
     
-    protected function getLearnerUrl(\core_kernel_classes_Resource $delivery) {
+    protected function getLearnerUrl(\core_kernel_classes_Resource $delivery)
+    {
+        $user = \common_session_SessionManager::getSession()->getUser();
+        $active = $this->getActiveDeliveryExecution($delivery);
+        if ($active !== null) {
+            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
+        }
+
+        $assignmentService = $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
+        if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
+            return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
+        } else {
+            throw new \taoLti_models_classes_LtiException(
+                __('User is not authorized to run this delivery'),
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            );
+        }
+    }
+
+    protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
+    {
         $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
 
@@ -127,22 +153,9 @@ class DeliveryTool extends taoLti_actions_ToolModule
                 }
             }
         }
-
-        if ($active !== null) {//resume delivery execution
-            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $active->getIdentifier()));
-        }
-
-        $assignmentService = $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
-        if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
-            return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
-        } else {
-            throw new \taoLti_models_classes_LtiException(
-                __('User is not authorized to run this delivery'),
-                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
-            );
-        }
+        return $active;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see taoLti_actions_ToolModule::getTool()
