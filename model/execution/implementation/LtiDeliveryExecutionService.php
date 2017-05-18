@@ -53,6 +53,7 @@ class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeli
         $links = $class->searchInstances([
             PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
             PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+            PROPERTY_LTI_DEL_EXEC_LINK_DELIVERY_ID => $delivery->getUri(),
         ], [
             'like' => false
         ]);

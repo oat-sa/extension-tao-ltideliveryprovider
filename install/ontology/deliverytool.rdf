@@ -41,6 +41,12 @@
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution">
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Linked delivery execution]]></rdfs:label>
+    <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution"/>
+    <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Linked delivery]]></rdfs:label>
     <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution"/>
     <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAODelivery.rdf#Delivery"/>
