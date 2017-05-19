@@ -15,14 +15,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
- *
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
-use oat\taoLti\models\classes\theme\LtiThemeSwitcher;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -74,6 +71,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.4.0');
         }
 
-        $this->skip('2.4.0', '3.0.0');
+        $this->skip('2.4.0', '3.0.1');
     }
 }
