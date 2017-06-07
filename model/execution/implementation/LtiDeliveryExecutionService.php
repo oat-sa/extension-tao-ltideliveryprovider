@@ -58,7 +58,7 @@ class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeli
         ]);
         $result = [];
         foreach ($links as $link) {
-            $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
+            $execId = (string)$link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
             $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($execId);
             if ($delivery->equals($deliveryExecution->getDelivery())) {
                 $result[] = $deliveryExecution;
