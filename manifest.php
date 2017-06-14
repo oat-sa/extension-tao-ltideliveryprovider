@@ -1,6 +1,5 @@
 <?php
 /**
- *   
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -16,26 +15,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
-use oat\taoLti\models\classes\LtiRoles;
-use oat\tao\model\user\TaoRoles;
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
-use oat\taoDeliveryRdf\controller\DeliveryMgmt;
+use oat\tao\model\user\TaoRoles;
+use oat\taoLti\models\classes\LtiRoles;
 
 return array(
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '3.0.0',
+    'version' => '4.0.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
-        'tao' => '>=7.45.5',
+        'tao' => '>=9.0.0',
         'taoDeliveryRdf' => '>=1.0',
-        'taoLti' => '>=1.7.0',
-        'taoLtiBasicOutcome' => '>=2.6'
+        'taoLti' => '>=3.2.2',
+        'taoLtiBasicOutcome' => '>=2.6',
+        'taoDelivery' => '>=5.0'
     ),
     'models' => array(
          'http://www.tao.lu/Ontologies/TAOLTI.rdf',
@@ -77,9 +75,6 @@ return array(
     
         #BASE URL (usually the domain root)
         'BASE_URL'                => ROOT_URL . 'ltiDeliveryProvider/',
-    
-        #BASE WWW the web resources path
-        'BASE_WWW'                => ROOT_URL . 'ltiDeliveryProvider/views/',
     ),
     'extra' => array(
         'structures' => __DIR__.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
