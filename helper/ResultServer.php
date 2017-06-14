@@ -44,29 +44,9 @@ class ResultServer
             ? $launchData->getVariable("lis_result_sourcedid")
             : $executionIdentifier;
 
-        if ($launchData->hasVariable("lis_result_sourcedid") && $launchData->hasVariable("lis_outcome_service_url")) {
-                
-            $options = array(
-                array(
-    	        "implementation" =>"taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
-    	        "parameters" => array(
-                    "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
-                    "consumer_key" => $launchData->getOauthKey(),
-                    "service_url" => $launchData->getVariable("lis_outcome_service_url"),
-                    "user_identifier" => common_session_SessionManager::getSession()->getUserUri(),
-    	            "user_fullName" => ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_FULL)
-    	                ? $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_FULL)
-    	                : '')
-                    )
-                )
-    	    );
-        } else {
-            $options = array();
-        }
-
         common_Logger::i("Spawning '".$resultIdentifier ."' related to delivery execution ".$executionIdentifier);
         $resultServerState = taoResultServer_models_classes_ResultServerStateFull::singleton(); 
-        $resultServerState->initResultServer($resultServer->getUri(), $options);
+        $resultServerState->initResultServer($resultServer->getUri());
         $resultServerState->spawnResult($executionIdentifier, $resultIdentifier);
          
         $resultServerState->storeRelatedTestTaker(common_session_SessionManager::getSession()->getUserUri());

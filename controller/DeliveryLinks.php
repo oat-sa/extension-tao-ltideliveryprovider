@@ -45,7 +45,7 @@ class DeliveryLinks extends tao_actions_CommonModule {
 	public function index()
 	{
         $feedBackMessage = '';
-        //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
+        //checks the constraint for the results handling, depends on taoResultServer
         $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
         try {
             $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
