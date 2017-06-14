@@ -100,8 +100,8 @@ class DeliveryRunner extends DeliveryServer
             $this->setData('consumerLabel', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION));
         }
         
-        if ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
-            $this->setData('returnUrl', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL));
+        if ($launchData->hasReturnUrl()) {
+            $this->setData('returnUrl', $launchData->getReturnUrl());
         }
         
         if ($launchData->hasVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE)) {
