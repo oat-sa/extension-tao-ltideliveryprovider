@@ -91,7 +91,7 @@ class LtiResultIdStorage extends ConfigurableService
      * @param $resultId
      * @return DeliveryExecution[]
      */
-    public function getDeliveryExecutionIds($resultId)
+    public function getDeliveryExecutions($resultId)
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(self::DELIVERY_EXECUTION_ID);

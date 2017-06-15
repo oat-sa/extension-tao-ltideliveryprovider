@@ -21,6 +21,7 @@ use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionS
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultIdStorage;
+use oat\ltiDeliveryProvider\model\QtiResultsService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -81,6 +82,12 @@ class Updater extends \common_ext_ExtensionUpdater
             $service->setServiceManager($this->getServiceManager());
             $service::install($service->getPersistence());
             $this->getServiceManager()->register(LtiResultIdStorage::SERVICE_ID, $service);
+
+            $qtiResultsService = $this->getServiceManager()->get(QtiResultsService::SERVICE_ID);
+            $this->getServiceManager()->register(
+                QtiResultsService::SERVICE_ID,
+                new QtiResultsService($qtiResultsService->getOptions())
+            );
             $this->setVersion('3.2.0');
         }
     }

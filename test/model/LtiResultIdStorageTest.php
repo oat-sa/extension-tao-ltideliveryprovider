@@ -45,15 +45,15 @@ class LtiResultIdStorageTest extends TaoPhpUnitTestRunner
         $this->assertEquals('9', $storage->getResultId($de));
     }
 
-    public function testGetDeliveryExecutionIds()
+    public function testGetDeliveryExecutions()
     {
         $storage = $this->getService();
 
-        $result = $storage->getDeliveryExecutionIds('0');
+        $result = $storage->getDeliveryExecutions('0');
         $this->assertEquals(1, count($result));
         $this->assertEquals($this->deId . '0', $result[0]->getIdentifier());
 
-        $result = $storage->getDeliveryExecutionIds('9');
+        $result = $storage->getDeliveryExecutions('9');
         $this->assertEquals([], $result);
     }
 
