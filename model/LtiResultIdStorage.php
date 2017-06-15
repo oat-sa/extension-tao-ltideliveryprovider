@@ -59,11 +59,15 @@ class LtiResultIdStorage extends ConfigurableService
      */
     public function log(DeliveryExecution $deliveryExecution, $resultId)
     {
-        $data = [
-            self::DELIVERY_EXECUTION_ID => $deliveryExecution->getIdentifier(),
-            self::RESULT_ID => $resultId,
-        ];
-        return $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
+        $result = true;
+        if ($this->getResultId($deliveryExecution) === null) {
+            $data = [
+                self::DELIVERY_EXECUTION_ID => $deliveryExecution->getIdentifier(),
+                self::RESULT_ID => $resultId,
+            ];
+            $result = $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
+        }
+        return $result;
     }
 
     /**
