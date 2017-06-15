@@ -41,6 +41,7 @@ return array(
     'install' => array(
         'php' => array(
             \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
+            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultIdStorage::class,
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'

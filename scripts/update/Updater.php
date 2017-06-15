@@ -20,6 +20,7 @@ namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
+use oat\ltiDeliveryProvider\model\LtiResultIdStorage;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -71,6 +72,16 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.4.0');
         }
 
-        $this->skip('2.4.0', '3.2.0');
+        $this->skip('2.4.0', '3.1.0');
+
+        if ($this->isVersion('3.1.0')) {
+            $service = new LtiResultIdStorage([
+                LtiResultIdStorage::OPTION_PERSISTENCE => 'default'
+            ]);
+            $service->setServiceManager($this->getServiceManager());
+            $service::install($service->getPersistence());
+            $this->getServiceManager()->register(LtiResultIdStorage::SERVICE_ID, $service);
+            $this->setVersion('3.2.0');
+        }
     }
 }
