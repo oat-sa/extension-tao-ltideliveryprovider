@@ -114,17 +114,6 @@ class LtiResultIdStorage extends ConfigurableService
     }
 
     /**
-     * @return array
-     */
-//    public static function tableColumns()
-//    {
-//        return [
-//            self::DELIVERY_EXECUTION_ID,
-//            self::RESULT_ID,
-//        ];
-//    }
-
-    /**
      * Create table in database
      * @param $persistence
      */
