@@ -66,10 +66,11 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	public function getFinishUrl(LtiMessage $ltiMessage, $deliveryExecution = null)
     {
         $session = \common_session_SessionManager::getSession();
+        /** @var \taoLti_models_classes_LtiLaunchData $launchData */
         $launchData = $session->getLaunchData();
         if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
-            && $launchData->hasVariable(\taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL)) {
-            $redirectUrl = $launchData->getVariable(\taoLti_models_classes_LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
+            && $launchData->hasReturnUrl()) {
+            $redirectUrl = $launchData->getReturnUrl();
         } else {
             $redirectUrl = _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
         }
