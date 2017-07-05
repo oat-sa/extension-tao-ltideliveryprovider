@@ -21,7 +21,7 @@ use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionS
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultIdStorage;
-use oat\ltiDeliveryProvider\model\QtiResultsService;
+use oat\ltiDeliveryProvider\model\ResultIdService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -80,14 +80,15 @@ class Updater extends \common_ext_ExtensionUpdater
                 LtiResultIdStorage::OPTION_PERSISTENCE => 'default'
             ]);
             $service->setServiceManager($this->getServiceManager());
-            $service::install($service->getPersistence());
-            $this->getServiceManager()->register(LtiResultIdStorage::SERVICE_ID, $service);
 
-            $qtiResultsService = $this->getServiceManager()->get(QtiResultsService::SERVICE_ID);
-            $this->getServiceManager()->register(
-                QtiResultsService::SERVICE_ID,
-                new QtiResultsService($qtiResultsService->getOptions())
+            $migration = new \oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultIdStorage_v1();
+            $migration->apply(
+                $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID)->getPersistenceById('default')
             );
+
+            $this->getServiceManager()->register(LtiResultIdStorage::SERVICE_ID, $service);
+            $this->getServiceManager()->register(ResultIdService::SERVICE_ID, new ResultIdService());
+
             $this->setVersion('3.2.0');
         }
     }

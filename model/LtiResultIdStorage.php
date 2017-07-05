@@ -21,8 +21,6 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Doctrine\DBAL\Schema\SchemaException;
 use oat\oatbox\service\ConfigurableService;
 
 /**
@@ -119,29 +117,8 @@ class LtiResultIdStorage extends ConfigurableService
      */
     public static function install($persistence)
     {
-        /** @var AbstractSchemaManager $schemaManager */
-        $schemaManager = $persistence->getDriver()->getSchemaManager();
-
-        /** @var Schema $schema */
-        $schema = $schemaManager->createSchema();
-        $fromSchema = clone $schema;
-
-        try {
-            $table = $schema->createTable(self::TABLE_NAME);
-            $table->addOption('engine', 'MyISAM');
-
-            $table->addColumn(self::DELIVERY_EXECUTION_ID, "text",  ["notnull" => true, 'comment' => 'Delivery Execution Identifier']);
-            $table->addColumn(self::RESULT_ID,             "text",  ["notnull" => true, 'comment' => 'Results Identifier']);
-
-            $table->setPrimaryKey([self::DELIVERY_EXECUTION_ID]);
-        } catch (SchemaException $e) {
-            \common_Logger::i('Database Schema of LtiResultIdStorage service already up to date.');
-        }
-
-        $queries = $persistence->getPlatForm()->getMigrateSchemaSql($fromSchema, $schema);
-        foreach ($queries as $query) {
-            $persistence->exec($query);
-        }
+        $migration = new \oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultIdStorage_v1();
+        $migration->apply($persistence);
     }
 
     /**

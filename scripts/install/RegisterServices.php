@@ -21,7 +21,7 @@
 namespace oat\ltiDeliveryProvider\scripts\install;
 
 use common_exception_Error;
-use oat\ltiDeliveryProvider\model\QtiResultsService;
+use oat\ltiDeliveryProvider\model\ResultIdService;
 
 /**
  * Class RegisterServices
@@ -37,10 +37,7 @@ class RegisterServices extends \common_ext_action_InstallAction
      */
     public function __invoke($params)
     {
-        $qtiResultsService = $this->getServiceManager()->get(QtiResultsService::SERVICE_ID);
-        $this->getServiceManager()->register(
-            QtiResultsService::SERVICE_ID,
-            new QtiResultsService($qtiResultsService->getOptions())
-        );
+        $this->getServiceManager()->register(ResultIdService::SERVICE_ID, new ResultIdService());
+
     }
 }
