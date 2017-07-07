@@ -21,3 +21,6 @@ start the delivery chosen by the instructor.
 The expected roles are:
 * `Learner` for people taking a test
 * `Instructor` for people configuring a link
+
+Custom parameters:
+* `max_attempts` Overrides the number of executions allowed on the delivery. Expects a positive integer value or 0 for unlimited attempts. Attempts on LTI calls are calculated per `resource_link_id` instead of per delivery.
