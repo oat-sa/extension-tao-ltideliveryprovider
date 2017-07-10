@@ -20,8 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
-use common_exception_Error;
-use oat\ltiDeliveryProvider\model\ResultIdService;
+use oat\ltiDeliveryProvider\model\ResultAliasService;
 
 /**
  * Class RegisterServices
@@ -32,12 +31,11 @@ class RegisterServices extends \common_ext_action_InstallAction
 {
     /**
      * @param $params
-     * @return common_report_Report
-     * @throws common_exception_Error
+     * @return \common_report_Report
+     * @throws \common_exception_Error
      */
     public function __invoke($params)
     {
-        $this->getServiceManager()->register(ResultIdService::SERVICE_ID, new ResultIdService());
-
+        $this->getServiceManager()->register(ResultAliasService::SERVICE_ID, new ResultAliasService());
     }
 }

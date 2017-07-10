@@ -22,15 +22,15 @@
 namespace oat\ltiDeliveryProvider\test\model\requestLog\rds;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
-use oat\ltiDeliveryProvider\model\LtiResultIdStorage;
+use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\oatbox\service\ServiceManager;
 
 /**
- * Class LtiResultIdStorageTest
+ * Class LtiResultAliasStorageTest
  * @package oat\ltiDeliveryProvider\test\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiResultIdStorageTest extends TaoPhpUnitTestRunner
+class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
 {
 
     private $deId = 'http://sample/first.rdf#i1450191587554175';
@@ -77,9 +77,9 @@ class LtiResultIdStorageTest extends TaoPhpUnitTestRunner
     protected function getService()
     {
         $persistenceManager = $this->getSqlMock('test_LtiResultIdStorageTest');
-        (new \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultIdStorage)->createTable($persistenceManager->getPersistenceById('test_LtiResultIdStorageTest'));
-        $storage = new LtiResultIdStorage([
-            LtiResultIdStorage::OPTION_PERSISTENCE => 'test_LtiResultIdStorageTest'
+        (new \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage)->createTable($persistenceManager->getPersistenceById('test_LtiResultIdStorageTest'));
+        $storage = new LtiResultAliasStorage([
+            LtiResultAliasStorage::OPTION_PERSISTENCE => 'test_LtiResultIdStorageTest'
         ]);
         $config = new \common_persistence_KeyValuePersistence([], new \common_persistence_InMemoryKvDriver());
         $config->set(\common_persistence_Manager::SERVICE_ID, $persistenceManager);
@@ -89,7 +89,7 @@ class LtiResultIdStorageTest extends TaoPhpUnitTestRunner
         return $storage;
     }
 
-    protected function loadFixtures(LtiResultIdStorage $storage)
+    protected function loadFixtures(LtiResultAliasStorage $storage)
     {
         for ($i = 0; $i < 5; $i++) {
             $de = $this->getDeliveryExecution($this->deId .$i);

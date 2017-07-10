@@ -23,14 +23,14 @@ namespace oat\ltiDeliveryProvider\scripts\install;
 use common_exception_Error;
 use common_persistence_SqlPersistence;
 use common_report_Report;
-use oat\ltiDeliveryProvider\model\LtiResultIdStorage;
+use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 
 /**
- * Class RegisterLtiResultIdStorage
+ * Class RegisterLtiResultAliasStorage
  * @package oat\ltiDeliveryProvider\scripts\install
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class RegisterLtiResultIdStorage extends \common_ext_action_InstallAction
+class RegisterLtiResultAliasStorage extends \common_ext_action_InstallAction
 {
     /**
      * @param $params
@@ -40,8 +40,8 @@ class RegisterLtiResultIdStorage extends \common_ext_action_InstallAction
     public function __invoke($params)
     {
         $persistenceId = count($params) > 0 ? reset($params) : 'default';
-        $storageService = new LtiResultIdStorage([LtiResultIdStorage::OPTION_PERSISTENCE => $persistenceId]);
-        $this->getServiceManager()->register(LtiResultIdStorage::SERVICE_ID, $storageService);
+        $storageService = new LtiResultAliasStorage([LtiResultAliasStorage::OPTION_PERSISTENCE => $persistenceId]);
+        $this->getServiceManager()->register(LtiResultAliasStorage::SERVICE_ID, $storageService);
         $this->createTable($storageService->getPersistence());
         return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('Registered and created LtiResultIdStorage Rds Storage'));
     }
@@ -51,6 +51,6 @@ class RegisterLtiResultIdStorage extends \common_ext_action_InstallAction
      */
     public function createTable(\common_persistence_SqlPersistence $persistence)
     {
-        LtiResultIdStorage::install($persistence);
+        LtiResultAliasStorage::install($persistence);
     }
 }

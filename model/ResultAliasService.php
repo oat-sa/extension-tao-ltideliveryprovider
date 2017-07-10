@@ -20,20 +20,20 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\taoResultServer\models\classes\ResultIdService as ResultIdServiceInterface;
+use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 use oat\oatbox\service\ConfigurableService;
 
 /**
- * class ResultIdService
+ * class ResultAliasService
  *
  * @package oat\ltiDeliveryProvider\model
  */
-class ResultIdService extends ConfigurableService implements ResultIdServiceInterface
+class ResultAliasService extends ConfigurableService implements ResultAliasServiceInterface
 {
     /**
      * @inheritdoc
      */
-    public function getResultId($deliveryExecutionId)
+    public function getResultAlias($deliveryExecutionId)
     {
         $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($deliveryExecutionId);
         $resultId = $this->getLtiResultIdStorage()->getResultId($deliveryExecution);
@@ -67,6 +67,6 @@ class ResultIdService extends ConfigurableService implements ResultIdServiceInte
      */
     protected function getLtiResultIdStorage()
     {
-        return $this->getServiceLocator()->get(LtiResultIdStorage::SERVICE_ID);
+        return $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
     }
 }

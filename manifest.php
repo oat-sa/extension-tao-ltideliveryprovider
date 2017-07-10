@@ -42,7 +42,7 @@ return array(
     'install' => array(
         'php' => array(
             \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultIdStorage::class,
+            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
         ),
         'rdf' => array(

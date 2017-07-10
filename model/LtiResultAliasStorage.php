@@ -24,11 +24,11 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 
 /**
- * Class LtiResultIdStorage
+ * Class LtiResultAliasStorage
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiResultIdStorage extends ConfigurableService
+class LtiResultAliasStorage extends ConfigurableService
 {
     const OPTION_PERSISTENCE = 'persistence';
 
@@ -117,7 +117,7 @@ class LtiResultIdStorage extends ConfigurableService
      */
     public static function install($persistence)
     {
-        $migration = new \oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultIdStorage_v1();
+        $migration = new \oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultAliasStorage_v1();
         $migration->apply($persistence);
     }
 

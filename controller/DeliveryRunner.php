@@ -26,7 +26,7 @@ use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoLti\models\classes\theme\LtiHeadless;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
-use oat\ltiDeliveryProvider\model\LtiResultIdStorage;
+use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\actions\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -146,7 +146,7 @@ class DeliveryRunner extends DeliveryServer
             : $executionIdentifier;
 
         /** @var LtiResultIdStorage $ltiResultIdStorage */
-        $ltiResultIdStorage = $this->getServiceManager()->get(LtiResultIdStorage::SERVICE_ID);
+        $ltiResultIdStorage = $this->getServiceManager()->get(LtiResultAliasStorage::SERVICE_ID);
         $ltiResultIdStorage->log(
             \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($executionIdentifier),
             $resultIdentifier

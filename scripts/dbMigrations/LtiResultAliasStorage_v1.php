@@ -24,11 +24,14 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\SchemaException;
 
 /**
- * Class LtiResultIdStorage
+ * Class LtiResultAliasStorage_v1
+ *
+ * NOTE! Do not change this file. If you need to change schema of storage create new version of this class.
+ *
  * @package oat\ltiDeliveryProvider\scripts\dbMigrations
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiResultIdStorage_v1
+class LtiResultAliasStorage_v1
 {
     const TABLE_NAME = 'lti_result_identifiers';
     const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
