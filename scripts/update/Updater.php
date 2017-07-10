@@ -73,9 +73,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.4.0');
         }
 
-        $this->skip('2.4.0', '3.1.0');
+        $this->skip('2.4.0', '3.1.1');
 
-        if ($this->isVersion('3.1.0')) {
+        if ($this->isVersion('3.1.1')) {
             $service = new LtiResultIdStorage([
                 LtiResultIdStorage::OPTION_PERSISTENCE => 'default'
             ]);
