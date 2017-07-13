@@ -21,6 +21,10 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoProctoring\model\execution\DeliveryExecutionManagerService;
+use oat\taoQtiTest\models\TestSessionService;
+use qtism\data\AssessmentTest;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
 use \core_kernel_classes_Property;
@@ -37,7 +41,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
-	
+    const EXTENDED_TIME  = 'custom_extended_time';
     const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
@@ -125,5 +129,32 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	public function getLinkedDeliveryExecutions(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
         $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
         return $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+    }
+
+    /**
+     * @param DeliveryExecution $deliveryExecution
+     * @param $extendedTime
+     * @return array
+     */
+    public function updateDeliveryExtendedTime(DeliveryExecution $deliveryExecution, $extendedTime)
+    {
+        /** @var DeliveryExecutionManagerService $deliveryExecutionManagerService */
+        $deliveryExecutionManagerService = $this->getServiceLocator()->get(DeliveryExecutionManagerService::SERVICE_ID);
+
+        /** @var TestSessionService $testSessionService */
+        $testSessionService = $this->getServiceLocator()->get(TestSessionService::SERVICE_ID);
+        $inputParameters = $testSessionService->getRuntimeInputParameters($deliveryExecution);
+
+        /** @var AssessmentTest $testDefinition */
+        $testDefinition = \taoQtiTest_helpers_Utils::getTestDefinition($inputParameters['QtiTestCompilation']);
+
+        $maxTime = $testDefinition->getTimeLimits()->getMaxTime();
+        $seconds = $maxTime->getSeconds(true);
+        $secondsNew = $seconds * $extendedTime;
+        $secondDiff = floor(($secondsNew - $seconds) / 60) * 60;
+
+        $deliveryExecutionArray[] = $deliveryExecution;
+
+        return $deliveryExecutionManagerService->setExtraTime($deliveryExecutionArray, $secondDiff);
     }
 }
