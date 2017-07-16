@@ -24,6 +24,8 @@ namespace oat\ltiDeliveryProvider\controller;
 use oat\tao\model\theme\ThemeService;
 use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoLti\models\classes\theme\LtiHeadless;
+use oat\taoProctoring\model\execution\DeliveryExecutionManagerService;
+use oat\taoQtiTest\models\runner\time\QtiTimer;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\ltiDeliveryProvider\helper\ResultServer;
@@ -43,6 +45,42 @@ use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 class DeliveryRunner extends DeliveryServer
 {
     use LtiModuleTrait;
+
+    public function runDeliveryExecution()
+    {
+        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        $extendedTime = 0;
+
+        if ($launchData->hasVariable(LTIDeliveryTool::EXTENDED_TIME)) {
+            $extendedTime = floatval($launchData->getVariable(LTIDeliveryTool::EXTENDED_TIME));
+        }
+
+        try {
+            /** @var DeliveryExecution $deliveryExecution */
+            $deliveryExecution = $this->getCurrentDeliveryExecution();
+
+            /** @var DeliveryExecutionManagerService  $deliveryExecutionManagerService */
+            $deliveryExecutionManagerService = $this->getServiceManager()->get(DeliveryExecutionManagerService::SERVICE_ID);
+
+            /** @var QtiTimer $timer */
+            $timer = $deliveryExecutionManagerService->getDeliveryTimer($deliveryExecution);
+
+            if ($timer->getExtraTime() && !$extendedTime) {
+                $extendedTime = 1;
+                LTIDeliveryTool::singleton()->updateDeliveryExtendedTime($deliveryExecution, $extendedTime);
+            } elseif (($timer->getExtraTime() && $extendedTime) || (!$timer->getExtraTime() && $extendedTime)) {
+                LTIDeliveryTool::singleton()->updateDeliveryExtendedTime($deliveryExecution, $extendedTime);
+            }
+        } catch (\Exception $e) {
+            $ltiException = new \taoLti_models_classes_LtiException(
+                $e->getMessage(),
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            );
+            $this->returnLtiError($ltiException);
+        }
+
+        return parent::runDeliveryExecution();
+    }
 
     /**
      * Defines if the top and bottom action menu should be displayed or not
