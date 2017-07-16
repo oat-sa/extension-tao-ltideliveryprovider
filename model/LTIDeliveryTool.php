@@ -23,8 +23,10 @@ namespace oat\ltiDeliveryProvider\model;
 
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoProctoring\model\execution\DeliveryExecutionManagerService;
+use oat\taoProctoring\model\monitorCache\DeliveryMonitoringService;
 use oat\taoQtiTest\models\TestSessionService;
 use qtism\data\AssessmentTest;
+use qtism\data\TestPart;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
 use \core_kernel_classes_Property;
@@ -134,7 +136,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
     /**
      * @param DeliveryExecution $deliveryExecution
      * @param $extendedTime
-     * @return array
+     * @return bool
      */
     public function updateDeliveryExtendedTime(DeliveryExecution $deliveryExecution, $extendedTime)
     {
@@ -147,14 +149,22 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
         /** @var AssessmentTest $testDefinition */
         $testDefinition = \taoQtiTest_helpers_Utils::getTestDefinition($inputParameters['QtiTestCompilation']);
-
-        $maxTime = $testDefinition->getTimeLimits()->getMaxTime();
-        $seconds = $maxTime->getSeconds(true);
-        $secondsNew = $seconds * $extendedTime;
-        $secondDiff = floor(($secondsNew - $seconds) / 60) * 60;
-
         $deliveryExecutionArray[] = $deliveryExecution;
 
-        return $deliveryExecutionManagerService->setExtraTime($deliveryExecutionArray, $secondDiff);
+        $secondDiff = null;
+        if ($maxTime = $testDefinition->getTimeLimits()->getMaxTime()) {
+            $seconds = $maxTime->getSeconds(true);
+            $secondsNew = $seconds * $extendedTime;
+            $secondDiff = floor(($secondsNew - $seconds) / 60) * 60;
+
+            $deliveryMonitoringService = $this->getServiceLocator()->get(DeliveryMonitoringService::SERVICE_ID);
+            $data = $deliveryMonitoringService->getData($deliveryExecution);
+            $dataArray = $data->get();
+            if (!isset($dataArray[DeliveryMonitoringService::REMAINING_TIME])) {
+                $data->update(DeliveryMonitoringService::REMAINING_TIME, $seconds);
+            }
+        }
+        $deliveryExecutionManagerService->setExtraTime($deliveryExecutionArray, $secondDiff, $extendedTime);
+        return true;
     }
 }
