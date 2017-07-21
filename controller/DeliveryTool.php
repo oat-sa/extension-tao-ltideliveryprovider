@@ -132,7 +132,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
 
     /**
      * @param core_kernel_classes_Resource $delivery
-     * @return mixed|null|\taoDelivery_models_classes_execution_DeliveryExecution
+     * @return mixed|null|DeliveryExecution
      */
     protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {

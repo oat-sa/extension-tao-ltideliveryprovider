@@ -21,15 +21,14 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\taoDelivery\model\execution\DeliveryExecution;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
 use oat\oatbox\user\User;
-use \taoDelivery_models_classes_execution_ServiceProxy;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
-use oat\taoDelivery\model\AssignmentServiceRegistry;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
@@ -94,7 +93,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	 * @param core_kernel_classes_Resource $delivery
 	 * @param core_kernel_classes_Resource $link
 	 * @param User $user
-	 * @return \taoDelivery_models_classes_execution_DeliveryExecution
+	 * @return DeliveryExecution
      * @throws \common_exception_Unauthorized
 	 */
 	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
