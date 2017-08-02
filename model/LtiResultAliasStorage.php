@@ -22,6 +22,7 @@ namespace oat\ltiDeliveryProvider\model;
 
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\execution\ServiceProxy;
 
 /**
  * Class LtiResultAliasStorage
@@ -104,7 +105,7 @@ class LtiResultAliasStorage extends ConfigurableService
         $result = [];
         if ($data) {
             foreach ($data as $row) {
-                $result[] = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($row);
+                $result[] = ServiceProxy::singleton()->getDeliveryExecution($row);
             }
         }
 

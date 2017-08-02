@@ -149,7 +149,7 @@ class DeliveryRunner extends DeliveryServer
         /** @var LtiResultIdStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceManager()->get(LtiResultAliasStorage::SERVICE_ID);
         $ltiResultIdStorage->log(
-            \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($executionIdentifier),
+            ServiceProxy::singleton()->getDeliveryExecution($executionIdentifier),
             $resultIdentifier
         );
     }
