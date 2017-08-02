@@ -23,6 +23,7 @@ namespace oat\ltiDeliveryProvider\controller;
 
 use oat\tao\model\theme\ThemeService;
 use oat\taoDelivery\controller\DeliveryServer;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\models\classes\theme\LtiHeadless;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
@@ -119,7 +120,7 @@ class DeliveryRunner extends DeliveryServer
     {
         $deliveryExecution = null;
         if ($this->hasRequestParameter('deliveryExecution')) {
-            $deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution(
+            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
                 $this->getRequestParameter('deliveryExecution')
             );
         }

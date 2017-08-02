@@ -22,13 +22,12 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use \tao_actions_CommonModule;
 use \taoLti_models_classes_LtiService;
 use \taoLti_models_classes_LtiLaunchData;
 use \core_kernel_classes_Resource;
-use \tao_helpers_Uri;
 use \core_kernel_classes_Property;
-use \taoDelivery_models_classes_execution_ServiceProxy;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 /**
@@ -101,8 +100,8 @@ class LinkConfiguration extends tao_actions_CommonModule {
 		    $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_TITLE));
 		}
 		
-		if (taoDelivery_models_classes_execution_ServiceProxy::singleton()->implementsMonitoring()) {
-		    $executions = taoDelivery_models_classes_execution_ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
+		if (ServiceProxy::singleton()->implementsMonitoring()) {
+		    $executions = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
 		    $this->setData('executionCount', count($executions));
 		}
 		

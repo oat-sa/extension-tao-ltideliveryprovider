@@ -28,6 +28,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
     /**
      * @param string $initialVersion
+     * @return string|void
      */
     public function update($initialVersion)
     {
@@ -73,9 +74,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.4.0');
         }
 
-        $this->skip('2.4.0', '3.1.1');
+        $this->skip('2.4.0', '3.2.1');
 
-        if ($this->isVersion('3.1.1')) {
+        if ($this->isVersion('3.2.1')) {
             $service = new LtiResultAliasStorage([
                 LtiResultAliasStorage::OPTION_PERSISTENCE => 'default'
             ]);
@@ -89,7 +90,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LtiResultAliasStorage::SERVICE_ID, $service);
             $this->getServiceManager()->register(ResultAliasService::SERVICE_ID, new ResultAliasService());
 
-            $this->setVersion('3.2.0');
+            $this->setVersion('3.3.0');
         }
     }
 }
