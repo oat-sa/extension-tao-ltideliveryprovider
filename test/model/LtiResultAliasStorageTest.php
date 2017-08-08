@@ -24,6 +24,7 @@ namespace oat\ltiDeliveryProvider\test\model\requestLog\rds;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\oatbox\service\ServiceManager;
+use oat\taoDelivery\model\execution\DeliveryExecution;
 
 /**
  * Class LtiResultAliasStorageTest
@@ -43,18 +44,25 @@ class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
         $this->assertEquals(null, $storage->getResultId($de));
         $this->assertTrue($storage->log($de, '9'));
         $this->assertEquals('9', $storage->getResultId($de));
+
+
+        //Try to log another delivery execution with the same result id.
+        //Delivery execution identifier should be overwritten
+        $de = $this->getDeliveryExecution($this->deId . '10');
+        $this->assertTrue($storage->log($de, '9'));
+        $this->assertEquals($this->deId . '10', $storage->getDeliveryExecution('9')->getIdentifier());
     }
 
-    public function testGetDeliveryExecutions()
+    public function testGetDeliveryExecution()
     {
         $storage = $this->getService();
 
-        $result = $storage->getDeliveryExecutions('0');
-        $this->assertEquals(1, count($result));
-        $this->assertEquals($this->deId . '0', $result[0]->getIdentifier());
+        $result = $storage->getDeliveryExecution('0');
+        $this->assertInstanceOf(DeliveryExecution::class, $result);
+        $this->assertEquals($this->deId . '0', $result->getIdentifier());
 
-        $result = $storage->getDeliveryExecutions('9');
-        $this->assertEquals([], $result);
+        $result = $storage->getDeliveryExecution('9');
+        $this->assertEquals(null, $result);
     }
 
     public function testGetResultId()
@@ -103,7 +111,7 @@ class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
             $id = $this->deliveryExecutionId;
         }
         $prophet = new \Prophecy\Prophet();
-        $deliveryExecutionProphecy = $prophet->prophesize('oat\taoDelivery\models\classes\execution\DeliveryExecution');
+        $deliveryExecutionProphecy = $prophet->prophesize('oat\taoDelivery\model\execution\DeliveryExecution');
         $deliveryExecutionProphecy->getIdentifier()->willReturn($id);
         return $deliveryExecutionProphecy->reveal();
     }

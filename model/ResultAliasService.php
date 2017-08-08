@@ -51,11 +51,10 @@ class ResultAliasService extends ConfigurableService implements ResultAliasServi
      */
     public function getDeliveryExecutionId($resultId)
     {
-        $deliveryExecutions = $this->getLtiResultIdStorage()->getDeliveryExecutions($resultId);
+        $deliveryExecution = $this->getLtiResultIdStorage()->getDeliveryExecution($resultId);
 
-        /** todo: handle multiple delivery executions */
-        if (!empty($deliveryExecutions)) {
-            $result = $deliveryExecutions[0]->getIdentifier();
+        if ($deliveryExecution !== null) {
+            $result = $deliveryExecution->getIdentifier();
         } else {
             $result = $resultId;
         }

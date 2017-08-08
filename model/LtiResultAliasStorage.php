@@ -64,6 +64,13 @@ class LtiResultAliasStorage extends ConfigurableService
                 self::DELIVERY_EXECUTION_ID => $deliveryExecution->getIdentifier(),
                 self::RESULT_ID => $resultId,
             ];
+
+            $queryBuilder = $this->getQueryBuilder();
+            $queryBuilder->delete($this->getTableName());
+            $queryBuilder->where(self::RESULT_ID . '=?');
+            $queryBuilder->setParameters([$resultId]);
+            $res = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters())->execute();
+
             $result = $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
         }
         return $result;
@@ -92,9 +99,9 @@ class LtiResultAliasStorage extends ConfigurableService
     /**
      * Get delivery execution instance by result id
      * @param $resultId
-     * @return DeliveryExecution[]
+     * @return DeliveryExecution|null
      */
-    public function getDeliveryExecutions($resultId)
+    public function getDeliveryExecution($resultId)
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(self::DELIVERY_EXECUTION_ID);
@@ -102,11 +109,9 @@ class LtiResultAliasStorage extends ConfigurableService
         $queryBuilder->setParameters([$resultId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $result = [];
-        if ($data) {
-            foreach ($data as $row) {
-                $result[] = ServiceProxy::singleton()->getDeliveryExecution($row);
-            }
+        $result = null;
+        if (isset($data[self::DELIVERY_EXECUTION_ID])) {
+            $result = ServiceProxy::singleton()->getDeliveryExecution($data[self::DELIVERY_EXECUTION_ID]);
         }
 
         return $result;

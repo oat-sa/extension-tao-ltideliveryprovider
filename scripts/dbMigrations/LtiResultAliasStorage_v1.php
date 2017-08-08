@@ -22,7 +22,7 @@ namespace oat\ltiDeliveryProvider\scripts\dbMigrations;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\SchemaException;
-
+use Doctrine\DBAL\Schema\Schema;
 /**
  * Class LtiResultAliasStorage_v1
  *
@@ -54,10 +54,11 @@ class LtiResultAliasStorage_v1
             $table = $schema->createTable(self::TABLE_NAME);
             $table->addOption('engine', 'MyISAM');
 
-            $table->addColumn(self::DELIVERY_EXECUTION_ID, "text",  ["notnull" => true, 'comment' => 'Delivery Execution Identifier']);
-            $table->addColumn(self::RESULT_ID,             "text",  ["notnull" => true, 'comment' => 'Results Identifier']);
+            $table->addColumn(self::DELIVERY_EXECUTION_ID, "text", ["notnull" => true, 'comment' => 'Delivery Execution Identifier']);
+            $table->addColumn(self::RESULT_ID,             "text", ["notnull" => true, 'comment' => 'Results Identifier']);
 
             $table->setPrimaryKey([self::DELIVERY_EXECUTION_ID]);
+            $table->addUniqueIndex([self::RESULT_ID], 'IDX_' . self::RESULT_ID . '_UNIQUE');
         } catch (SchemaException $e) {
             \common_Logger::i('Database Schema of LtiResultIdStorage service already up to date.');
         }
