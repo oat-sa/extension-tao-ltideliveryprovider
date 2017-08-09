@@ -23,6 +23,7 @@ namespace oat\ltiDeliveryProvider\model;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 
 /**
  * Class LtiResultAliasStorage
@@ -56,65 +57,56 @@ class LtiResultAliasStorage extends ConfigurableService
      * @param string $resultId
      * @return boolean
      */
-    public function log(DeliveryExecution $deliveryExecution, $resultId)
+    public function storeResultAlias($deliveryExecutionId, $resultId)
     {
         $result = true;
-        if ($this->getResultId($deliveryExecution) === null) {
-            $data = [
-                self::DELIVERY_EXECUTION_ID => $deliveryExecution->getIdentifier(),
-                self::RESULT_ID => $resultId,
-            ];
+        $data = [
+            self::DELIVERY_EXECUTION_ID => $deliveryExecutionId,
+            self::RESULT_ID => $resultId,
+        ];
 
-            $queryBuilder = $this->getQueryBuilder();
-            $queryBuilder->delete($this->getTableName());
-            $queryBuilder->where(self::RESULT_ID . '=?');
-            $queryBuilder->setParameters([$resultId]);
-            $res = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters())->execute();
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->delete($this->getTableName());
+        $queryBuilder->where(self::RESULT_ID . '=?');
+        $queryBuilder->setParameters([$resultId]);
+        $res = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters())->execute();
 
-            $result = $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
-        }
+        $result = $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
         return $result;
     }
 
     /**
-     * Get result identifier linked to given delivery execution
-     * Null if no result ids found
-     * @param DeliveryExecution $deliveryExecution
-     * @return string|null
+     * @see ResultAliasServiceInterface::getResultAlias
      */
-    public function getResultId(DeliveryExecution $deliveryExecution)
+    public function getResultAlias($deliveryExecutionId)
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(self::RESULT_ID);
         $queryBuilder->where('t.'.self::DELIVERY_EXECUTION_ID . '=?');
-        $queryBuilder->setParameters([$deliveryExecution->getIdentifier()]);
+        $queryBuilder->setParameters([$deliveryExecutionId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
         $result = $stmt->fetch(\PDO::FETCH_COLUMN);
-        if ($result === false) {
-            $result = null;
-        }
-        return $result;
+        return $result === false ? [] : [$result];
     }
 
     /**
-     * Get delivery execution instance by result id
-     * @param $resultId
-     * @return DeliveryExecution|null
+     * @see ResultAliasServiceInterface::getDeliveryExecutionId
+     *
+     * Should return null if not found, but as there is no aggregation of alias
+     * services yet, we need mimic the oat\taoResultServer\models\classes::ResultAliasService
+     * behaviour here
      */
-    public function getDeliveryExecution($resultId)
+    public function getDeliveryExecutionId($aliasId)
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(self::DELIVERY_EXECUTION_ID);
         $queryBuilder->where('t.'.self::RESULT_ID . '=?');
-        $queryBuilder->setParameters([$resultId]);
+        $queryBuilder->setParameters([$aliasId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $result = null;
-        if (isset($data[self::DELIVERY_EXECUTION_ID])) {
-            $result = ServiceProxy::singleton()->getDeliveryExecution($data[self::DELIVERY_EXECUTION_ID]);
-        }
-
-        return $result;
+        return isset($data[self::DELIVERY_EXECUTION_ID])
+            ? $data[self::DELIVERY_EXECUTION_ID]
+            : $aliasId;
     }
 
     /**

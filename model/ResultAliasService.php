@@ -36,34 +36,19 @@ class ResultAliasService extends ConfigurableService implements ResultAliasServi
      */
     public function getResultAlias($deliveryExecutionId)
     {
-        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($deliveryExecutionId);
-        $resultId = $this->getLtiResultIdStorage()->getResultId($deliveryExecution);
-
-        if (!empty($resultId)) {
-            $resultId = $deliveryExecutionId;
-        }
-
-        return [$resultId];
+        return $this->getLtiResultIdStorage()->getResultAlias($deliveryExecutionId);
     }
 
     /**
      * @inheritdoc
      */
-    public function getDeliveryExecutionId($resultId)
+    public function getDeliveryExecutionId($aliasId)
     {
-        $deliveryExecution = $this->getLtiResultIdStorage()->getDeliveryExecution($resultId);
-
-        if ($deliveryExecution !== null) {
-            $result = $deliveryExecution->getIdentifier();
-        } else {
-            $result = $resultId;
-        }
-
-        return $result;
+        return $this->getLtiResultIdStorage()->getDeliveryExecutionId($aliasId);
     }
 
     /**
-     * @return LtiResultIdStorage
+     * @return LtiResultAliasStorage
      */
     protected function getLtiResultIdStorage()
     {

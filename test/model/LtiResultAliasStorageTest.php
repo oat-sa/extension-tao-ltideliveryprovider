@@ -36,47 +36,46 @@ class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
 
     private $deId = 'http://sample/first.rdf#i1450191587554175';
 
-    public function testLog()
+    public function testStoreResultAlias()
     {
         $storage = $this->getService();
-        $de = $this->getDeliveryExecution($this->deId . '9');
+        $deId = $this->deId . '9';
 
-        $this->assertEquals(null, $storage->getResultId($de));
-        $this->assertTrue($storage->log($de, '9'));
-        $this->assertEquals('9', $storage->getResultId($de));
+        $this->assertEquals([], $storage->getResultAlias($deId));
+        $this->assertTrue($storage->storeResultAlias($deId, '9'));
+        $this->assertEquals(['9'], $storage->getResultAlias($deId));
 
 
         //Try to log another delivery execution with the same result id.
         //Delivery execution identifier should be overwritten
-        $de = $this->getDeliveryExecution($this->deId . '10');
-        $this->assertTrue($storage->log($de, '9'));
-        $this->assertEquals($this->deId . '10', $storage->getDeliveryExecution('9')->getIdentifier());
+        $deId = $this->deId . '10';
+        $this->assertTrue($storage->storeResultAlias($deId, '9'));
+        $this->assertEquals($this->deId . '10', $storage->getDeliveryExecutionId('9'));
     }
 
     public function testGetDeliveryExecution()
     {
         $storage = $this->getService();
 
-        $result = $storage->getDeliveryExecution('0');
-        $this->assertInstanceOf(DeliveryExecution::class, $result);
-        $this->assertEquals($this->deId . '0', $result->getIdentifier());
+        $result = $storage->getDeliveryExecutionId('0');
+        $this->assertEquals($this->deId . '0', $result);
 
-        $result = $storage->getDeliveryExecution('9');
-        $this->assertEquals(null, $result);
+        $result = $storage->getDeliveryExecutionId('9');
+        $this->assertEquals('9', $result);
     }
 
     public function testGetResultId()
     {
         $storage = $this->getService();
 
-        $de = $this->getDeliveryExecution($this->deId . '0');
-        $this->assertEquals('0', $storage->getResultId($de));
+        $deId = $this->deId . '0';
+        $this->assertEquals(['0'], $storage->getResultAlias($deId));
 
-        $de = $this->getDeliveryExecution($this->deId . '3');
-        $this->assertEquals('3', $storage->getResultId($de));
+        $deId = $this->deId . '3';
+        $this->assertEquals(['3'], $storage->getResultAlias($deId));
 
-        $de = $this->getDeliveryExecution($this->deId . '9');
-        $this->assertEquals(null, $storage->getResultId($de));
+        $deId = $this->deId . '9';
+        $this->assertEquals([], $storage->getResultAlias($deId));
     }
 
     /**
@@ -100,8 +99,8 @@ class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
     protected function loadFixtures(LtiResultAliasStorage $storage)
     {
         for ($i = 0; $i < 5; $i++) {
-            $de = $this->getDeliveryExecution($this->deId .$i);
-            $storage->log($de, $i);
+            $deId = $this->deId .$i;
+            $storage->storeResultAlias($deId, $i);
         }
     }
 
