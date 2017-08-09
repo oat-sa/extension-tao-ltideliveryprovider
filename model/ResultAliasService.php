@@ -42,7 +42,7 @@ class ResultAliasService extends ConfigurableService implements ResultAliasServi
     /**
      * @inheritdoc
      */
-    public function getDeliveryExecutionId($resultId)
+    public function getDeliveryExecutionId($aliasId)
     {
         return $this->getLtiResultIdStorage()->getDeliveryExecutionId($aliasId);
     }
