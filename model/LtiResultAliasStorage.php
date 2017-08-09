@@ -75,6 +75,9 @@ class LtiResultAliasStorage extends ConfigurableService
         return $result;
     }
 
+    /**
+     * @see ResultAliasServiceInterface::getResultAlias
+     */
     public function getResultAlias($deliveryExecutionId)
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -87,7 +90,7 @@ class LtiResultAliasStorage extends ConfigurableService
     }
 
     /**
-     * @inheritdoc
+     * @see ResultAliasServiceInterface::getDeliveryExecutionId
      */
     public function getDeliveryExecutionId($aliasId)
     {
