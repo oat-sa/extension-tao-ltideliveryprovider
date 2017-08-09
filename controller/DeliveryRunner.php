@@ -149,7 +149,7 @@ class DeliveryRunner extends DeliveryServer
         /** @var LtiResultIdStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceManager()->get(LtiResultAliasStorage::SERVICE_ID);
         $ltiResultIdStorage->storeResultAlias(
-            $deliveryExecution->getIdentifier(),
+            $executionIdentifier,
             $resultIdentifier
         );
     }
