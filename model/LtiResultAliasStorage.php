@@ -91,6 +91,10 @@ class LtiResultAliasStorage extends ConfigurableService
 
     /**
      * @see ResultAliasServiceInterface::getDeliveryExecutionId
+     *
+     * Should return null if not found, but as there is no aggregation of alias
+     * services yet, we need mimic the oat\taoResultServer\models\classes::ResultAliasService
+     * behaviour here
      */
     public function getDeliveryExecutionId($aliasId)
     {
