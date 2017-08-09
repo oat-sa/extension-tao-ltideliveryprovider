@@ -32,6 +32,7 @@ return array(
         'tao' => '>=9.0.0',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=3.2.2',
+        'taoLtiBasicOutcome' => '>=2.6',
         'taoResultServer' => '>=3.4.0',
         'taoDelivery' => '>=7.0.0'
     ),
