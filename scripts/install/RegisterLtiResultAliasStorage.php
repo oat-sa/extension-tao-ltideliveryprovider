@@ -24,6 +24,7 @@ use common_exception_Error;
 use common_persistence_SqlPersistence;
 use common_report_Report;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
+use oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultAliasStorage_v2;
 
 /**
  * Class RegisterLtiResultAliasStorage
@@ -51,6 +52,7 @@ class RegisterLtiResultAliasStorage extends \common_ext_action_InstallAction
      */
     public function createTable(\common_persistence_SqlPersistence $persistence)
     {
-        LtiResultAliasStorage::install($persistence);
+        $tableSetup = new LtiResultAliasStorage_v2();
+        $tableSetup->apply($service->getPersistence());
     }
 }
