@@ -50,4 +50,14 @@ interface LtiDeliveryExecutionService
      * @return DeliveryExecution[]
      */
     public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId);
+
+
+    /**
+     * create a LTIDeliveryExecutionLink from parameters
+     * @param string $userUri
+     * @param string $link
+     * @param string $deliveryExecutionUri
+     * @return LTIDeliveryExecutionLink
+     */
+    public function createDeliveryExecutionLink($userUri, $link, $deliveryExecutionUri);
 }
