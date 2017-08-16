@@ -21,6 +21,7 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
@@ -52,14 +53,10 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
-	    
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
-	    $link = $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-            PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution
-	    ));
-	    return $link instanceof core_kernel_classes_Resource;
+
+	    $link = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($userUri, $link->getUri(), $deliveryExecution->getUri());
+
+	    return !is_null($link );
 	}
 
 	public function getFinishUrl(LtiMessage $ltiMessage, $deliveryExecution = null)
@@ -104,12 +101,8 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
 
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
-	    $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier()
-	    ));
+        $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
+
 	    return $deliveryExecution;
 	}
 	
@@ -122,7 +115,9 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	 * @return array
 	 */
 	public function getLinkedDeliveryExecutions(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
-        $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        return $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+        /** @var LtiDeliveryExecutionService $deliveryExecutionService */
+	    $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+        $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+        return $executions;
     }
 }
