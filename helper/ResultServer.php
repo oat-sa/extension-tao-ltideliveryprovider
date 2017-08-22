@@ -67,7 +67,7 @@ class ResultServer
         common_Logger::i("Spawning '".$resultIdentifier ."' related to delivery execution ".$executionIdentifier);
         $resultServerState = taoResultServer_models_classes_ResultServerStateFull::singleton(); 
         $resultServerState->initResultServer($resultServer->getUri(), $options);
-        $resultServerState->spawnResult($executionIdentifier, $resultIdentifier);
+        $resultServerState->spawnResult($executionIdentifier, $executionIdentifier);
          
         $resultServerState->storeRelatedTestTaker(common_session_SessionManager::getSession()->getUserUri());
         $resultServerState->storeRelatedDelivery($delivery->getUri());

@@ -20,6 +20,8 @@ namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
+use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
+use oat\ltiDeliveryProvider\model\ResultAliasService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -72,6 +74,24 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.4.0');
         }
 
-        $this->skip('2.4.0', '3.3.0');
+        $this->skip('2.4.0', '3.2.1');
+
+        if ($this->isVersion('3.2.1')) {
+            $service = new LtiResultAliasStorage([
+                LtiResultAliasStorage::OPTION_PERSISTENCE => 'default'
+            ]);
+            $service->setServiceManager($this->getServiceManager());
+
+            $migration = new \oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultAliasStorage_v1();
+            $migration->apply(
+                $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID)->getPersistenceById('default')
+            );
+
+            $this->getServiceManager()->register(LtiResultAliasStorage::SERVICE_ID, $service);
+            $this->getServiceManager()->register(ResultAliasService::SERVICE_ID, new ResultAliasService());
+
+            $this->setVersion('3.3.0');
+        }
+        $this->skip('3.3.0', '3.4.0');
     }
 }
