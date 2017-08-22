@@ -19,7 +19,7 @@
  * 
  */
 
-namespace oat\ltiDeliveryProvider\model\linkDeliveryExecution;
+namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
 use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
 

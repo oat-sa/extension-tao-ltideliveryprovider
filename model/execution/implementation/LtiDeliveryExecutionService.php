@@ -21,7 +21,6 @@
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
-use oat\ltiDeliveryProvider\model\linkDeliveryExecution\OntologyLTIDeliveryExecutionLink;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
