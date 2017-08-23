@@ -52,7 +52,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
 
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUserId()
     {
@@ -60,7 +60,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
     }
 
     /**
-     * @param mixed $userId
+     * @param string $userId
      */
     public function setUserId($userId)
     {
@@ -68,7 +68,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDeliveryExecutionId()
     {
@@ -76,7 +76,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
     }
 
     /**
-     * @param mixed $deliveryExecutionId
+     * @param string $deliveryExecutionId
      */
     public function setDeliveryExecutionId($deliveryExecutionId)
     {
@@ -84,7 +84,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLinkId()
     {
@@ -92,7 +92,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
     }
 
     /**
-     * @param mixed $linkId
+     * @param string $linkId
      */
     public function setLinkId($linkId)
     {

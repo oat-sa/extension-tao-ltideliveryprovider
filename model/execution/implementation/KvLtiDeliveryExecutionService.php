@@ -35,12 +35,7 @@ class KvLtiDeliveryExecutionService extends ConfigurableService implements LtiDe
 
     const OPTION_PERSISTENCE = 'persistence';
 
-    const LTI_DE_LINK_USER = 'kvlti_lu_';
-
     const LTI_DE_LINK_LINK = 'kvlti_ll_';
-
-    const LTI_DE_LINK_EXEC_ID = 'kvlti_le_';
-
 
 
     /**
