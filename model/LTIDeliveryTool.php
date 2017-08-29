@@ -143,7 +143,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
             $deliveryExecution
         ];
 
-        $extendedTime = ($timer->getExtraTime() && !$extendedTime) ? 1 : $extendedTime;
+        $extendedTime = (!$extendedTime) ? 1 : $extendedTime;
         if ($extendedTime) {
             $deliveryExecutionManagerService->setExtraTime(
                 $deliveryExecutionArray,
