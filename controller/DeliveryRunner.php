@@ -47,6 +47,23 @@ class DeliveryRunner extends DeliveryServer
     use LtiModuleTrait;
 
     /**
+     * Displays the execution screen
+     */
+    public function runDeliveryExecution() {
+        $deliveryExecution = $this->getCurrentDeliveryExecution();
+
+        $launchData = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        $extendedTime = 0;
+        if ($launchData->hasVariable(LTIDeliveryTool::CUSTOM_LTI_EXTENDED_TIME)) {
+            $extendedTime = floatval($launchData->getVariable(LTIDeliveryTool::CUSTOM_LTI_EXTENDED_TIME));
+        }
+
+        LTIDeliveryTool::singleton()->updateDeliveryExtendedTime($deliveryExecution, $extendedTime);
+
+        parent::runDeliveryExecution();
+    }
+    
+    /**
      * Defines if the top and bottom action menu should be displayed or not
      *
      * @return boolean
