@@ -93,15 +93,6 @@ class DeliveryTool extends taoLti_actions_ToolModule
                         $deliveryExecutionStateService = $this->getServiceManager()->get(StateServiceInterface::SERVICE_ID);
                         $deliveryExecutionStateService->pause($activeExecution);
                     }
-
-                    $launchData = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-                    $extendedTime = 0;
-                    if ($launchData->hasVariable(LTIDeliveryTool::CUSTOM_LTI_EXTENDED_TIME)) {
-                        $extendedTime = floatval($launchData->getVariable(LTIDeliveryTool::CUSTOM_LTI_EXTENDED_TIME));
-                    }
-
-                    LTIDeliveryTool::singleton()->updateDeliveryExtendedTime($activeExecution, $extendedTime);
-
                     $this->redirect($this->getLearnerUrl($compiledDelivery));
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
