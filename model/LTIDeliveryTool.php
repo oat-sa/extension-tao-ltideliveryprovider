@@ -43,24 +43,26 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
     const CUSTOM_LTI_EXTENDED_TIME = 'custom_extended_time';
-	
-	public function getLaunchUrl($parameters = array()) {
+    const LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
+
+
+    public function getLaunchUrl($parameters = array()) {
 		$fullAction = self::ACTION.'/'.base64_encode(json_encode($parameters));
 		return _url($fullAction, self::MODULE, self::EXTENSION);
 	}
 	
 	public function getDeliveryFromLink() {
 		$remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY));
+		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::LINK_DELIVERY));
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
 	    
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+	    $class = new core_kernel_classes_Class(LtiDeliveryExecutionService::LINK);
 	    $link = $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-            PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution
+            LtiDeliveryExecutionService::LINK_USER => $userUri,
+            LtiDeliveryExecutionService::LINK_OF_LINK => $link,
+            LtiDeliveryExecutionService::LINK_OF_EXECUTION => $deliveryExecution
 	    ));
 	    return $link instanceof core_kernel_classes_Resource;
 	}
@@ -107,11 +109,11 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
 
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+	    $class = new core_kernel_classes_Class(LtiDeliveryExecutionService::LINK);
 	    $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier()
+            LtiDeliveryExecutionService::LINK_USER => $user->getIdentifier(),
+            LtiDeliveryExecutionService::LINK_OF_LINK => $link,
+            LtiDeliveryExecutionService::LINK_OF_EXECUTION => $deliveryExecution->getIdentifier()
 	    ));
 	    return $deliveryExecution;
 	}
