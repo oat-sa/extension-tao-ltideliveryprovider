@@ -50,16 +50,16 @@ class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeli
      */
     public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId)
     {
-        $class = new \core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+        $class = new \core_kernel_classes_Class(LtiDeliveryExecutionService::LINK);
         $links = $class->searchInstances([
-            PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
-            PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+            LtiDeliveryExecutionService::LINK_USER => $userId,
+            LtiDeliveryExecutionService::LINK_OF_LINK => $link,
         ], [
             'like' => false
         ]);
         $result = [];
         foreach ($links as $link) {
-            $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
+            $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(LtiDeliveryExecutionService::LINK_OF_EXECUTION));
             $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($execId);
             if ($delivery->equals($deliveryExecution->getDelivery())) {
                 $result[] = $deliveryExecution;
