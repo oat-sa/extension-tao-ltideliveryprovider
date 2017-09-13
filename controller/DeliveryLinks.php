@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use \tao_actions_CommonModule;
 use \core_kernel_classes_Resource;
 use \tao_helpers_Uri;
@@ -48,7 +49,7 @@ class DeliveryLinks extends tao_actions_CommonModule {
         //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
         $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
         try {
-            $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
+            $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::RESULT_SERVER_PROP));
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
         }

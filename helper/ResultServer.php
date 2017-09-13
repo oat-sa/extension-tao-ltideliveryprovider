@@ -25,6 +25,7 @@ namespace oat\ltiDeliveryProvider\helper;
 use \core_kernel_classes_Resource;
 use \core_kernel_classes_Property;
 use \common_session_SessionManager;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoResultServer\models\classes\ResultServerService;
 use \taoLti_models_classes_LtiLaunchData;
 use \common_Logger;
@@ -35,7 +36,7 @@ class ResultServer
 
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, $executionIdentifier, $launchData) {
         
-        $resultServer = $delivery->getOnePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
+        $resultServer = $delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::RESULT_SERVER_PROP));
         if (empty($resultServer)) {
             //No static result server was associated with the delivery
             $resultServer = new core_kernel_classes_Resource(ResultServerService::RESULT_SERVER);

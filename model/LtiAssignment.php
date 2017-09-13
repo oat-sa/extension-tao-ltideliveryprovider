@@ -23,6 +23,7 @@ namespace oat\ltiDeliveryProvider\model;
 
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\AssignmentService;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\oatbox\user\User;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -57,7 +58,7 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
      */
     protected function verifyToken(\core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(TAO_DELIVERY_MAXEXEC_PROP));
+        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::MAX_EXEC_PROP));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
 
         $currentSession = \common_session_SessionManager::getSession();
