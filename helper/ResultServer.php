@@ -39,7 +39,7 @@ class ResultServer
         $resultServer = $delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::RESULT_SERVER_PROP));
         if (empty($resultServer)) {
             //No static result server was associated with the delivery
-            $resultServer = new core_kernel_classes_Resource(ResultServerService::RESULT_SERVER);
+            $resultServer = new core_kernel_classes_Resource(ResultServerService::PROPERTY_RESULT_SERVER);
         }
         
         $resultIdentifier = $launchData->hasVariable("lis_result_sourcedid")

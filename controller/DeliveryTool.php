@@ -85,7 +85,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
             }
         } else {
             $user = common_session_SessionManager::getSession()->getUser();
-            $isLearner = !is_null($user) && in_array(LtiRoles::CONTEXT_LEARNER, $user->getRoles());
+            $isLearner = !is_null($user) && in_array(LtiRoles::PROPERTY_CONTEXT_LEARNER, $user->getRoles());
             if ($isLearner) {
                 if (tao_models_classes_accessControl_AclProxy::hasAccess('runDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider')) {
                     $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
