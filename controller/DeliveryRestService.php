@@ -45,7 +45,7 @@ class DeliveryRestService extends \tao_actions_RestController
             } 
             
             $selectedDelivery = new \core_kernel_classes_Resource($this->getRequestParameter('deliveryId'));
-            if(!$selectedDelivery->isInstanceOf(new \core_kernel_classes_Class(TaoOntology::DELIVERY_CLASS))) {
+            if(!$selectedDelivery->isInstanceOf(new \core_kernel_classes_Class(TaoOntology::DELIVERY_CLASS_URI))) {
                 $this->returnFailure(new \common_exception_NotFound('Delivery not found'));
             }
             
