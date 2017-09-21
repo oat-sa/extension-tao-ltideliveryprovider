@@ -38,8 +38,9 @@ use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
-	
-    const EXTENSION = 'ltiDeliveryProvider';
+	const CONTEXT_LEARNER = 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Learner';
+
+	const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
     const CUSTOM_LTI_EXTENDED_TIME = 'custom_extended_time';
