@@ -50,7 +50,7 @@ class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeli
      */
     public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId)
     {
-        $class = new \core_kernel_classes_Class(LtiDeliveryExecutionService::PROPERTY_LINK);
+        $class = new \core_kernel_classes_Class(LtiDeliveryExecutionService::CLASS_URI_LINK);
         $links = $class->searchInstances([
             LtiDeliveryExecutionService::PROPERTY_LINK_USER => $userId,
             LtiDeliveryExecutionService::PROPERTY_LINK_OF_LINK => $link,

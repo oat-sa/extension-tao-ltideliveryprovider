@@ -50,7 +50,7 @@ class DeliveryLinks extends tao_actions_CommonModule {
         //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
         $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
         try {
-            $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::RESULT_SERVER_PROP));
+            $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_RESULT_SERVER));
         } catch (Exception $e) {
             $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
         }

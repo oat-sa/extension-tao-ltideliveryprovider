@@ -50,7 +50,7 @@ class DeliveryRestService extends \tao_actions_RestController
             }
             
             try {
-                $selectedDelivery->getUniquePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::RESULT_SERVER_PROP));
+                $selectedDelivery->getUniquePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_RESULT_SERVER));
             } catch (Exception $e) {
                 $this->returnFailure(new \common_exception_BadRequest('The delivery is not associated to a Result server storage policy'));
             }

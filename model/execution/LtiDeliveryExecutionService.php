@@ -33,7 +33,7 @@ interface LtiDeliveryExecutionService
 {
     const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
 
-    const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution';
+    const CLASS_URI_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution';
 
     const PROPERTY_LINK_USER = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser';
 

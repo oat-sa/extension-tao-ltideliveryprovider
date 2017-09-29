@@ -36,10 +36,10 @@ class ResultServer
 
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, $executionIdentifier, $launchData) {
         
-        $resultServer = $delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::RESULT_SERVER_PROP));
+        $resultServer = $delivery->getOnePropertyValue(new core_kernel_classes_Property(DeliveryContainerService::PROPERTY_RESULT_SERVER));
         if (empty($resultServer)) {
             //No static result server was associated with the delivery
-            $resultServer = new core_kernel_classes_Resource(ResultServerService::PROPERTY_RESULT_SERVER);
+            $resultServer = new core_kernel_classes_Resource(ResultServerService::INSTANCE_RESULT_SERVER);
         }
         
         $resultIdentifier = $launchData->hasVariable("lis_result_sourcedid")

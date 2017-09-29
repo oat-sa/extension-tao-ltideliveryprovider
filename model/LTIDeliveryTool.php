@@ -38,7 +38,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
-	const CONTEXT_LEARNER = 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Learner';
+	const INSTANCE_CONTEXT_LEARNER = 'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership#Learner';
 
 	const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
@@ -59,7 +59,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
 	    
-	    $class = new core_kernel_classes_Class(LtiDeliveryExecutionService::PROPERTY_LINK);
+	    $class = new core_kernel_classes_Class(LtiDeliveryExecutionService::CLASS_URI_LINK);
 	    $link = $class->createInstanceWithProperties(array(
             LtiDeliveryExecutionService::PROPERTY_LINK_USER => $userUri,
             LtiDeliveryExecutionService::PROPERTY_LINK_OF_LINK => $link,
@@ -110,7 +110,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
 
-	    $class = new core_kernel_classes_Class(LtiDeliveryExecutionService::PROPERTY_LINK);
+	    $class = new core_kernel_classes_Class(LtiDeliveryExecutionService::CLASS_URI_LINK);
 	    $class->createInstanceWithProperties(array(
             LtiDeliveryExecutionService::PROPERTY_LINK_USER => $user->getIdentifier(),
             LtiDeliveryExecutionService::PROPERTY_LINK_OF_LINK => $link,

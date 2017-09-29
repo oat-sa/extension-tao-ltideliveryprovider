@@ -58,7 +58,7 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
      */
     protected function verifyToken(\core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::MAX_EXEC_PROP));
+        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
 
         $currentSession = \common_session_SessionManager::getSession();
