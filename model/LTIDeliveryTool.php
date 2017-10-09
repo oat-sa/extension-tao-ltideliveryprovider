@@ -22,8 +22,6 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoProctoring\model\execution\DeliveryExecutionManagerService;
-use oat\taoQtiTest\models\runner\time\QtiTimer;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
 use \core_kernel_classes_Property;
@@ -132,27 +130,4 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         return $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
     }
 
-    /**
-     * @param DeliveryExecution $deliveryExecution
-     * @param $extendedTime
-     */
-    public function updateDeliveryExtendedTime(DeliveryExecution $deliveryExecution, $extendedTime)
-    {
-        /** @var DeliveryExecutionManagerService  $deliveryExecutionManagerService */
-        $deliveryExecutionManagerService = $this->getServiceLocator()->get(DeliveryExecutionManagerService::SERVICE_ID);
-        /** @var QtiTimer $timer */
-        $timer = $deliveryExecutionManagerService->getDeliveryTimer($deliveryExecution);
-        $deliveryExecutionArray = [
-            $deliveryExecution
-        ];
-
-        $extendedTime = (!$extendedTime) ? 1 : $extendedTime;
-        if ($extendedTime) {
-            $deliveryExecutionManagerService->setExtraTime(
-                $deliveryExecutionArray,
-                $timer->getExtraTime(),
-                $extendedTime
-            );
-        }
-    }
 }
