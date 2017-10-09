@@ -41,7 +41,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
     const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
-	
+
 	public function getLaunchUrl($parameters = array()) {
 		$fullAction = self::ACTION.'/'.base64_encode(json_encode($parameters));
 		return _url($fullAction, self::MODULE, self::EXTENSION);
@@ -120,4 +120,5 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
         return $executions;
     }
+
 }
