@@ -50,4 +50,11 @@ interface LtiDeliveryExecutionService
      * @return DeliveryExecution[]
      */
     public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId);
+
+    /**
+     * Get delivery active execution by delivery for current user
+     * @param \core_kernel_classes_Resource $delivery
+     * @return mixed
+     */
+    public function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery);
 }
