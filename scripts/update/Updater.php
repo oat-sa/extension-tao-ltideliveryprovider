@@ -22,6 +22,10 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\tao\model\accessControl\func\AclProxy;
+use oat\taoLti\models\classes\LtiRoles;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -93,5 +97,10 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('3.3.0');
         }
         $this->skip('3.3.0', '3.5.1');
+
+        if ($this->isVersion('3.5.1')) {
+            AclProxy::applyRule(new AccessRule('grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'));
+            $this->setVersion('3.6.0');
+        }
     }
 }

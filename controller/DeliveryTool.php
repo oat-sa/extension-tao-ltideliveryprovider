@@ -97,7 +97,10 @@ class DeliveryTool extends taoLti_actions_ToolModule
                         }
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (ActionFullException $e) {
-                        $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
+                        $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
+                            'position' => $e->getPosition(),
+                            'delivery' => $compiledDelivery->getUri()
+                        ]));
                     }
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
@@ -109,6 +112,28 @@ class DeliveryTool extends taoLti_actions_ToolModule
                 $this->returnError(__('Access to this functionality is restricted to students'), false);
             }
         }
+    }
+
+    /**
+     * @throws \taoLti_models_classes_LtiException
+     */
+    public function launchQueue()
+    {
+        $delivery = $this->getDelivery();
+        if (!$delivery->exists()) {
+            throw new \taoLti_models_classes_LtiException(
+            __('Delivery does not exist. Please contact your instructor.'),
+            LtiErrorMessage::ERROR_INVALID_PARAMETER);
+        }
+        $runUrl = _url('run', 'DeliveryTool', null, ['delivery' => $delivery->getUri()]);
+        $config = $this->getServiceManager()->get('ltiDeliveryProvider/LaunchQueue')->getConfig();
+
+        $this->defaultData();
+        $this->setData('delivery', $delivery);
+        $this->setData('runUrl', $runUrl);
+        $this->setData('position', intval($this->getRequestParameter('position')));
+        $this->setData('config', $config);
+        $this->setView('learner/launchQueue.tpl');
     }
 
     /**
