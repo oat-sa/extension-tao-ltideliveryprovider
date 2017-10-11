@@ -100,6 +100,13 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('3.5.1')) {
             AclProxy::applyRule(new AccessRule('grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'));
+            $launchQueueConfig = new \oat\oatbox\config\ConfigurationService([
+                'config' => [
+                    'relaunchInterval' => 30,
+                    'relaunchIntervalDeviation' => 5,
+                ]
+            ]);
+            $this->getServiceManager()->register('ltiDeliveryProvider/LaunchQueue', $launchQueueConfig);
             $this->setVersion('3.6.0');
         }
     }

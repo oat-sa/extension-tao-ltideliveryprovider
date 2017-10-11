@@ -127,12 +127,11 @@ class DeliveryTool extends taoLti_actions_ToolModule
         }
         $runUrl = _url('run', 'DeliveryTool', null, ['delivery' => $delivery->getUri()]);
         $config = $this->getServiceManager()->get('ltiDeliveryProvider/LaunchQueue')->getConfig();
-
+        $config['runUrl'] = $runUrl;
         $this->defaultData();
         $this->setData('delivery', $delivery);
-        $this->setData('runUrl', $runUrl);
         $this->setData('position', intval($this->getRequestParameter('position')));
-        $this->setData('config', $config);
+        $this->setData('client_params', $config);
         $this->setView('learner/launchQueue.tpl');
     }
 

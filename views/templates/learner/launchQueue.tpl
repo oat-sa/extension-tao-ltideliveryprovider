@@ -12,7 +12,7 @@ use oat\tao\helpers\Layout;
         <link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('errors.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('userError.css','tao') ?>" />
-        <?= Layout::getAmdLoader(Template::js('loader/backoffice.min.js', 'tao'), 'controller/backoffice') ?>
+        <?= Layout::getAmdLoader(Template::js('loader/app.min.js', 'tao'), 'controller/app', get_data('client_params')) ?>
     </head>
     <body>
         <div id="main" class="ui-widget-content ui-corner-all">

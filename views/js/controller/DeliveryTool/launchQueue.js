@@ -18,17 +18,37 @@
  */
 
 define([
-
-], function () {
+    'lodash',
+    'jquery'
+], function (_, $) {
     'use strict';
+
+    var _defaultParams = {
+        "relaunchInterval" : 30,
+        "relaunchIntervalDeviation" : 5
+    };
 
     /**
      * @exports
      */
     return {
         start: function() {
-            console.log('dsfhdasfklhdasfklhdas');
-            console.log(arguments);
+            var loaderScript = $('#amd-loader');
+            var params = loaderScript.data('params');
+            var interval;
+            var deviation;
+
+            params = _.defaults(params, _defaultParams);
+
+            interval = params.relaunchInterval;
+            deviation = parseInt(params.relaunchIntervalDeviation) - (Math.random() * parseInt(params.relaunchIntervalDeviation) * 2);
+            interval = (interval + deviation) * 1000;
+
+            if (params.runUrl) {
+                setTimeout(function () {
+                    window.location = params.runUrl;
+                }, interval);
+            }
         }
     };
 });
