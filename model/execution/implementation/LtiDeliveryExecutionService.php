@@ -24,8 +24,11 @@ use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDe
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
-use \oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
+use oat\tao\model\actionQueue\ActionQueue;
+use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+
 /**
  * Class LtiDeliveryExecutionService
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
@@ -33,6 +36,9 @@ use \oat\ltiDeliveryProvider\model\LTIDeliveryTool;
  */
 class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeliveryExecutionServiceInterface
 {
+
+    const OPTION_PERSISTENCE = 'persistence';
+
     /**
      * @inheritdoc
      */
@@ -71,43 +77,59 @@ class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeli
     }
 
     /**
-     * @param \core_kernel_classes_Resource $delivery
-     * @return DeliveryExecution
-     * @throws
+     * @inheritdoc
      */
     public function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {
-        $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-        $user = \common_session_SessionManager::getSession()->getUser();
-
-        $launchData = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-        if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
-            // ignore existing executions to force restart
-            $executions = array();
+        /** @var ActionQueue $actionQueue */
+        $actionQueue = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
+        $action = new GetActiveDeliveryExecution($delivery);
+        if ($actionQueue->perform($action)) {
+            return $action->getResult();
         } else {
-            $executions = $this->getLinkedDeliveryExecutions($delivery, $remoteLink, $user->getIdentifier());
+            throw new \oat\tao\model\actionQueue\ActionFullException($actionQueue->getPosition($action));
         }
-
-        $active = null;
-
-        if (empty($executions)) {
-            $active = $this->getTool()->startDelivery($delivery, $remoteLink, $user);
-        } else {
-            foreach ($executions as $deliveryExecution) {
-                if (!$this->isFinished($deliveryExecution)) {
-                    $active = $deliveryExecution;
-                    break;
-                }
-            }
-        }
-        return $active;
     }
 
     /**
-     * @return LTIDeliveryTool
+     * @param DeliveryExecutionState $event
      */
-    protected function getTool()
+    public function executionStateChanged(DeliveryExecutionState $event)
     {
-        return LTIDeliveryTool::singleton();
+        $persistence = $this->getPersistence();
+        if ($event->getState() === DeliveryExecution::STATE_ACTIVE) {
+            $persistence->incr(self::class.'_'.'active_executions');
+        } else if ($event->getPreviousState() === DeliveryExecution::STATE_ACTIVE) {
+            $persistence->decr(self::class.'_'.'active_executions');
+        }
+    }
+
+    /**
+     * @param DeliveryExecutionCreated $event
+     * @throws
+     */
+    public function executionCreated(DeliveryExecutionCreated $event)
+    {
+        $persistence = $this->getPersistence();
+        if ($event->getDeliveryExecution()->getState()->getUri() === DeliveryExecution::STATE_ACTIVE) {
+            $persistence->incr(self::class.'_'.'active_executions');
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfActiveDeliveryExecutions()
+    {
+        return intval($this->getPersistence()->get(self::class.'_'.'active_executions'));
+    }
+
+    /**
+     * @return \common_persistence_KeyValuePersistence
+     */
+    protected function getPersistence()
+    {
+        $persistenceId = $this->getOption(self::OPTION_PERSISTENCE);
+        return $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID)->getPersistenceById($persistenceId);
     }
 }

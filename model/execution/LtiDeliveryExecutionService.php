@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\model\execution;
 
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 
 /**
  * Interface LtiDeliveryExecutionService
@@ -57,4 +58,17 @@ interface LtiDeliveryExecutionService
      * @return mixed
      */
     public function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery);
+
+    /**
+     * Listener of changing delivery execution state event
+     * @param DeliveryExecutionState $event
+     * @return mixed
+     */
+    public function executionStateChanged(DeliveryExecutionState $event);
+
+    /**
+     * Get number of delivery executions in active state
+     * @return int
+     */
+    public function getNumberOfActiveDeliveryExecutions();
 }
