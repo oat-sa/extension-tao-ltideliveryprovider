@@ -26,10 +26,11 @@ return array(
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '3.5.1',
+    'version' => '3.6.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
-        'tao' => '>=9.0.0',
+        'generis' => '>=5.2.0',
+        'tao' => '>=13.2.0',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=3.2.2',
         'taoLtiBasicOutcome' => '>=2.6',
@@ -44,7 +45,8 @@ return array(
         'php' => array(
             \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class
+            \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
+            \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
@@ -60,6 +62,7 @@ return array(
         array('grant', TaoRoles::ANONYMOUS, array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch')),
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run')),
         array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class),
+        array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'),
         array('grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class)
     ),
     'constants' => array(
