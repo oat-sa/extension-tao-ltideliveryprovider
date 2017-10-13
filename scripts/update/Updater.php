@@ -19,9 +19,18 @@
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
+use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\tao\model\accessControl\func\AclProxy;
+use oat\taoLti\models\classes\LtiRoles;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
+use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
+use oat\tao\model\actionQueue\ActionQueue;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -92,6 +101,41 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->setVersion('3.3.0');
         }
-        $this->skip('3.3.0', '3.5.2');
+        $this->skip('3.3.0', '3.5.1');
+
+        if ($this->isVersion('3.5.1')) {
+            AclProxy::applyRule(new AccessRule('grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'));
+            $launchQueueConfig = new \oat\oatbox\config\ConfigurationService([
+                'config' => [
+                    'relaunchInterval' => 30,
+                    'relaunchIntervalDeviation' => 5,
+                ]
+            ]);
+            $this->getServiceManager()->register('ltiDeliveryProvider/LaunchQueue', $launchQueueConfig);
+
+
+            $actionQueue = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
+            $actions = $actionQueue->getOption(ActionQueue::OPTION_ACTIONS);
+            $actions[GetActiveDeliveryExecution::class] = [
+                ActionQueue::ACTION_PARAM_LIMIT => 0,
+                ActionQueue::ACTION_PARAM_TTL => 3600, //one hour
+            ];
+            $actionQueue->setOption(ActionQueue::OPTION_ACTIONS, $actions);
+            $this->getServiceManager()->register(ActionQueue::SERVICE_ID, $actionQueue);
+
+            $ltiDeliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            $ltiDeliveryExecutionService->setOption(LtiDeliveryExecutionService::OPTION_PERSISTENCE, 'cache');
+            $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecutionService);
+
+            /** @var EventManager $eventManager */
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->attach(DeliveryExecutionState::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionStateChanged']);
+            $eventManager->attach(DeliveryExecutionCreated::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionCreated']);
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+
+            $this->setVersion('3.6.0');
+        }
+
+        $this->skip('3.6.0', '3.6.1');
     }
 }
