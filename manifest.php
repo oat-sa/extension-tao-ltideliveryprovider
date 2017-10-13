@@ -20,6 +20,7 @@ use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\tao\model\user\TaoRoles;
 use oat\taoLti\models\classes\LtiRoles;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
 
 return array(
     'name' => 'ltiDeliveryProvider',
