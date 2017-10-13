@@ -124,7 +124,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(ActionQueue::SERVICE_ID, $actionQueue);
 
             $ltiDeliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-            $ltiDeliveryExecutionService->setOption(LtiDeliveryExecutionService::OPTION_PERSISTENCE, 'cache');
+            $ltiDeliveryExecutionService->setOption(LtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE, 'cache');
             $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecutionService);
 
             /** @var EventManager $eventManager */
@@ -135,5 +135,15 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->setVersion('3.6.0');
         }
+
+        if ($this->isVersion('3.6.0')) {
+
+            $ltiDeliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            $ltiDeliveryExecutionService->setOption(LtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE, 'cache');
+            $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecutionService);
+
+            $this->setVersion('3.7.0');
+        }
+
     }
 }

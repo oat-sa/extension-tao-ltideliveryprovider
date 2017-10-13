@@ -7,5 +7,5 @@
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 
 return new LtiDeliveryExecutionService([
-    LtiDeliveryExecutionService::OPTION_PERSISTENCE => 'cache'
+    LtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE => 'cache'
 ]);
