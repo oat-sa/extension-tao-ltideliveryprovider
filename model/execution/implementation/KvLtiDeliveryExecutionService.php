@@ -24,13 +24,14 @@ use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDe
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 
 /**
  * Class KvLtiDeliveryExecutionService
  * Key value implementation of the LtiDeliveryExecutionServiceInterface
  * @package oat\ltiDeliveryProvider\model\execution
  */
-class KvLtiDeliveryExecutionService extends ConfigurableService implements LtiDeliveryExecutionServiceInterface
+class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 {
 
     const OPTION_PERSISTENCE = 'persistence';
