@@ -74,9 +74,12 @@ interface LtiDeliveryExecutionService
      */
     public function executionStateChanged(DeliveryExecutionState $event);
 
-    /**
-     * Get number of delivery executions in active state
-     * @return int
+	/**
+     * create a LTIDeliveryExecutionLink from parameters
+     * @param string $userUri
+     * @param string $link
+     * @param string $deliveryExecutionUri
+     * @return LTIDeliveryExecutionLink
      */
-    public function getNumberOfActiveDeliveryExecutions();
+    public function createDeliveryExecutionLink($userUri, $link, $deliveryExecutionUri);
 }
