@@ -41,7 +41,6 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
     const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
-    const CUSTOM_LTI_EXTENDED_TIME = 'custom_extended_time';
     const PROPERTY_LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
 
 
