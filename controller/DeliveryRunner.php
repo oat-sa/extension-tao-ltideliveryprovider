@@ -34,6 +34,7 @@ use oat\taoLti\actions\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
+use oat\taoDelivery\model\execution\StateServiceInterface;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -45,7 +46,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 class DeliveryRunner extends DeliveryServer
 {
     use LtiModuleTrait;
-
+    
     /**
      * Defines if the top and bottom action menu should be displayed or not
      *
@@ -53,8 +54,8 @@ class DeliveryRunner extends DeliveryServer
      */
     protected function showControls() {
         $themeService = $this->getServiceManager()->get(ThemeService::SERVICE_ID);
-        if ($themeService instanceof LtiHeadless) {
-            return !$themeService->isHeadless(); 
+        if ($themeService instanceof ThemeService || $themeService instanceof LtiHeadless) {
+            return !$themeService->isHeadless();
         }
         return false;
     }
@@ -124,6 +125,10 @@ class DeliveryRunner extends DeliveryServer
             $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
                 $this->getRequestParameter('deliveryExecution')
             );
+            if ($deliveryExecution->getState() !== DeliveryExecution::STATE_FINISHIED) {
+                $stateService = $this->getServiceManager()->get(StateServiceInterface::SERVICE_ID);
+                $stateService->finish($deliveryExecution);
+            }
         }
         $redirectUrl = LTIDeliveryTool::singleton()->getFinishUrl($this->getLtiMessage($deliveryExecution), $deliveryExecution);
         $this->redirect($redirectUrl);

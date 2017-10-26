@@ -20,9 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
 
 /**
@@ -30,15 +28,8 @@ use oat\taoDelivery\model\execution\ServiceProxy;
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  * @package oat\ltiDeliveryProvider\model\execution
  */
-class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeliveryExecutionServiceInterface
+class LtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 {
-    /**
-     * @inheritdoc
-     */
-    public function isFinished(DeliveryExecution $deliveryExecution)
-    {
-        return $deliveryExecution->getState()->getUri() === DeliveryExecution::STATE_FINISHIED;
-    }
 
     /**
      * Returns an array of DeliveryExecution
@@ -46,25 +37,41 @@ class LtiDeliveryExecutionService extends ConfigurableService implements LtiDeli
      * @param \core_kernel_classes_Resource $delivery
      * @param \core_kernel_classes_Resource $link
      * @param string $userId
+     * @throws
      * @return DeliveryExecution[]
      */
     public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId)
     {
-        $class = new \core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
+        $class = new \core_kernel_classes_Class(OntologyLTIDeliveryExecutionLink::CLASS_LTI_DELIVERYEXECUTION_LINK);
         $links = $class->searchInstances([
-            PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
-            PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER => $userId,
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
         ], [
             'like' => false
         ]);
         $result = [];
         foreach ($links as $link) {
-            $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
+            $execId = $link->getUniquePropertyValue(new \core_kernel_classes_Property(OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
             $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($execId);
             if ($delivery->equals($deliveryExecution->getDelivery())) {
                 $result[] = $deliveryExecution;
             }
         }
         return $result;
+    }
+
+	 /**
+     * @inheritdoc
+     */
+    public function createDeliveryExecutionLink($userUri, $link, $deliveryExecutionUri)
+    {
+        $class = new \core_kernel_classes_Class(OntologyLTIDeliveryExecutionLink::CLASS_LTI_DELIVERYEXECUTION_LINK);
+        $link = $class->createInstanceWithProperties(array(
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecutionUri
+        ));
+
+        return $link;
     }
 }
