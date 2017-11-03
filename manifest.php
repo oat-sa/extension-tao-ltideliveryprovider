@@ -32,7 +32,7 @@ return array(
     'requires' => array(
         'generis' => '>=5.2.0',
         'tao' => '>=13.2.0',
-        'taoDeliveryRdf' => '>=1.0',
+        'taoDeliveryRdf' => '>=3.17.0',
         'taoLti' => '>=3.2.2',
         'taoLtiBasicOutcome' => '>=2.6',
         'taoResultServer' => '>=3.4.0',
@@ -47,7 +47,8 @@ return array(
             \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
-            \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class
+            \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class,
+            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiLaunchDataService::class
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
