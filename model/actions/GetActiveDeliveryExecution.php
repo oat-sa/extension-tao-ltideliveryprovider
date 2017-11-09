@@ -25,7 +25,6 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoProctoring\model\monitorCache\DeliveryMonitoringService;
 
 /**
  * Class GetActiveDeliveryExecution
@@ -36,7 +35,7 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
 {
     protected $delivery;
 
-    public function __construct(\core_kernel_classes_Resource $delivery)
+    public function __construct(\core_kernel_classes_Resource $delivery = null)
     {
         $this->delivery = $delivery;
     }
@@ -51,31 +50,36 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
      */
     public function __invoke($params)
     {
-        $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-        $user = \common_session_SessionManager::getSession()->getUser();
-
-        $launchData = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-        /** @var LtiDeliveryExecutionService $deliveryExecutionService */
-        $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
-            // ignore existing executions to force restart
-            $executions = array();
-        } else {
-            $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($this->delivery, $remoteLink, $user->getIdentifier());
-        }
-
         $active = null;
 
-        if (empty($executions)) {
-            $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
-        } else {
-            foreach ($executions as $deliveryExecution) {
-                if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
-                    $active = $deliveryExecution;
-                    break;
+        if ($this->delivery !== null) {
+            $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+            $user = \common_session_SessionManager::getSession()->getUser();
+
+            $launchData = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+            /** @var LtiDeliveryExecutionService $deliveryExecutionService */
+            $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
+                // ignore existing executions to force restart
+                $executions = array();
+            } else {
+                $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($this->delivery, $remoteLink, $user->getIdentifier());
+            }
+
+            if (empty($executions)) {
+                $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
+            } else {
+                foreach ($executions as $deliveryExecution) {
+                    if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
+                        $active = $deliveryExecution;
+                        break;
+                    }
                 }
             }
+        } else {
+            $this->logNotice('Attempt to invoke action `' . $this->getId() .'` without delivery');
         }
+
         return $active;
     }
 
