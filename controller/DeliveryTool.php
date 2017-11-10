@@ -20,8 +20,10 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use \taoLti_actions_ToolModule;
 use \tao_models_classes_accessControl_AclProxy;
 use \tao_helpers_Uri;
@@ -198,14 +200,10 @@ class DeliveryTool extends taoLti_actions_ToolModule
         } else {
             
             $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-            $deliveryUri = $launchData->getCustomParameter('delivery');
-            
-            if (!is_null($deliveryUri)) {
-                $returnValue = new core_kernel_classes_Resource($deliveryUri);
-            } else {
-                // stored in link
-                $returnValue = LTIDeliveryTool::singleton()->getDeliveryFromLink();
-            }
+
+            /** @var LtiLaunchDataService $launchDataService */
+            $launchDataService = $this->getServiceManager()->get(LtiLaunchDataService::SERVICE_ID);
+            $returnValue = $launchDataService->findDeliveryFromLaunchData($launchData);
         }
         return $returnValue;
     }
