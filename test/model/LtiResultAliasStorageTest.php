@@ -24,7 +24,6 @@ namespace oat\ltiDeliveryProvider\test\model\requestLog\rds;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\oatbox\service\ServiceManager;
-use oat\taoDelivery\model\execution\DeliveryExecution;
 
 /**
  * Class LtiResultAliasStorageTest
@@ -51,6 +50,13 @@ class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
         $deId = $this->deId . '10';
         $this->assertTrue($storage->storeResultAlias($deId, '9'));
         $this->assertEquals($this->deId . '10', $storage->getDeliveryExecutionId('9'));
+
+
+        //Try to log the same delivery execution with another .
+        //Delivery execution identifier should be overwritten
+        $deId = $this->deId . '10';
+        $this->assertTrue($storage->storeResultAlias($deId, '10'));
+        $this->assertEquals($this->deId . '10', $storage->getDeliveryExecutionId('10'));
     }
 
     public function testGetDeliveryExecution()

@@ -20,9 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 
 /**
@@ -53,13 +51,12 @@ class LtiResultAliasStorage extends ConfigurableService
 
     /**
      * Add record to the storage
-     * @param DeliveryExecution $deliveryExecution
+     * @param string $deliveryExecutionId
      * @param string $resultId
      * @return boolean
      */
     public function storeResultAlias($deliveryExecutionId, $resultId)
     {
-        $result = true;
         $data = [
             self::DELIVERY_EXECUTION_ID => $deliveryExecutionId,
             self::RESULT_ID => $resultId,
@@ -67,8 +64,8 @@ class LtiResultAliasStorage extends ConfigurableService
 
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->delete($this->getTableName());
-        $queryBuilder->where(self::RESULT_ID . '=?');
-        $queryBuilder->setParameters([$resultId]);
+        $queryBuilder->where(self::RESULT_ID . '=? OR ' . self::DELIVERY_EXECUTION_ID . '= ?');
+        $queryBuilder->setParameters([$resultId, $deliveryExecutionId]);
         $res = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters())->execute();
 
         $result = $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
