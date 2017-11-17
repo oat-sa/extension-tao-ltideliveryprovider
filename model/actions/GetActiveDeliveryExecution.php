@@ -25,6 +25,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\execution\DeliveryServerService;
 
 /**
  * Class GetActiveDeliveryExecution
@@ -69,8 +70,9 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
             if (empty($executions)) {
                 $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
             } else {
+                $resumable = $this->getServiceLocator()->get(DeliveryServerService::SERVICE_ID)->getResumableStates();
                 foreach ($executions as $deliveryExecution) {
-                    if (!$deliveryExecutionService->isFinished($deliveryExecution)) {
+                    if (in_array($deliveryExecution->getState()->getUri(), $resumable)) {
                         $active = $deliveryExecution;
                         break;
                     }
