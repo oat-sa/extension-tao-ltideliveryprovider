@@ -59,12 +59,24 @@ class DeliveryRunner extends DeliveryServer
         }
         return false;
     }
-    
+
     protected function getReturnUrl() {
         $deliveryExecution = $this->getCurrentDeliveryExecution();
-        return _url('finishDeliveryExecution', 'DeliveryRunner', 'ltiDeliveryProvider',
+        return _url('ltiReturn', 'DeliveryRunner', 'ltiDeliveryProvider',
             ['deliveryExecution' => $deliveryExecution->getIdentifier()]
         );
+    }
+
+    public function ltiReturn()
+    {
+        $deliveryExecution = $this->getCurrentDeliveryExecution();
+        if ($this->hasRequestParameter('warning')) {
+            $ltiMessage = new LtiMessage($this->getRequestParameter('warning'), null);
+        } else {
+            $ltiMessage = $this->getLtiMessage($deliveryExecution);
+        }
+        $redirectUrl = LTIDeliveryTool::singleton()->getFinishUrl($ltiMessage, $deliveryExecution);
+        $this->redirect($redirectUrl);
     }
 
     /**
