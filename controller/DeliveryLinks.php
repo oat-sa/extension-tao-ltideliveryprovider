@@ -21,12 +21,14 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use \tao_actions_CommonModule;
 use \core_kernel_classes_Resource;
 use \tao_helpers_Uri;
 use \core_kernel_classes_Property;
 use \Exception;
 use \core_kernel_classes_Class;
+use taoLti_models_classes_ConsumerService;
 
 /**
  * 
@@ -53,10 +55,9 @@ class DeliveryLinks extends tao_actions_CommonModule {
         if (!empty($feedBackMessage)) {
             $this->setData('warning', $feedBackMessage);
         }
-        $class = new core_kernel_classes_Class(CLASS_LTI_CONSUMER);
+        $class = new core_kernel_classes_Class(taoLti_models_classes_ConsumerService::CLASS_URI);
         $this->setData('consumers', $class->getInstances());
         $this->setData('deliveryLabel', $selectedDelivery->getLabel());
         $this->setView('linkManagement.tpl', 'ltiDeliveryProvider');
-
     }
 }

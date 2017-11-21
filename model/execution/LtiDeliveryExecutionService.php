@@ -34,6 +34,14 @@ interface LtiDeliveryExecutionService
 {
     const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
 
+    const CLASS_URI_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution';
+
+    const PROPERTY_LINK_USER = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser';
+
+    const PROPERTY_LINK_OF_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink';
+
+    const PROPERTY_LINK_OF_EXECUTION = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution';
+
     /**
      * Check whether delivery execution is finished or not (can be resumed).
      *

@@ -22,6 +22,7 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 
 /**
  * LTI Delivery REST API

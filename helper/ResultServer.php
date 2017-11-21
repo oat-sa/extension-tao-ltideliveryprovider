@@ -24,6 +24,8 @@ namespace oat\ltiDeliveryProvider\helper;
 
 use \core_kernel_classes_Resource;
 use \common_session_SessionManager;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
+use oat\taoResultServer\models\classes\ResultServerService;
 use \taoLti_models_classes_LtiLaunchData;
 use oat\oatbox\service\ServiceManager;
 

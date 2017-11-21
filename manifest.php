@@ -17,17 +17,17 @@
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\tao\model\user\TaoRoles;
 use oat\taoLti\models\classes\LtiRoles;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
 
 return array(
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '3.10.1',
+    'version' => '3.11.1',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'generis' => '>=5.2.0',
@@ -63,8 +63,8 @@ return array(
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', array('ext'=>'ltiDeliveryProvider')),
         array('grant', TaoRoles::ANONYMOUS, array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch')),
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run')),
-        array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class),
-        array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'),
+        array('grant', LtiRoles::INSTANCE_CONTEXT_LEARNER, DeliveryRunner::class),
+        array('grant', LtiRoles::INSTANCE_CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'),
         array('grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class)
     ),
     'constants' => array(
