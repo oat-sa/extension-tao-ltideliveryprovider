@@ -49,12 +49,6 @@ class DeliveryRestService extends \tao_actions_RestController
                 $this->returnFailure(new \common_exception_NotFound('Delivery not found'));
             }
             
-            try {
-                $selectedDelivery->getUniquePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_RESULT_SERVER));
-            } catch (Exception $e) {
-                $this->returnFailure(new \common_exception_BadRequest('The delivery is not associated to a Result server storage policy'));
-            }
-            
             $this->returnSuccess(LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
 
         } catch (Exception $ex) {
