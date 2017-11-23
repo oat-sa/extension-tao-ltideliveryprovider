@@ -62,7 +62,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    return !is_null($link );
 	}
 
-	public function getFinishUrl(LtiMessage $ltiMessage, $deliveryExecution = null)
+	public function getFinishUrl(LtiMessage $ltiMessage = null, DeliveryExecution $deliveryExecution = null)
     {
         $session = \common_session_SessionManager::getSession();
         /** @var \taoLti_models_classes_LtiLaunchData $launchData */
@@ -80,7 +80,10 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
                 $urlParts['query'] = '';
             }
             parse_str($urlParts['query'], $params);
-            $params = array_merge($params, $ltiMessage->getUrlParams());
+            if ($ltiMessage) {
+                $params = array_merge($params, $ltiMessage->getUrlParams());
+            }
+            $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
             $urlParts['query'] = http_build_query($params);
             $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
         }
