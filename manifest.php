@@ -17,17 +17,17 @@
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\tao\model\user\TaoRoles;
 use oat\taoLti\models\classes\LtiRoles;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
 
 return array(
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '3.10.2',
+    'version' => '3.11.3',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'generis' => '>=5.2.0',

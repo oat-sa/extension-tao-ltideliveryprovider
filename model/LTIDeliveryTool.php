@@ -42,6 +42,8 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
     const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
+    const PROPERTY_LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
+
 
 	public function getLaunchUrl($parameters = array()) {
 		$fullAction = self::ACTION.'/'.base64_encode(json_encode($parameters));
@@ -50,7 +52,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	
 	public function getDeliveryFromLink() {
 		$remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY));
+		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
