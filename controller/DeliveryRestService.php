@@ -22,6 +22,7 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 
 /**
  * LTI Delivery REST API
@@ -46,12 +47,6 @@ class DeliveryRestService extends \tao_actions_RestController
             $selectedDelivery = new \core_kernel_classes_Resource($this->getRequestParameter('deliveryId'));
             if(!$selectedDelivery->isInstanceOf(new \core_kernel_classes_Class(TAO_DELIVERY_CLASS))) {
                 $this->returnFailure(new \common_exception_NotFound('Delivery not found'));
-            }
-            
-            try {
-                $selectedDelivery->getUniquePropertyValue(new \core_kernel_classes_Property(\TAO_DELIVERY_RESULTSERVER_PROP));
-            } catch (Exception $e) {
-                $this->returnFailure(new \common_exception_BadRequest('The delivery is not associated to a Result server storage policy'));
             }
             
             $this->returnSuccess(LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));

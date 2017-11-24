@@ -21,12 +21,14 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use \tao_actions_CommonModule;
 use \core_kernel_classes_Resource;
 use \tao_helpers_Uri;
 use \core_kernel_classes_Property;
 use \Exception;
 use \core_kernel_classes_Class;
+use taoLti_models_classes_ConsumerService;
 
 /**
  * 
@@ -47,20 +49,15 @@ class DeliveryLinks extends tao_actions_CommonModule {
         $feedBackMessage = '';
         //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
         $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-        try {
-            $resultServer = $selectedDelivery->getUniquePropertyValue(new core_kernel_classes_Property(TAO_DELIVERY_RESULTSERVER_PROP));
-        } catch (Exception $e) {
-            $feedBackMessage = __("The delivery is not associated to a Result server storage policy");
-        }
+        
         $this->setData('launchUrl', LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
 
         if (!empty($feedBackMessage)) {
             $this->setData('warning', $feedBackMessage);
         }
-        $class = new core_kernel_classes_Class(CLASS_LTI_CONSUMER);
+        $class = new core_kernel_classes_Class(taoLti_models_classes_ConsumerService::CLASS_URI);
         $this->setData('consumers', $class->getInstances());
         $this->setData('deliveryLabel', $selectedDelivery->getLabel());
         $this->setView('linkManagement.tpl', 'ltiDeliveryProvider');
-
     }
 }

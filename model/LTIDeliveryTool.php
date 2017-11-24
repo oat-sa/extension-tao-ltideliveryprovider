@@ -42,6 +42,8 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
     const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
+    const PROPERTY_LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
+
 
 	public function getLaunchUrl($parameters = array()) {
 		$fullAction = self::ACTION.'/'.base64_encode(json_encode($parameters));
@@ -50,7 +52,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	
 	public function getDeliveryFromLink() {
 		$remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY));
+		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
@@ -60,7 +62,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	    return !is_null($link );
 	}
 
-	public function getFinishUrl(LtiMessage $ltiMessage, $deliveryExecution = null)
+	public function getFinishUrl(LtiMessage $ltiMessage = null, DeliveryExecution $deliveryExecution = null)
     {
         $session = \common_session_SessionManager::getSession();
         /** @var \taoLti_models_classes_LtiLaunchData $launchData */
@@ -78,7 +80,10 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
                 $urlParts['query'] = '';
             }
             parse_str($urlParts['query'], $params);
-            $params = array_merge($params, $ltiMessage->getUrlParams());
+            if ($ltiMessage) {
+                $params = array_merge($params, $ltiMessage->getUrlParams());
+            }
+            $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
             $urlParts['query'] = http_build_query($params);
             $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
         }
