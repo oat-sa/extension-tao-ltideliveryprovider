@@ -6,7 +6,7 @@ use oat\tao\helpers\Layout;
 
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title><?=__('Launch Queue.');?></title>
+        <title><?=__('Test Launch Queue');?></title>
         <?= \tao_helpers_Scriptloader::render() ?>
         <link rel="stylesheet" type="text/css" href="<?= Template::css('reset.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
@@ -17,9 +17,9 @@ use oat\tao\helpers\Layout;
     <body>
         <div id="main" class="ui-widget-content ui-corner-all">
             <div>
-                <h1><?=__('Launch Queue.');?></h1>
+                <h1><?=__('Test Launch Queue');?></h1>
                 <p id="warning_msg">
-                    <?= __('We are experiencing unusually high user volumes. To ensure you receive the best possible testing experience please hold on a moment.') ?>
+                    <?= __('An unusually high number of people are testing right now, Your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!') ?>
                     <br>
                     <br>
                     <?= __('Your position in the queue is: %s', get_data('position')) ?>
