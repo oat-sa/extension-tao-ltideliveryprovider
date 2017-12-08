@@ -6,10 +6,11 @@ use oat\tao\helpers\Template;
 
 <head>
 	<title><?=__('Thank you');?></title>
-	
     <link rel="stylesheet" href="<?= Template::css('reset.css','tao') ?>" />
 	<link rel="stylesheet" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
-    <link rel="stylesheet" href="<?= Template::css('thankyou.css') ?>" />	
+    <link rel="stylesheet" href="<?= Template::css('thankyou.css') ?>" />
+	<link rel="shortcut icon" href="<?= Template::img('favicon.ico', 'tao') ?>"/>
+
 </head>
 
 <body>
