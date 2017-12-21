@@ -41,6 +41,6 @@ class RegisterServices extends InstallAction
         $this->getServiceManager()->register(ResultAliasService::SERVICE_ID, new ResultAliasService());
         $this->getServiceManager()->register(LtiOutcomeService::SERVICE_ID, new LtiOutcomeService());
 
-        return new common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Registered and created ResultAliasService / LtiOutcomeService services'));
+        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Registered and created ResultAliasService / LtiOutcomeService services'));
     }
 }
