@@ -34,7 +34,7 @@ return array(
         'tao' => '>=14.0.2',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=3.2.2',
-        'taoResultServer' => '>=4.2.0',
+        'taoResultServer' => '>=5.0.0',
         'taoDelivery' => '>=8.1.0'
     ),
     'models' => array(
