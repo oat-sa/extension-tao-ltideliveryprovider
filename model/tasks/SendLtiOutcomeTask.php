@@ -90,7 +90,7 @@ class SendLtiOutcomeTask extends AbstractAction
         $deliveryResultAlias = $resultAliasService->getResultAlias($deliveryResultIdentifier);
         $deliveryResultIdentifier = empty($deliveryResultAlias) ? $deliveryResultIdentifier : current($deliveryResultAlias);
 
-        $message = $this->buildXMLMessage($deliveryResultIdentifier, $grade, 'replaceResultRequest');
+        $message = $this->buildXMLMessage($deliveryResultIdentifier, $grade);
 
         $credentialResource = \taoLti_models_classes_LtiService::singleton()->getCredential($consumerKey);
         $credentials = new \tao_models_classes_oauth_Credentials($credentialResource);
