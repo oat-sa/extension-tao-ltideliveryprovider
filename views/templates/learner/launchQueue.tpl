@@ -19,10 +19,7 @@ use oat\tao\helpers\Layout;
             <div>
                 <h1><?=__('Test Launch Queue');?></h1>
                 <p id="warning_msg">
-                    <?= __('An unusually high number of people are testing right now, Your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!') ?>
-                    <br>
-                    <br>
-                    <?= __('Your position in the queue is: %s', get_data('position')) ?>
+                    <?= __('An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!') ?>
                 </p>
             </div>
         </div>

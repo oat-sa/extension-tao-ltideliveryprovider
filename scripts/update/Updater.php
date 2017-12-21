@@ -20,6 +20,7 @@ namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
+use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
@@ -157,5 +158,19 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('3.9.0', '3.11.5');
+
+        if ($this->isVersion('3.11.5')) {
+
+            $ltiOutcome = new LtiOutcomeService();
+            $this->getServiceManager()->register(LtiOutcomeService::SERVICE_ID, $ltiOutcome);
+
+            /** @var EventManager $eventManager */
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->attach(DeliveryExecutionState::class, [LtiOutcomeService::SERVICE_ID, 'deferTransmit']);
+
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+
+            $this->setVersion('4.0.0');
+    }
     }
 }

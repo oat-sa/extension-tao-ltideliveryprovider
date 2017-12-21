@@ -156,23 +156,18 @@ class DeliveryRunner extends DeliveryServer
         return new LtiMessage($state, null);
     }
 
-    protected function initResultServer($compiledDelivery, $executionIdentifier)
+    protected function initResultServer($compiledDelivery, $executionIdentifier, $userId)
     {
-        //The result server from LTI context depend on call parameters rather than static result server definition
         // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
         $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
-        ResultServer::initLtiResultServer($compiledDelivery, $executionIdentifier, $launchData);
-        $resultIdentifier = $launchData->hasVariable("lis_result_sourcedid")
-            ? $launchData->getVariable("lis_result_sourcedid")
-            : $executionIdentifier;
+        $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid') ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
 
-        /** @var LtiResultIdStorage $ltiResultIdStorage */
+        /** @var LtiResultAliasStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceManager()->get(LtiResultAliasStorage::SERVICE_ID);
-        $ltiResultIdStorage->storeResultAlias(
-            $executionIdentifier,
-            $resultIdentifier
-        );
+        $ltiResultIdStorage->storeResultAlias($executionIdentifier, $resultIdentifier);
+
+        parent::initResultServer($compiledDelivery, $executionIdentifier, $userId);
     }
 
 }
