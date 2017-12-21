@@ -108,7 +108,6 @@ class SendLtiOutcomeTask extends AbstractAction
 
             $this->logWarning("Request sent (Body)\n" . $signedRequest->getBody() . "\n");
             $this->logWarning("Request sent (Headers)\n" . serialize($signedRequest->getHeaders()) . "\n");
-            $this->logWarning("Request sent (Headers)\n" . serialize($signedRequest->getParams()) . "\n");
             $this->logWarning("\nHTTP Code received: " . $response->httpCode . "\n");
 
             $this->logWarning("\nHTTP From: " . $response->effectiveUrl . "\n");
