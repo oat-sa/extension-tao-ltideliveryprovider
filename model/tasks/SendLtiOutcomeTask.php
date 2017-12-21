@@ -114,6 +114,8 @@ class SendLtiOutcomeTask extends AbstractAction
             $this->logWarning("\nHTTP Content received: " . $response->responseData . "\n");
 
             throw new \common_exception_Error('An HTTP level problem occurred when sending the outcome to the service url');
+        } else {
+            $this->logInfo('Submited LTI score with id "'.$deliveryResultIdentifier.'"');
         }
         return true;
     }
