@@ -99,17 +99,21 @@ class SendLtiOutcomeTask extends AbstractAction
         $unSignedOutComeRequest->setBody($message);
         $signingService = new \tao_models_classes_oauth_Service();
         $signedRequest = $signingService->sign($unSignedOutComeRequest, $credentials, true);
-        $this->logInfo("Request sent (Body)\n" . $signedRequest->getBody() . "\n");
-        $this->logInfo("Request sent (Headers)\n" . serialize($signedRequest->getHeaders()) . "\n");
-        $this->logInfo("Request sent (Headers)\n" . serialize($signedRequest->getParams()) . "\n");
         //Hack for moodle compatibility, the header is ignored for the signature computation
         $signedRequest->setHeader("Content-Type", "application/xml");
 
         $response = $signedRequest->send();
-        $this->logInfo("\nHTTP Code received: " . $response->httpCode . "\n");
-        $this->logInfo("\nHTTP From: " . $response->effectiveUrl . "\n");
-        $this->logInfo("\nHTTP Content received: " . $response->responseData . "\n");
+
         if ('200' != $response->httpCode) {
+
+            $this->logWarning("Request sent (Body)\n" . $signedRequest->getBody() . "\n");
+            $this->logWarning("Request sent (Headers)\n" . serialize($signedRequest->getHeaders()) . "\n");
+            $this->logWarning("Request sent (Headers)\n" . serialize($signedRequest->getParams()) . "\n");
+            $this->logWarning("\nHTTP Code received: " . $response->httpCode . "\n");
+
+            $this->logWarning("\nHTTP From: " . $response->effectiveUrl . "\n");
+            $this->logWarning("\nHTTP Content received: " . $response->responseData . "\n");
+
             throw new \common_exception_Error('An HTTP level problem occurred when sending the outcome to the service url');
         }
         return true;
