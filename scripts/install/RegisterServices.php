@@ -14,20 +14,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016  (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2016-2017  (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
+use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
+use oat\oatbox\extension\InstallAction;
 
 /**
  * Class RegisterServices
  * @package oat\ltiDeliveryProvider\scripts\install
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class RegisterServices extends \common_ext_action_InstallAction
+class RegisterServices extends InstallAction
 {
     /**
      * @param $params
@@ -37,5 +39,8 @@ class RegisterServices extends \common_ext_action_InstallAction
     public function __invoke($params)
     {
         $this->getServiceManager()->register(ResultAliasService::SERVICE_ID, new ResultAliasService());
+        $this->getServiceManager()->register(LtiOutcomeService::SERVICE_ID, new LtiOutcomeService());
+
+        return new common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Registered and created ResultAliasService / LtiOutcomeService services'));
     }
 }
