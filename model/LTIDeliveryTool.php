@@ -21,9 +21,8 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoProctoring\model\execution\DeliveryExecutionManagerService;
-use oat\taoQtiTest\models\runner\time\QtiTimer;
 use \taoLti_models_classes_LtiTool;
 use \taoLti_models_classes_LtiService;
 use \core_kernel_classes_Property;
@@ -34,6 +33,7 @@ use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
+use oat\taoDelivery\model\authorization\AuthorizationService;
 
 class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 
@@ -42,8 +42,9 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
     const EXTENSION = 'ltiDeliveryProvider';
 	const MODULE = 'DeliveryTool';
 	const ACTION = 'launch';
-    const CUSTOM_LTI_EXTENDED_TIME = 'custom_extended_time';
-	
+    const PROPERTY_LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
+
+
 	public function getLaunchUrl($parameters = array()) {
 		$fullAction = self::ACTION.'/'.base64_encode(json_encode($parameters));
 		return _url($fullAction, self::MODULE, self::EXTENSION);
@@ -51,21 +52,17 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	
 	public function getDeliveryFromLink() {
 		$remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(PROPERTY_LINK_DELIVERY));
+		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
-	    
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
-	    $link = $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-            PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution
-	    ));
-	    return $link instanceof core_kernel_classes_Resource;
+
+	    $link = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($userUri, $link->getUri(), $deliveryExecution->getUri());
+
+	    return !is_null($link );
 	}
 
-	public function getFinishUrl(LtiMessage $ltiMessage, $deliveryExecution = null)
+	public function getFinishUrl(LtiMessage $ltiMessage = null, DeliveryExecution $deliveryExecution = null)
     {
         $session = \common_session_SessionManager::getSession();
         /** @var \taoLti_models_classes_LtiLaunchData $launchData */
@@ -83,7 +80,10 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
                 $urlParts['query'] = '';
             }
             parse_str($urlParts['query'], $params);
-            $params = array_merge($params, $ltiMessage->getUrlParams());
+            if ($ltiMessage) {
+                $params = array_merge($params, $ltiMessage->getUrlParams());
+            }
+            $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
             $urlParts['query'] = http_build_query($params);
             $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
         }
@@ -100,6 +100,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
      * @throws \common_exception_Unauthorized
 	 */
 	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
+        $this->getAuthorizationProvider()->verifyStartAuthorization($delivery->getUri(), $user);
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::LTI_SERVICE_ID);
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
@@ -107,15 +108,22 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
 
-	    $class = new core_kernel_classes_Class(CLASS_LTI_DELIVERYEXECUTION_LINK);
-	    $class->createInstanceWithProperties(array(
-	        PROPERTY_LTI_DEL_EXEC_LINK_USER => $user->getIdentifier(),
-	        PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
-	        PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecution->getIdentifier()
-	    ));
+        $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
+
 	    return $deliveryExecution;
 	}
-	
+
+    /**
+     * Gives you the authorization provider for the given execution.
+     *
+     * @return AuthorizationProvider
+     */
+    protected function getAuthorizationProvider()
+    {
+        $authService = $this->getServiceLocator()->get(AuthorizationService::SERVICE_ID);
+        return $authService->getAuthorizationProvider();
+    }
+
 	/**
 	 * Returns an array of DeliveryExecution
 	 * 
@@ -125,31 +133,10 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	 * @return array
 	 */
 	public function getLinkedDeliveryExecutions(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, $userId) {
-        $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        return $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+        /** @var LtiDeliveryExecutionService $deliveryExecutionService */
+	    $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+        $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+        return $executions;
     }
 
-    /**
-     * @param DeliveryExecution $deliveryExecution
-     * @param $extendedTime
-     */
-    public function updateDeliveryExtendedTime(DeliveryExecution $deliveryExecution, $extendedTime)
-    {
-        /** @var DeliveryExecutionManagerService  $deliveryExecutionManagerService */
-        $deliveryExecutionManagerService = $this->getServiceLocator()->get(DeliveryExecutionManagerService::SERVICE_ID);
-        /** @var QtiTimer $timer */
-        $timer = $deliveryExecutionManagerService->getDeliveryTimer($deliveryExecution);
-        $deliveryExecutionArray = [
-            $deliveryExecution
-        ];
-
-        $extendedTime = (!$extendedTime) ? 1 : $extendedTime;
-        if ($extendedTime) {
-            $deliveryExecutionManagerService->setExtraTime(
-                $deliveryExecutionArray,
-                $timer->getExtraTime(),
-                $extendedTime
-            );
-        }
-    }
 }

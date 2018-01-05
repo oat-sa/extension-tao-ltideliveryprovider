@@ -17,6 +17,7 @@
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\tao\model\user\TaoRoles;
 use oat\taoLti\models\classes\LtiRoles;
@@ -26,15 +27,15 @@ return array(
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '3.4.1',
+    'version' => '4.0.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
-        'tao' => '>=9.0.0',
+        'generis' => '>=5.2.0',
+        'tao' => '>=14.0.2',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=3.2.2',
-        'taoLtiBasicOutcome' => '>=2.6',
-        'taoResultServer' => '>=3.4.0',
-        'taoDelivery' => '>=7.0.0'
+        'taoResultServer' => '>=5.0.0',
+        'taoDelivery' => '>=8.1.0'
     ),
     'models' => array(
          'http://www.tao.lu/Ontologies/TAOLTI.rdf',
@@ -45,6 +46,8 @@ return array(
             \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
+            \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class,
+            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiLaunchDataService::class
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
@@ -60,6 +63,7 @@ return array(
         array('grant', TaoRoles::ANONYMOUS, array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch')),
         array('grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', array('ext'=>'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run')),
         array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class),
+        array('grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'),
         array('grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class)
     ),
     'constants' => array(
