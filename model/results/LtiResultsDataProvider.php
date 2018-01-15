@@ -34,6 +34,14 @@ use oat\taoResultServer\models\classes\search\ResultsDataProvider;
 class LtiResultsDataProvider extends ResultsDataProvider
 {
 
+    /**
+     * @param      $queryString
+     * @param null $rootClass
+     * @param int  $start
+     * @param int  $count
+     * @return mixed|\oat\search\ResultSet
+     * @throws \core_kernel_persistence_Exception
+     */
     public function query($queryString, $rootClass = null, $start = 0, $count = 10)
     {
         $search = SearchService::getSearchImplementation();
@@ -61,7 +69,9 @@ class LtiResultsDataProvider extends ResultsDataProvider
                     $executionUri = $executionLink->getOnePropertyValue(new \core_kernel_classes_Property(OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
                     if ($executionUri) {
                         $execution = ServiceProxy::singleton()->getDeliveryExecution($executionUri);
-                        $results->append($execution->getDelivery()->getUri());
+                        try {
+                            $results->append($execution->getDelivery()->getUri());
+                        } catch (\Exception $e) {}
                     }
                 }
             }
