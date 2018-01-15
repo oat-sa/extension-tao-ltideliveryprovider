@@ -31,10 +31,10 @@ return array(
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'generis' => '>=5.2.0',
-        'tao' => '>=14.0.2',
+        'tao' => '>=15.5.0',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=3.2.2',
-        'taoResultServer' => '>=5.0.0',
+        'taoResultServer' => '>=5.1.0',
         'taoDelivery' => '>=8.1.0'
     ),
     'models' => array(
