@@ -23,6 +23,7 @@ namespace oat\ltiDeliveryProvider\model\results;
 use oat\ltiDeliveryProvider\model\execution\implementation\OntologyLTIDeliveryExecutionLink;
 use oat\tao\model\search\SearchService;
 use oat\tao\model\search\strategy\GenerisSearch;
+use oat\taoDelivery\model\execution\OntologyDeliveryExecution;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\models\classes\ResourceLink\OntologyLink;
 use oat\taoResultServer\models\classes\search\ResultsDataProvider;
@@ -39,14 +40,14 @@ class LtiResultsDataProvider extends ResultsDataProvider
      * @param null $rootClass
      * @param int  $start
      * @param int  $count
-     * @return mixed|\oat\search\ResultSet
+     * @return mixed
      * @throws \core_kernel_persistence_Exception
      */
-    public function query($queryString, $rootClass = null, $start = 0, $count = 10)
+    public function query($queryString, $rootClass = null, $start = 0, $count = 10, $options = [])
     {
         $search = SearchService::getSearchImplementation();
-        $results = parent::query($queryString, $rootClass, $start = 0, $count = 10);
-        if ($search instanceof GenerisSearch) {
+        $results = parent::query($queryString, $rootClass, $start, $count, $options);
+        if ($search instanceof GenerisSearch && $queryString) {
             $class = new \core_kernel_classes_Class(OntologyLink::CLASS_LTI_INCOMINGLINK);
             $resultsLinks = $class->searchInstances(array(
                 OntologyLink::PROPERTY_LINK_ID => $queryString
@@ -70,7 +71,12 @@ class LtiResultsDataProvider extends ResultsDataProvider
                     if ($executionUri) {
                         $execution = ServiceProxy::singleton()->getDeliveryExecution($executionUri);
                         try {
-                            $results->append($execution->getDelivery()->getUri());
+                            if (isset($options[self::PARAM_RESULT_CLASS]) && $options[self::PARAM_RESULT_CLASS] == OntologyDeliveryExecution::CLASS_URI) {
+                                $results->append($executionUri);
+                            } else {
+                                $results->append($execution->getDelivery()->getUri());
+                            }
+
                         } catch (\Exception $e) {}
                     }
                 }
