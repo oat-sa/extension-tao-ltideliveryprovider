@@ -63,21 +63,21 @@ class LtiResultsDataProvider extends ResultsDataProvider
                 $executionLinks = $class->searchInstances(array(
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK => $uri
                 ));
-
                 if ($executionLinks) {
                     /** @var \core_kernel_classes_Resource $executionLink */
-                    $executionLink = current($executionLinks);
-                    $executionUri = $executionLink->getOnePropertyValue(new \core_kernel_classes_Property(OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
-                    if ($executionUri) {
-                        $execution = ServiceProxy::singleton()->getDeliveryExecution($executionUri);
-                        try {
-                            if (isset($options[self::PARAM_RESULT_CLASS]) && $options[self::PARAM_RESULT_CLASS] == OntologyDeliveryExecution::CLASS_URI) {
-                                $results->append($executionUri);
-                            } else {
-                                $results->append($execution->getDelivery()->getUri());
-                            }
+                    foreach ($executionLinks as $executionLink) {
+                        $executionUri = $executionLink->getOnePropertyValue(new \core_kernel_classes_Property(OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
+                        if ($executionUri) {
+                            $execution = ServiceProxy::singleton()->getDeliveryExecution($executionUri);
+                            try {
+                                if (isset($options[self::PARAM_RESULT_CLASS]) && $options[self::PARAM_RESULT_CLASS] == OntologyDeliveryExecution::CLASS_URI) {
+                                    $results->append($executionUri);
+                                } else {
+                                    $results->append($execution->getDelivery()->getUri());
+                                }
 
-                        } catch (\Exception $e) {}
+                            } catch (\Exception $e) {}
+                        }
                     }
                 }
             }
