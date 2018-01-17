@@ -21,6 +21,8 @@ use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionS
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
+use oat\ltiDeliveryProvider\model\results\LtiResultsDataProvider;
+use oat\ltiDeliveryProvider\model\results\LtiResultWatcher;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
@@ -33,6 +35,8 @@ use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\tao\model\actionQueue\ActionQueue;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+use oat\taoResultServer\models\classes\search\ResultsDataProvider;
+use oat\taoResultServer\models\classes\search\ResultsWatcher;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -172,5 +176,18 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->setVersion('4.0.0');
     }
+        if ($this->isVersion('4.0.0')) {
+
+            /** @var EventManager $eventManager */
+            $resultWatcher = $this->getServiceManager()->get(ResultsWatcher::SERVICE_ID);
+            $ltiResultWatcher = new LtiResultWatcher($resultWatcher->getOptions());
+            $this->getServiceManager()->register(ResultsWatcher::SERVICE_ID, $ltiResultWatcher);
+
+            $resultDataProvider = $this->getServiceManager()->get(ResultsDataProvider::SERVICE_ID);
+            $ltiResultDataProvider = new LtiResultsDataProvider($resultDataProvider->getOptions());
+            $this->getServiceManager()->register(ResultsDataProvider::SERVICE_ID, $ltiResultDataProvider);
+
+            $this->setVersion('4.1.0');
+        }
     }
 }
