@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\model\results;
 
 use oat\ltiDeliveryProvider\model\execution\implementation\OntologyLTIDeliveryExecutionLink;
+use oat\tao\model\search\ResultSet;
 use oat\tao\model\search\SearchService;
 use oat\tao\model\search\strategy\GenerisSearch;
 use oat\taoDelivery\model\execution\OntologyDeliveryExecution;
@@ -82,7 +83,8 @@ class LtiResultsDataProvider extends ResultsDataProvider
                 }
             }
         }
-
-        return $results;
+        $ids = $results->getArrayCopy();
+        $ids = array_unique($ids);
+        return new ResultSet($ids, sizeof($ids));
     }
 }
