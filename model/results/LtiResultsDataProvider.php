@@ -37,11 +37,13 @@ class LtiResultsDataProvider extends ResultsDataProvider
 {
 
     /**
-     * @param      $queryString
+     * @param $queryString
      * @param null $rootClass
-     * @param int  $start
-     * @param int  $count
-     * @return mixed
+     * @param int $start
+     * @param int $count
+     * @param array $options
+     * @return ResultSet
+     * @throws \common_exception_NotFound
      * @throws \core_kernel_persistence_Exception
      */
     public function query($queryString, $rootClass = null, $start = 0, $count = 10, $options = [])
@@ -70,11 +72,19 @@ class LtiResultsDataProvider extends ResultsDataProvider
                         $executionUri = $executionLink->getOnePropertyValue(new \core_kernel_classes_Property(OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID));
                         if ($executionUri) {
                             $execution = ServiceProxy::singleton()->getDeliveryExecution($executionUri);
+                            $deliveryUri = $execution->getDelivery()->getUri();
                             try {
                                 if (isset($options[self::PARAM_RESULT_CLASS]) && $options[self::PARAM_RESULT_CLASS] == OntologyDeliveryExecution::CLASS_URI) {
-                                    $results->append($executionUri);
+                                    if (isset($options[self::PARAM_DELIVERY_URI])) {
+                                        if ($options[self::PARAM_DELIVERY_URI] == $deliveryUri) {
+                                            $results->append($executionUri);
+                                        }
+                                    } else {
+                                        $results->append($executionUri);
+                                    }
+
                                 } else {
-                                    $results->append($execution->getDelivery()->getUri());
+                                    $results->append($deliveryUri);
                                 }
 
                             } catch (\Exception $e) {}
