@@ -21,6 +21,8 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDelete;
+use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 
 /**
@@ -28,7 +30,7 @@ use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiResultAliasStorage extends ConfigurableService
+class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecutionDelete
 {
     const OPTION_PERSISTENCE = 'persistence';
 
@@ -129,6 +131,20 @@ class LtiResultAliasStorage extends ConfigurableService
         }
 
         return $this->persistence;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteDeliveryExecutionData(DeliveryExecutionDeleteRequest $request)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->delete(static::TABLE_NAME, 't')
+            ->where('t.'.static::DELIVERY_EXECUTION_ID .'=:deliveryExecutionId')
+            ->setParameter('deliveryExecutionId', $request->getDeliveryExecution()->getIdentifier());
+
+        return $this->persistence->exec($queryBuilder->getSQL(), $queryBuilder->getParameters());
     }
 
     /**
