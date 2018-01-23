@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
+use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -38,6 +39,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 
     const LTI_DE_LINK_LINK = 'kvlti_ll_';
 
+    const LINKS_OF_DELIVERY_EXECUTION = 'kvlti_links_de_';
 
     /**
      * @var \common_persistence_KeyValuePersistence
@@ -97,12 +99,70 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      */
     public function createDeliveryExecutionLink($userUri, $link, $deliveryExecutionUri)
     {
-
         $ltiDeliveryExecutionLink = new KvLTIDeliveryExecutionLink($userUri, $deliveryExecutionUri, $link);
         $this->getPersistence()->set(self::LTI_DE_LINK_LINK . $link . $userUri, json_encode($ltiDeliveryExecutionLink));
+        $this->saveLinkReference($link, $userUri, $deliveryExecutionUri);
 
         return $ltiDeliveryExecutionLink;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function deleteDeliveryExecutionData(DeliveryExecutionDeleteRequest $request)
+    {
+        $userUri = $request->getDeliveryExecution()->getUserIdentifier();
+        $deUri   = $request->getDeliveryExecution()->getIdentifier();
+        $deleted = [];
 
+        $linksOfDelivery = $this->getDeliveryExecutionLinks($userUri, $deUri);
+
+        foreach ($linksOfDelivery as $link) {
+            $deleted[] = $this->getPersistence()->del(self::LTI_DE_LINK_LINK . $link . $userUri);
+        }
+
+        $deleted[] = $this->getPersistence()->del(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deUri);
+
+        return !in_array(false, $deleted);
+    }
+
+    /**
+     * @param $link
+     * @param $userUri
+     * @param $deliveryExecutionUri
+     * @return bool
+     * @throws \common_Exception
+     */
+    protected function saveLinkReference($link, $userUri, $deliveryExecutionUri)
+    {
+        $linksOfExecutionAndUser = $this->getPersistence()->get(static::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri);
+
+        if (is_null($linksOfExecutionAndUser)) {
+            $linksOfExecutionAndUser = [];
+        } else {
+            $linksOfExecutionAndUser = json_decode($linksOfExecutionAndUser, true);
+        }
+
+        $linksOfExecutionAndUser[] = $link;
+
+        return $this->getPersistence()->set(static::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri, json_encode($linksOfExecutionAndUser));
+    }
+
+    /**
+     * @param $userUri
+     * @param $deliveryExecutionUri
+     * @return array
+     */
+    protected function getDeliveryExecutionLinks($userUri, $deliveryExecutionUri)
+    {
+        $linksOfExecutionAndUser = $this->getPersistence()->get(self::LTI_DE_LINK_LINK . $userUri . $deliveryExecutionUri);
+
+        if (is_null($linksOfExecutionAndUser)) {
+            $linksOfExecutionAndUser = [];
+        } else {
+            $linksOfExecutionAndUser = json_decode($linksOfExecutionAndUser, true);
+        }
+
+        return $linksOfExecutionAndUser;
+    }
 }
