@@ -121,7 +121,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
             $deleted[] = $this->getPersistence()->del(self::LTI_DE_LINK_LINK . $link . $userUri);
         }
 
-        $deleted[] = $this->getPersistence()->del(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deUri);
+        $this->getPersistence()->del(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deUri);
 
         return !in_array(false, $deleted);
     }
@@ -155,7 +155,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      */
     protected function getDeliveryExecutionLinks($userUri, $deliveryExecutionUri)
     {
-        $linksOfExecutionAndUser = $this->getPersistence()->get(self::LTI_DE_LINK_LINK . $userUri . $deliveryExecutionUri);
+        $linksOfExecutionAndUser = $this->getPersistence()->get(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri);
 
         if (is_null($linksOfExecutionAndUser)) {
             $linksOfExecutionAndUser = [];
