@@ -34,7 +34,7 @@ return array(
         'tao' => '>=15.7.0',
         'taoDeliveryRdf' => '>=1.0',
         'taoLti' => '>=3.2.2',
-        'taoResultServer' => '>=5.0.0',
+        'taoResultServer' => '>=5.2.0',
         'taoDelivery' => '>=8.1.0'
     ),
     'models' => array(
@@ -48,7 +48,7 @@ return array(
             \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
             \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiLaunchDataService::class,
-            \oat\taoResultServer\scripts\install\SetupSearchService::class
+            \oat\ltiDeliveryProvider\scripts\install\SetupSearchService::class
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
