@@ -47,7 +47,8 @@ return array(
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
             \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiLaunchDataService::class
+            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiLaunchDataService::class,
+            \oat\taoResultServer\scripts\install\SetupSearchService::class
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'

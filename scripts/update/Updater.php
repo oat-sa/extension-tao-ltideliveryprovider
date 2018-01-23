@@ -27,12 +27,14 @@ use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\search\index\IndexService;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\tao\model\actionQueue\ActionQueue;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+use oat\taoResultServer\models\classes\ResultService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -172,6 +174,19 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->setVersion('4.0.0');
     }
-        $this->skip('4.0.0', '4.1.0');
+        if ($this->isVersion('4.0.0')) {
+            /** @var IndexService $indexService */
+            $indexService = $this->getServiceLocator()->get(IndexService::SERVICE_ID);
+            $options = $indexService->getOptions();
+            $options['rootClasses'][ResultService::DELIVERY_RESULT_CLASS_URI] = [
+                IndexService::PROPERTY_FIELDS => [
+                    \taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID
+                ]
+            ];
+            $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
+            $this->setVersion('4.1.0');
+        }
+
+
     }
 }
