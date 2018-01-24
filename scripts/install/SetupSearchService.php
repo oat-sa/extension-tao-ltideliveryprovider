@@ -39,7 +39,7 @@ class SetupSearchService extends InstallAction
         /** @var IndexService $indexService */
         $indexService = $this->getServiceLocator()->get(IndexService::SERVICE_ID);
         $options = $indexService->getOptions();
-        $options['rootClasses'][ResultService::DELIVERY_RESULT_CLASS_URI][IndexService::PROPERTY_FIELDS][] = \taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID;
+        $options[IndexService::PROPERTY_ROOT_CLASSES][ResultService::DELIVERY_RESULT_CLASS_URI][IndexService::PROPERTY_FIELDS][] = \taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID;
         $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
     }
 }
