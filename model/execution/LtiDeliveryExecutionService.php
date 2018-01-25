@@ -20,6 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\model\execution;
 
+use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDelete;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 
@@ -30,7 +31,7 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
  *
  * @package oat\ltiDeliveryProvider\model\execution
  */
-interface LtiDeliveryExecutionService
+interface LtiDeliveryExecutionService extends DeliveryExecutionDelete
 {
     const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
 
