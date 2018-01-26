@@ -173,15 +173,10 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
             $this->setVersion('4.0.0');
-    }
-        if ($this->isVersion('4.0.0')) {
-            /** @var IndexService $indexService */
-            $indexService = $this->getServiceManager()->get(IndexService::SERVICE_ID);
-            $options = $indexService->getOptions();
-            $options[IndexService::OPTION_ROOT_CLASSES][] = ResultService::DELIVERY_RESULT_CLASS_URI;
-            $this->getServiceManager()->register(IndexService::SERVICE_ID, new IndexService($options));
-            $this->setVersion('4.1.0');
         }
+
+        $this->skip('4.0.0', '5.1.0');
+
 
     }
 }
