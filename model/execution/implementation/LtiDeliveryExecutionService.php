@@ -20,6 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
+use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\ServiceProxy;
 
@@ -73,5 +74,28 @@ class LtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
         ));
 
         return $link;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteDeliveryExecutionData(DeliveryExecutionDeleteRequest $request)
+    {
+        $removed = [];
+        $deliveryExecutionUri = $request->getDeliveryExecution()->getIdentifier();
+        $userUri = $request->getDeliveryExecution()->getUserIdentifier();
+        $class = new \core_kernel_classes_Class(OntologyLTIDeliveryExecutionLink::CLASS_LTI_DELIVERYEXECUTION_LINK);
+
+        $resources = $class->searchInstances([
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
+            OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecutionUri
+        ]);
+
+        /** @var \core_kernel_classes_Resource $resource */
+        foreach ($resources as $resource){
+            $removed[] = $resource->delete();
+        }
+
+        return !in_array(false, $removed);
     }
 }
