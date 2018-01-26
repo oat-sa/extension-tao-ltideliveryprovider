@@ -95,14 +95,14 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
             if ($session instanceof \taoLti_models_classes_TaoLtiSession) {
                 $deliveryExecution = $event->getDeliveryExecution();
                 $body = [
-                    'label' => $deliveryExecution->getLabel()
+                    'label' => $deliveryExecution->getLabel(),
+                    'delivery' => $deliveryExecution->getDelivery()->getUri()
                 ];
                 $lunchData = $session->getLaunchData();
                 if ($lunchData->hasVariable(\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID)) {
                     $body[\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID] = $lunchData->getVariable(\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID);
                 }
                 $uri = $deliveryExecution->getIdentifier();
-                $responseUri = $deliveryExecution->getDelivery()->getUri();
                 $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
                 $queueDispatcher->createTask(new AddSearchIndex(), [$uri, $uri, ResultService::DELIVERY_RESULT_CLASS_URI, $body], __('Adding/Updating search index for %s', $deliveryExecution->getLabel()));
 
