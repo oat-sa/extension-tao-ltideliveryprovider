@@ -177,6 +177,5 @@ class Updater extends \common_ext_ExtensionUpdater
 
         $this->skip('4.0.0', '5.1.0');
 
-
     }
 }
