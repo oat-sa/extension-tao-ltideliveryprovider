@@ -21,7 +21,6 @@
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
-use oat\tao\model\search\SearchService;
 use oat\tao\model\search\tasks\AddSearchIndex;
 use oat\tao\model\search\tasks\AddSearchIndexFromArray;
 use oat\taoDelivery\model\execution\DeliveryExecution;
@@ -32,6 +31,7 @@ use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoResultServer\models\classes\ResultService;
 use oat\taoTaskQueue\model\QueueDispatcher;
+use oat\tao\model\search\Search;
 
 /**
  * Class AbstractLtiDeliveryExecutionService
@@ -90,7 +90,7 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
         if ($event->getDeliveryExecution()->getState()->getUri() === DeliveryExecution::STATE_ACTIVE) {
             $persistence->incr(self::class.'_'.'active_executions');
         }
-        $searchService = SearchService::getSearchImplementation();
+        $searchService = $this->getServiceLocator()->get(Search::SERVICE_ID);
         if ($searchService->supportCustomIndex()) {
             $session = \common_session_SessionManager::getSession();
             if ($session instanceof \taoLti_models_classes_TaoLtiSession) {
