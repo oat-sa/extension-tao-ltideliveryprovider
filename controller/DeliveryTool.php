@@ -23,14 +23,14 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use oat\taoLti\models\classes\LtiException;
+use oat\taoLti\models\classes\LtiService;
 use \taoLti_actions_ToolModule;
 use \tao_models_classes_accessControl_AclProxy;
 use \tao_helpers_Uri;
 use \common_session_SessionManager;
 use \common_Logger;
 use \core_kernel_classes_Resource;
-use \taoLti_models_classes_LtiService;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -68,10 +68,18 @@ class DeliveryTool extends taoLti_actions_ToolModule
      * @var string
      */
     const PARAM_THANKYOU_MESSAGE = 'custom_message';
-    
+
     /**
      * (non-PHPdoc)
      * @see taoLti_actions_ToolModule::run()
+     *
+     * @throws LtiException
+     * @throws \InterruptedActionException
+     * @throws \ResolverException
+     * @throws \common_exception_Error
+     * @throws \common_exception_IsAjaxAction
+     * @throws \common_exception_NotFound
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
     public function run()
     {
@@ -82,7 +90,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
             } else {
                 // user NOT authorised to select the Delivery
-                throw new \taoLti_models_classes_LtiException(
+                throw new LtiException(
                     __('This tool has not yet been configured, please contact your instructor'),
                     LtiErrorMessage::ERROR_INVALID_PARAMETER);
             }
@@ -117,13 +125,13 @@ class DeliveryTool extends taoLti_actions_ToolModule
     }
 
     /**
-     * @throws \taoLti_models_classes_LtiException
+     * @throws LtiException
      */
     public function launchQueue()
     {
         $delivery = $this->getDelivery();
         if (!$delivery->exists()) {
-            throw new \taoLti_models_classes_LtiException(
+            throw new LtiException(
             __('Delivery does not exist. Please contact your instructor.'),
             LtiErrorMessage::ERROR_INVALID_PARAMETER);
         }
@@ -141,7 +149,8 @@ class DeliveryTool extends taoLti_actions_ToolModule
      * @param core_kernel_classes_Resource $delivery
      * @param DeliveryExecution $activeExecution
      * @return string|URI
-     * @throws \taoLti_models_classes_LtiException
+     * @throws LtiException
+     * @throws \common_exception_Error
      */
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery, DeliveryExecution $activeExecution = null)
     {
@@ -158,7 +167,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
         } else {
-            throw new \taoLti_models_classes_LtiException(
+            throw new LtiException(
                 __('User is not authorized to run this delivery'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
@@ -183,13 +192,15 @@ class DeliveryTool extends taoLti_actions_ToolModule
     {
         return LTIDeliveryTool::singleton();
     }
-    
+
     /**
      * Returns the delivery associated with the current link
      * either from url or from the remote_link if configured
      * returns null if none found
      *
      * @return core_kernel_classes_Resource
+     * @throws LtiException
+     * @throws \common_exception_Error
      */
     private function getDelivery()
     {
@@ -199,7 +210,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
             
-            $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+            $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
 
             /** @var LtiLaunchDataService $launchDataService */
             $launchDataService = $this->getServiceManager()->get(LtiLaunchDataService::SERVICE_ID);

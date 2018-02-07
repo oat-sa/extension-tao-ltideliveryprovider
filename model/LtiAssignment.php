@@ -26,7 +26,9 @@ use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\oatbox\user\User;
+use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
+use oat\taoLti\models\classes\TaoLtiSession;
 
 /**
  * Class LtiAssignment
@@ -51,10 +53,15 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
 
     /**
      * Check Max. number of executions
+     *
      * @param \core_kernel_classes_Resource $delivery
      * @param User $user
      * @return bool
-     * @throws \taoLti_models_classes_LtiException
+     * @throws LtiException
+     * @throws \common_exception_Error
+     * @throws \core_kernel_persistence_Exception
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
     protected function verifyToken(\core_kernel_classes_Resource $delivery, User $user)
     {
@@ -63,12 +70,12 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
 
         $currentSession = \common_session_SessionManager::getSession();
 
-        if ($currentSession instanceof \taoLti_models_classes_TaoLtiSession) {
+        if ($currentSession instanceof TaoLtiSession) {
             $launchData = $currentSession->getLaunchData();
             if ($launchData->hasVariable(self::LTI_MAX_ATTEMPTS_VARIABLE)) {
                 $val = $launchData->getVariable(self::LTI_MAX_ATTEMPTS_VARIABLE);
                 if (!is_numeric($val)) {
-                    throw new \taoLti_models_classes_LtiException(
+                    throw new LtiException(
                         __('"max_attempts" variable must me numeric.'),
                         LtiErrorMessage::ERROR_INVALID_PARAMETER
                     );
@@ -85,7 +92,7 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). " without tokens");
-            throw new \taoLti_models_classes_LtiException(
+            throw new LtiException(
                 __('Attempts limit has been reached.'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );

@@ -21,13 +21,11 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use \taoLti_models_classes_LtiTool;
-use \taoLti_models_classes_LtiService;
+use oat\taoLti\models\classes\LtiService;
+use oat\taoLti\models\classes\LtiTool;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
-use \core_kernel_classes_Class;
 use oat\oatbox\user\User;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
@@ -35,7 +33,7 @@ use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 
-class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
+class LTIDeliveryTool extends LtiTool {
 
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
 	
@@ -51,7 +49,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	}
 	
 	public function getDeliveryFromLink() {
-		$remoteLink = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+		$remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
 		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
 	}
 	
@@ -65,7 +63,7 @@ class LTIDeliveryTool extends taoLti_models_classes_LtiTool {
 	public function getFinishUrl(LtiMessage $ltiMessage = null, DeliveryExecution $deliveryExecution = null)
     {
         $session = \common_session_SessionManager::getSession();
-        /** @var \taoLti_models_classes_LtiLaunchData $launchData */
+        /** @var LtiLaunchData $launchData */
         $launchData = $session->getLaunchData();
         if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
             && $launchData->hasReturnUrl()) {

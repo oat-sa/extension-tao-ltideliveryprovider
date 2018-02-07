@@ -1,5 +1,5 @@
 <?php
-/*  
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -18,44 +18,46 @@
  *               
  * 
  */
+
 namespace oat\ltiDeliveryProvider\controller;
 
+use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
-use \tao_actions_CommonModule;
-use \core_kernel_classes_Resource;
-use \tao_helpers_Uri;
-use \core_kernel_classes_Property;
-use \Exception;
-use \core_kernel_classes_Class;
-use taoLti_models_classes_ConsumerService;
+use oat\taoLti\models\classes\ConsumerService;
+use tao_actions_CommonModule;
+use tao_helpers_Uri;
 
 /**
- * 
+ *
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package filemanager
- 
  */
-class DeliveryLinks extends tao_actions_CommonModule {
-	
+class DeliveryLinks extends tao_actions_CommonModule
+{
     /**
      * Displays the LTI link for the consumer with respect to the currently selected delviery
      * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome service impelmentation
      * @author patrick <patrick@taotesting.com>
      */
-	public function index()
-	{
+    public function index()
+    {
         $feedBackMessage = '';
         //checks the constraint for the results handling, depends on taoResultServer, taoLtiBasicOutcome
-        $selectedDelivery = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-        
-        $this->setData('launchUrl', LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
+        $selectedDelivery = new core_kernel_classes_Resource(
+            tao_helpers_Uri::decode($this->getRequestParameter('uri'))
+        );
+
+        $this->setData(
+            'launchUrl',
+            LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri()))
+        );
 
         if (!empty($feedBackMessage)) {
             $this->setData('warning', $feedBackMessage);
         }
-        $class = new core_kernel_classes_Class(taoLti_models_classes_ConsumerService::CLASS_URI);
+        $class = new core_kernel_classes_Class(ConsumerService::CLASS_URI);
         $this->setData('consumers', $class->getInstances());
         $this->setData('deliveryLabel', $selectedDelivery->getLabel());
         $this->setView('linkManagement.tpl', 'ltiDeliveryProvider');
