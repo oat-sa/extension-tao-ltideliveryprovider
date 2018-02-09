@@ -33,7 +33,7 @@ return array(
         'generis' => '>=5.2.0',
         'tao' => '>=15.11.0',
         'taoDeliveryRdf' => '>=1.0',
-        'taoLti' => '>=3.2.2',
+        'taoLti' => '>=4.2.0',
         'taoResultServer' => '>=5.0.0',
         'taoDelivery' => '>=9.0.0'
     ),
