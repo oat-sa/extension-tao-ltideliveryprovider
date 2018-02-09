@@ -23,9 +23,9 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
+use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiService;
-use \taoLti_actions_ToolModule;
 use \tao_models_classes_accessControl_AclProxy;
 use \tao_helpers_Uri;
 use \common_session_SessionManager;
@@ -43,7 +43,7 @@ use oat\tao\model\actionQueue\ActionFullException;
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package ltiDeliveryProvider
  */
-class DeliveryTool extends taoLti_actions_ToolModule
+class DeliveryTool extends ToolModule
 {
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
@@ -71,7 +71,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
 
     /**
      * (non-PHPdoc)
-     * @see taoLti_actions_ToolModule::run()
+     * @see ToolModule::run()
      *
      * @throws LtiException
      * @throws \InterruptedActionException
@@ -126,6 +126,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
 
     /**
      * @throws LtiException
+     * @throws \common_exception_Error
      */
     public function launchQueue()
     {
@@ -186,7 +187,7 @@ class DeliveryTool extends taoLti_actions_ToolModule
     
     /**
      * (non-PHPdoc)
-     * @see taoLti_actions_ToolModule::getTool()
+     * @see ToolModule::getTool()
      */
     protected function getTool()
     {
