@@ -20,7 +20,6 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-
 use common_session_SessionManager;
 use oat\ltiDeliveryProvider\model\tasks\SendLtiOutcomeTask;
 use oat\oatbox\service\ConfigurableService;
@@ -47,14 +46,14 @@ class LtiOutcomeService extends ConfigurableService
             && common_session_SessionManager::getSession() instanceof TaoLtiSession) {
 
             /** @var QueueDispatcherInterface $taskQueue */
-            $taskQueue = \oat\oatbox\service\ServiceManager::getServiceManager()->get(QueueDispatcherInterface::SERVICE_ID);
+            $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-
-            $params['deliveryResultIdentifier'] = $event->getDeliveryExecution()->getIdentifier();
-            $params['consumerKey'] = $launchData->getOauthKey();
-            $params['serviceUrl'] = $launchData->getVariable('lis_outcome_service_url');
-
-            $taskQueue->createTask(new SendLtiOutcomeTask(), $params, 'Submit LTI results');
+            if ($launchData->hasVariable('lis_outcome_service_url')) {
+                $params['deliveryResultIdentifier'] = $event->getDeliveryExecution()->getIdentifier();
+                $params['consumerKey'] = $launchData->getOauthKey();
+                $params['serviceUrl'] = $launchData->getVariable('lis_outcome_service_url');
+                $taskQueue->createTask(new SendLtiOutcomeTask(), $params, 'Submit LTI results');
+            }
         }
 
     }
