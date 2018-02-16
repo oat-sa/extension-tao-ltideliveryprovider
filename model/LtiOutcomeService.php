@@ -20,32 +20,38 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-
 use common_session_SessionManager;
 use oat\ltiDeliveryProvider\model\tasks\SendLtiOutcomeTask;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
+use oat\taoLti\models\classes\LtiService;
+use oat\taoLti\models\classes\TaoLtiSession;
 use oat\taoTaskQueue\model\QueueDispatcherInterface;
-use taoLti_models_classes_LtiService;
 
 class LtiOutcomeService extends ConfigurableService
 {
     const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
 
+    /**
+     * @param DeliveryExecutionState $event
+     * @throws \common_exception_Error
+     * @throws \common_exception_NotFound
+     * @throws \oat\taoLti\models\classes\LtiException
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     */
     public function deferTransmit(DeliveryExecutionState $event)
     {
         if (DeliveryExecutionInterface::STATE_FINISHIED === $event->getState() && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
-            && common_session_SessionManager::getSession() instanceof \taoLti_models_classes_TaoLtiSession) {
+            && common_session_SessionManager::getSession() instanceof TaoLtiSession) {
 
             /** @var QueueDispatcherInterface $taskQueue */
-            $taskQueue = \oat\oatbox\service\ServiceManager::getServiceManager()->get(QueueDispatcherInterface::SERVICE_ID);
-            $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+            $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+            $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
             if ($launchData->hasVariable('lis_outcome_service_url')) {
                 $params['deliveryResultIdentifier'] = $event->getDeliveryExecution()->getIdentifier();
                 $params['consumerKey'] = $launchData->getOauthKey();
                 $params['serviceUrl'] = $launchData->getVariable('lis_outcome_service_url');
-
                 $taskQueue->createTask(new SendLtiOutcomeTask(), $params, 'Submit LTI results');
             }
         }

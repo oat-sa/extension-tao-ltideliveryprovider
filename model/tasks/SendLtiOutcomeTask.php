@@ -24,6 +24,7 @@ namespace oat\ltiDeliveryProvider\model\tasks;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoLti\models\classes\LtiService;
 use oat\taoOutcomeUi\model\ResultsService;
 use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 use taoResultServer_models_classes_OutcomeVariable;
@@ -78,8 +79,7 @@ class SendLtiOutcomeTask extends AbstractAction
      * @param $serviceUrl
      * @return bool
      * @throws \common_exception_Error
-     * @throws \taoLti_models_classes_LtiException
-     * @throws \tao_models_classes_oauth_Exception
+     * @throws \oat\taoLti\models\classes\LtiException
      */
     private function sendLtiOutcome(taoResultServer_models_classes_OutcomeVariable $testVariable, $deliveryResultIdentifier, $consumerKey, $serviceUrl)
     {
@@ -92,7 +92,7 @@ class SendLtiOutcomeTask extends AbstractAction
 
         $message = $this->buildXMLMessage($deliveryResultIdentifier, $grade);
 
-        $credentialResource = \taoLti_models_classes_LtiService::singleton()->getCredential($consumerKey);
+        $credentialResource = LtiService::singleton()->getCredential($consumerKey);
         $credentials = new \tao_models_classes_oauth_Credentials($credentialResource);
         //Building POX raw http message
         $unSignedOutComeRequest = new \common_http_Request($serviceUrl, 'POST', array());

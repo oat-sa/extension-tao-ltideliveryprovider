@@ -29,6 +29,8 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\tao\model\actionQueue\ActionQueue;
 use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+use oat\taoLti\models\classes\LtiLaunchData;
+use oat\taoLti\models\classes\TaoLtiSession;
 use oat\taoResultServer\models\classes\ResultService;
 use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\tao\model\search\Search;
@@ -93,7 +95,7 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
         $searchService = $this->getServiceLocator()->get(Search::SERVICE_ID);
         if ($searchService->supportCustomIndex()) {
             $session = \common_session_SessionManager::getSession();
-            if ($session instanceof \taoLti_models_classes_TaoLtiSession) {
+            if ($session instanceof TaoLtiSession) {
                 $deliveryExecution = $event->getDeliveryExecution();
                 $body = [
                     'label' => $deliveryExecution->getLabel(),
@@ -101,8 +103,8 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
                     'type' => ResultService::DELIVERY_RESULT_CLASS_URI
                 ];
                 $lunchData = $session->getLaunchData();
-                if ($lunchData->hasVariable(\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID)) {
-                    $body[\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID] = $lunchData->getVariable(\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID);
+                if ($lunchData->hasVariable(LtiLaunchData::RESOURCE_LINK_ID)) {
+                    $body[LtiLaunchData::RESOURCE_LINK_ID] = $lunchData->getVariable(LtiLaunchData::RESOURCE_LINK_ID);
                 }
                 $id = $deliveryExecution->getIdentifier();
                 $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
