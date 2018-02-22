@@ -16,6 +16,7 @@
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
  *
+ * @author Ilya Yarkavets <ilya.yarkavets@1pt.com>
  */
 
 namespace oat\ltiDeliveryProvider\model;

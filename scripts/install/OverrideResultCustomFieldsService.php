@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2018  (original work) Open Assessment Technologies SA;
  *
- * @author Alexander Zagovorichev <zagovorichev@1pt.com>
+ * @author Ilya Yarkavets <ilya.yarkavets@1pt.com>
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
