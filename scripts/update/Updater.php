@@ -21,6 +21,7 @@ use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionS
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
+use oat\ltiDeliveryProvider\model\LtiResultCustomFieldsService;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
@@ -34,6 +35,7 @@ use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\tao\model\actionQueue\ActionQueue;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
 use oat\taoResultServer\models\classes\ResultService;
 
 class Updater extends \common_ext_ExtensionUpdater
@@ -176,6 +178,15 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('4.0.0', '5.2.0');
+
+        if ($this->isVersion('5.2.0')) {
+
+            /** @var ResultCustomFieldsService $resultCustomFieldsService */
+            $resultCustomFieldsService = $this->getServiceManager()->get(ResultCustomFieldsService::SERVICE_ID);
+            $ltiResultCustomFieldsService = new LtiResultCustomFieldsService($resultCustomFieldsService->getOptions());
+            $this->getServiceManager()->register(LtiResultCustomFieldsService::SERVICE_ID, $ltiResultCustomFieldsService);
+            $this->setVersion('5.3.0');
+        }
 
     }
 }
