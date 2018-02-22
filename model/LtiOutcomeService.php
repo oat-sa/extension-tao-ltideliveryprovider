@@ -41,12 +41,13 @@ class LtiOutcomeService extends ConfigurableService
             /** @var QueueDispatcherInterface $taskQueue */
             $taskQueue = \oat\oatbox\service\ServiceManager::getServiceManager()->get(QueueDispatcherInterface::SERVICE_ID);
             $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+            if ($launchData->hasVariable(\taoLti_models_classes_LtiLaunchData::RESOURCE_LINK_ID) && $launchData->hasVariable('lis_outcome_service_url')) {
+                $params['deliveryResultIdentifier'] = $event->getDeliveryExecution()->getIdentifier();
+                $params['consumerKey'] = $launchData->getOauthKey();
+                $params['serviceUrl'] = $launchData->getVariable('lis_outcome_service_url');
 
-            $params['deliveryResultIdentifier'] = $event->getDeliveryExecution()->getIdentifier();
-            $params['consumerKey'] = $launchData->getOauthKey();
-            $params['serviceUrl'] = $launchData->getVariable('lis_outcome_service_url');
-
-            $taskQueue->createTask(new SendLtiOutcomeTask(), $params, 'Submit LTI results');
+                $taskQueue->createTask(new SendLtiOutcomeTask(), $params, 'Submit LTI results');
+            }
         }
 
     }
