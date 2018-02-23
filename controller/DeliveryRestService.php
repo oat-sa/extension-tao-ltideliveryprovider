@@ -23,7 +23,6 @@ namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\tao\model\TaoOntology;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
 
 /**
  * LTI Delivery REST API

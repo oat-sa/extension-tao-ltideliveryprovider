@@ -26,6 +26,8 @@ use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\DeliveryServerService;
+use oat\taoLti\models\classes\LtiException;
+use oat\taoLti\models\classes\LtiService;
 
 /**
  * Class GetActiveDeliveryExecution
@@ -44,20 +46,22 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
     /**
      * @param $params
      * @return DeliveryExecution
+     * @throws LtiException
      * @throws \common_exception_Error
+     * @throws \common_exception_NotFound
      * @throws \common_exception_Unauthorized
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
-     * @throws \taoLti_models_classes_LtiException
      */
     public function __invoke($params)
     {
         $active = null;
 
         if ($this->delivery !== null) {
-            $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+            $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
             $user = \common_session_SessionManager::getSession()->getUser();
 
-            $launchData = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+            $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
             /** @var LtiDeliveryExecutionService $deliveryExecutionService */
             $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
             if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {

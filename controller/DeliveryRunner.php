@@ -24,13 +24,13 @@ namespace oat\ltiDeliveryProvider\controller;
 use oat\tao\model\theme\ThemeService;
 use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoLti\controller\traits\LtiModuleTrait;
+use oat\taoLti\models\classes\LtiException;
+use oat\taoLti\models\classes\LtiLaunchData;
+use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\theme\LtiHeadless;
-use \taoLti_models_classes_LtiService;
-use \taoLti_models_classes_LtiLaunchData;
-use oat\ltiDeliveryProvider\helper\ResultServer;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
-use oat\taoLti\actions\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
@@ -87,32 +87,45 @@ class DeliveryRunner extends DeliveryServer
         $this->setData('allowRepeat', true);
         $this->setView('learner/overview.tpl');
     }
-    
+
+    /**
+     * @throws LtiException
+     * @throws \InterruptedActionException
+     * @throws \ResolverException
+     * @throws \common_exception_Error
+     * @throws \common_exception_IsAjaxAction
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     */
     public function repeat() {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
 
-        $remoteLink = \taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+        $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
 
         try {
             $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
             $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
         } catch (\common_exception_Unauthorized $e) {
-            $ltiException = new \taoLti_models_classes_LtiException(
+            $ltiException = new LtiException(
                 $e->getMessage(),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
             $this->returnLtiError($ltiException);
         }
     }
-    
+
+    /**
+     * @throws LtiException
+     * @throws \common_exception_Error
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     */
     public function thankYou() {
-        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
         
-        if ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
-            $this->setData('consumerLabel', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
-        } elseif($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)) {
-            $this->setData('consumerLabel', $launchData->getVariable(taoLti_models_classes_LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION));
+        if ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
+            $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
+        } elseif($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)) {
+            $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION));
         }
         
         if ($launchData->hasReturnUrl()) {
@@ -149,6 +162,7 @@ class DeliveryRunner extends DeliveryServer
     /**
      * @param DeliveryExecution $deliveryExecution
      * @return LtiMessage
+     * @throws \common_exception_NotFound
      */
     protected function getLtiMessage(DeliveryExecution $deliveryExecution)
     {
@@ -156,11 +170,19 @@ class DeliveryRunner extends DeliveryServer
         return new LtiMessage($state, null);
     }
 
+    /**
+     * @param $compiledDelivery
+     * @param $executionIdentifier
+     * @param $userId
+     * @throws LtiException
+     * @throws \common_exception_Error
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     */
     protected function initResultServer($compiledDelivery, $executionIdentifier, $userId)
     {
         // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
-        $launchData = taoLti_models_classes_LtiService::singleton()->getLtiSession()->getLaunchData();
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
         $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid') ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
 
         /** @var LtiResultAliasStorage $ltiResultIdStorage */

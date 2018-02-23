@@ -1,6 +1,5 @@
 <?php
-
-/*  
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -16,7 +15,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
  * Copyright (c) 2013 Open Assessment Technologies S.A.
- 
  * 
  */
 
@@ -24,9 +22,7 @@ namespace oat\ltiDeliveryProvider\helper;
 
 use \core_kernel_classes_Resource;
 use \common_session_SessionManager;
-use oat\taoDeliveryRdf\model\DeliveryContainerService;
-use oat\taoResultServer\models\classes\ResultServerService;
-use \taoLti_models_classes_LtiLaunchData;
+use oat\taoLti\models\classes\LtiLaunchData;
 use oat\oatbox\service\ServiceManager;
 
 class ResultServer
@@ -44,8 +40,8 @@ class ResultServer
                         "consumer_key" => $launchData->getOauthKey(),
                         "service_url" => $launchData->getVariable("lis_outcome_service_url"),
                         "user_identifier" => common_session_SessionManager::getSession()->getUserUri(),
-                        "user_fullName" => ($launchData->hasVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_FULL)
-                            ? $launchData->getVariable(taoLti_models_classes_LtiLaunchData::LIS_PERSON_NAME_FULL)
+                        "user_fullName" => ($launchData->hasVariable(LtiLaunchData::LIS_PERSON_NAME_FULL)
+                            ? $launchData->getVariable(LtiLaunchData::LIS_PERSON_NAME_FULL)
                             : '')
                     ]
                 ]

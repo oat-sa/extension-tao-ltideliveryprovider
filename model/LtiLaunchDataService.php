@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\taoLti\models\classes\LtiLaunchData;
 
 /**
  * Class LtiLaunchDataService
@@ -33,10 +34,11 @@ class LtiLaunchDataService extends ConfigurableService
     const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
-     * @param \taoLti_models_classes_LtiLaunchData $launchData
+     * @param LtiLaunchData $launchData
      * @return \core_kernel_classes_Resource
+     * @throws \common_exception_Error
      */
-    public function findDeliveryFromLaunchData(\taoLti_models_classes_LtiLaunchData $launchData)
+    public function findDeliveryFromLaunchData(LtiLaunchData $launchData)
     {
         $deliveryUri = $launchData->getCustomParameter('delivery');
 
