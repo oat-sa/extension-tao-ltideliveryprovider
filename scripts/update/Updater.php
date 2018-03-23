@@ -187,6 +187,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LtiResultCustomFieldsService::SERVICE_ID, $ltiResultCustomFieldsService);
             $this->setVersion('5.3.0');
         }
-
+        $this->skip('5.3.0', '5.4.0');
     }
 }
