@@ -58,17 +58,19 @@ class DeliveryContainerService extends DeliveryRdfContainerService
      */
     protected function getActiveFeatures(\core_kernel_classes_Resource $delivery)
     {
-        $result = array_reverse(parent::getActiveFeatures($delivery));
+        $result = parent::getActiveFeatures($delivery);
         $currentSession = \common_session_SessionManager::getSession();
         if ($currentSession instanceof TaoLtiSession) {
             $launchData = $currentSession->getLaunchData();
             $this->validateLtiParams($launchData);
             if ($launchData->hasVariable(self::CUSTOM_LTI_SECURE)) {
-                $result['security'] = true;
-            } else {
-                unset($result['security']);
+                if ($launchData->getVariable(self::CUSTOM_LTI_SECURE) === 'true') {
+                    $result[] = 'security';
+                } else {
+                    $result = array_diff($result, ['security']);
+                }
             }
         }
-        return array_keys($result);
+        return array_unique($result);
     }
 }
