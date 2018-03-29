@@ -191,10 +191,9 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('5.3.0', '5.4.0');
 
         if ($this->isVersion('5.4.0')) {
-            $deliveryContainerService = $this->getServiceManager()->get(DeliveryContainerService::SERVICE_ID);
             $this->getServiceManager()->register(
                 DeliveryContainerService::SERVICE_ID,
-                new DeliveryContainerService($deliveryContainerService->getOptions())
+                new DeliveryContainerService([])
             );
             $this->setVersion('5.5.0');
         }

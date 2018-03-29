@@ -32,9 +32,6 @@ class InstallDeliveryContainerService extends InstallAction
      */
     public function __invoke($params)
     {
-        $service = new DeliveryContainerService(
-            $this->getServiceLocator()->get(DeliveryContainerService::class)->getOptions()
-        );
-        $this->getServiceManager()->register(DeliveryContainerService::SERVICE_ID, $service);
+        $this->getServiceManager()->register(DeliveryContainerService::SERVICE_ID, new DeliveryContainerService([]));
     }
 }
