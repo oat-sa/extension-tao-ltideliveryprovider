@@ -37,6 +37,7 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
 use oat\taoResultServer\models\classes\ResultService;
+use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -188,5 +189,13 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('5.3.0');
         }
         $this->skip('5.3.0', '5.4.0');
+
+        if ($this->isVersion('5.4.0')) {
+            $this->getServiceManager()->register(
+                DeliveryContainerService::SERVICE_ID,
+                new DeliveryContainerService([])
+            );
+            $this->setVersion('5.5.0');
+        }
     }
 }
