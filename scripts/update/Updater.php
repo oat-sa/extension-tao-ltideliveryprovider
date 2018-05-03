@@ -203,9 +203,10 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('5.5.0', '6.0.0');
 
         if ($this->isVersion('6.0.0')) {
+            $options = $this->getServiceManager()->get(AttemptServiceInterface::SERVICE_ID)->getOptions();
             $this->getServiceManager()->register(
                 AttemptServiceInterface::SERVICE_ID,
-                new AttemptService([])
+                new AttemptService($options)
             );
             $this->setVersion('6.1.0');
         }

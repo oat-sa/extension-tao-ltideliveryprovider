@@ -38,9 +38,10 @@ class RegisterLtiAttemptService extends InstallAction
      */
     public function __invoke($params)
     {
+        $options = $this->getServiceManager()->get(AttemptServiceInterface::SERVICE_ID)->getOptions();
         $this->getServiceManager()->register(
             AttemptServiceInterface::SERVICE_ID,
-            new AttemptService([])
+            new AttemptService($options)
         );
     }
 }
