@@ -21,15 +21,14 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\oatbox\user\User;
-use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\models\classes\TaoLtiSession;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 
 /**
  * Service to count the attempts to pass the test.
  *
  * @access public
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
- * @package taoDelivery
  */
 class AttemptService extends \oat\taoDelivery\model\AttemptService
 {
@@ -37,14 +36,15 @@ class AttemptService extends \oat\taoDelivery\model\AttemptService
     /**
      * @inheritdoc
      */
-    public function getAttempts($delivery, User $user)
+    public function getAttempts($deliveryId, User $user)
     {
         $currentSession = \common_session_SessionManager::getSession();
         if ($currentSession instanceof TaoLtiSession) {
-            return $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID)
-                ->getUserExecutions(new \core_kernel_classes_Resource($delivery), $user->getIdentifier());
+            $executionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            $delivery = new \core_kernel_classes_Resource($deliveryId);
+            return $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
         } else {
-            return parent::getAttempts($delivery, $user);
+            return parent::getAttempts($deliveryId, $user);
         }
     }
 }
