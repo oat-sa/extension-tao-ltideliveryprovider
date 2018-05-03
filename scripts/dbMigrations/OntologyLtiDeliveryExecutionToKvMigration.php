@@ -39,7 +39,7 @@ use oat\oatbox\log\VerboseLoggerFactory;
  *
  * @package oat\ltiDeliveryProvider\scripts\dbMigrations
  */
-class OntologyLtiLinksToKvMigration extends ScriptAction
+class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
 {
     use OntologyAwareTrait;
 
@@ -55,7 +55,7 @@ class OntologyLtiLinksToKvMigration extends ScriptAction
             $ltiDeliveryExecution = $this->getServiceLocator()->get('ltiDeliveryProvider/LtiDeliveryExecution');
 
             if (!$ltiDeliveryExecution instanceof OntologyDeliveryExecutionService) {
-                return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' LtiLinks migration must be done on a Ontology Service e.q. LtiDeliveryExecutionService.');
+                return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' LtiDeliveryExecution migration must be done on a Ontology Service e.q. LtiDeliveryExecutionService.');
             }
 
             $kvDeliveryExecutionService = new KvLtiDeliveryExecutionService(array(
@@ -71,34 +71,51 @@ class OntologyLtiLinksToKvMigration extends ScriptAction
             $i = 0;
             foreach ($iterator as $instance) {
 
-                $linkProperties = $instance->getPropertiesValues(array(
+                $properties = $instance->getPropertiesValues(array(
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER,
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK,
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID,
                 ));
 
-                $userUri = reset($linkProperties[OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER]);
-                $link = reset($linkProperties[OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK]);
-                $deliveryExecution = reset($linkProperties[OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID]);
+                $user = $this->getPropertyValue($properties, OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER);
+                $link = $this->getPropertyValue($properties, OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK);
+                $deliveryExecution = $this->getPropertyValue($properties, OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID);
 
-                if ($kvDeliveryExecutionService->createDeliveryExecutionLink($userUri->getUri(), $link->getUri(), $deliveryExecution->getUri())) {
+                if ($kvDeliveryExecutionService->createDeliveryExecutionLink($user, $link, $deliveryExecution)) {
                     if ($this->getOption('no-delete') !== true) {
                         $instance->delete();
-                        $this->logInfo('Lti links "' . $instance->getUri() .'" deleted from ontology storage.');
+                        $this->logInfo('LtiDeliveryExecution "' . $instance->getUri() .'" deleted from ontology storage.');
                     }
-                    $this->logNotice('Lti links "' . $instance->getUri() .'" successfully migrated.');
+                    $this->logNotice('LtiDeliveryExecution "' . $instance->getUri() .'" successfully migrated.');
                     $i++;
                 } else {
-                    $this->logError('Lti links "' . $instance->getUri() .'" cannot be migrated.');
+                    $this->logError('LtiDeliveryExecution "' . $instance->getUri() .'" cannot be migrated.');
                 }
             }
-            $this->logNotice('LtiLinks migrated: ' . $i);
+            $this->logNotice('LtiDeliveryExecution migrated: ' . $i);
         } catch (\Exception $e) {
-            return \common_report_Report::createFailure('LtiLinks migration has failed with error message : ' . $e->getMessage());
+            return \common_report_Report::createFailure('LtiDeliveryExecution migration has failed with error message : ' . $e->getMessage());
 
         }
 
-        return \common_report_Report::createSuccess('LtiLinks successfully has been migrated from Ontology to KV value. Count of LtiLinks migrated: ' . $i);
+        return \common_report_Report::createSuccess('LtiDeliveryExecution successfully has been migrated from Ontology to KV value. Count of LtiDeliveryExecution migrated: ' . $i);
+    }
+
+
+    /**
+     * Extract a property value from $properties array
+     *
+     * @param array $properties
+     * @param $propertyName
+     * @return string
+     */
+    protected function getPropertyValue(array $properties, $propertyName)
+    {
+        if (!isset($properties[$propertyName])) {
+            return null;
+        }
+        $value = reset($properties[$propertyName]);
+        return $value instanceof \core_kernel_classes_Resource ? $value->getUri() : (string) $value;
     }
 
     /**
@@ -109,14 +126,26 @@ class OntologyLtiLinksToKvMigration extends ScriptAction
      */
     protected function getKeyValuePersistenceName()
     {
+        $this->getKeyValuePersistence();
+        return $this->getOption('kv-persistence');
+    }
+
+    /**
+     * Create the persistence from option and validate as KeyValue persistence
+     *
+     * @return \common_persistence_KeyValuePersistence
+     * @throws \common_Exception
+     */
+    protected function getKeyValuePersistence()
+    {
         $persistenceName = $this->getOption('kv-persistence');
         /** @var \common_persistence_Manager $persistenceManager */
         $persistenceManager = $this->getServiceLocator()->get(\common_persistence_Manager::SERVICE_ID);
         $persistence = $persistenceManager->getPersistenceById($persistenceName);
-        if (!$persistence->getDriver() instanceof \common_persistence_KvDriver) {
+        if (!$persistence instanceof \common_persistence_KeyValuePersistence) {
             throw new \common_Exception('Given persistence is not a key value');
         }
-        return $persistenceName;
+        return $persistence;
     }
 
     /**
@@ -151,13 +180,13 @@ class OntologyLtiLinksToKvMigration extends ScriptAction
                 'prefix' => 'nms',
                 'longPrefix' => 'no-migrate-service',
                 'flag' => true,
-                'description' => 'Migrate the ontology LtiDeliveryExecutionService to KvLtiDeliveryExecutionService.',
+                'description' => 'Don\'t migrate the ontology LtiDeliveryExecutionService to KvLtiDeliveryExecutionService.',
             ),
             'no-delete' => array(
                 'prefix' => 'nd',
                 'longPrefix' => 'no-delete',
                 'flag' => true,
-                'description' => 'Delete ontology LtiLinks after migration.',
+                'description' => 'Don\'t delete ontology LtiDeliveryExecution after migration.',
             ),
             'verbose' => array(
                 'prefix' => 'v',
