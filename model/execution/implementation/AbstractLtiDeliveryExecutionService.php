@@ -106,14 +106,6 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
     }
 
     /**
-     * @return int
-     */
-    public function getNumberOfActiveDeliveryExecutions()
-    {
-        return intval($this->getPersistence()->get(self::class.'_'.'active_executions'));
-    }
-
-    /**
      * @return \common_persistence_KeyValuePersistence
      */
     protected function getPersistence()
