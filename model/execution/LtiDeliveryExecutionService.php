@@ -36,14 +36,6 @@ interface LtiDeliveryExecutionService extends DeliveryExecutionDelete
     const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
 
     /**
-     * Check whether delivery execution is finished or not (can be resumed).
-     *
-     * @param DeliveryExecution $deliveryExecution
-     * @return boolean
-     */
-    public function isFinished(DeliveryExecution $deliveryExecution);
-
-    /**
      * Get delivery executions linked to user and $link resource
      *
      * @param \core_kernel_classes_Resource $delivery

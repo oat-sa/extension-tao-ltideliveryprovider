@@ -61,14 +61,6 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
     }
 
     /**
-     * @inheritdoc
-     */
-    public function isFinished(DeliveryExecution $deliveryExecution)
-    {
-        return $deliveryExecution->getState()->getUri() === DeliveryExecution::STATE_FINISHIED;
-    }
-
-    /**
      * Returns an array of DeliveryExecution
      *
      * @param \core_kernel_classes_Resource $delivery

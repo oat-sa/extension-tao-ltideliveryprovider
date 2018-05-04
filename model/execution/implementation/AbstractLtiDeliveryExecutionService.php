@@ -48,15 +48,6 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
     /**
      * @inheritdoc
      */
-    public function isFinished(DeliveryExecution $deliveryExecution)
-    {
-        return $deliveryExecution->getState()->getUri() === DeliveryExecution::STATE_FINISHIED;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
     public function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {
         /** @var ActionQueue $actionQueue */
@@ -112,14 +103,6 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
 
             }
         }
-    }
-
-    /**
-     * @return int
-     */
-    public function getNumberOfActiveDeliveryExecutions()
-    {
-        return intval($this->getPersistence()->get(self::class.'_'.'active_executions'));
     }
 
     /**
