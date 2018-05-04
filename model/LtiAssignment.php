@@ -21,7 +21,7 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
+use oat\taoDelivery\model\AttemptServiceInterface;
 use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoDeliveryRdf\model\GroupAssignment;
@@ -60,7 +60,6 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
      * @throws LtiException
      * @throws \common_exception_Error
      * @throws \core_kernel_persistence_Exception
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
     protected function verifyToken(\core_kernel_classes_Resource $delivery, User $user)
@@ -85,10 +84,8 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
         }
 
         //check Tokens
-        /** @var LtiDeliveryExecutionService $executionService */
-        $executionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-
-        $usedTokens = count($executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier()));
+        $usedTokens = count($this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID)
+            ->getAttempts($delivery->getUri(), $user));
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). " without tokens");

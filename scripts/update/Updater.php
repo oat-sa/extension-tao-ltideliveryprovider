@@ -38,6 +38,8 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
 use oat\taoResultServer\models\classes\ResultService;
 use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
+use oat\ltiDeliveryProvider\model\AttemptService;
+use oat\taoDelivery\model\AttemptServiceInterface;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -199,5 +201,17 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('5.5.0', '6.0.0');
+
+        if ($this->isVersion('6.0.0')) {
+            $attemptService = $this->safeLoadService(AttemptServiceInterface::SERVICE_ID);
+            if (!$attemptService instanceof AttemptServiceInterface) {
+                $attemptService = new AttemptService([]);
+            }
+            $statesToExclude = $attemptService->getStatesToExclude();
+            $newAttemptService = new AttemptService([]);
+            $newAttemptService->setStatesToExclude($statesToExclude);
+            $this->getServiceManager()->register(AttemptServiceInterface::SERVICE_ID, $newAttemptService);
+            $this->setVersion('6.1.0');
+        }
     }
 }
