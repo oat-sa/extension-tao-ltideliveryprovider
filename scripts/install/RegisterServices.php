@@ -25,6 +25,8 @@ use oat\ltiDeliveryProvider\model\ResultAliasService;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\InstallAction;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterService;
 
 /**
  * Class RegisterServices
@@ -42,6 +44,12 @@ class RegisterServices extends InstallAction
     {
         $this->getServiceManager()->register(ResultAliasService::SERVICE_ID, new ResultAliasService());
         $this->getServiceManager()->register(LtiOutcomeService::SERVICE_ID, new LtiOutcomeService());
+        $this->getServiceManager()->register(
+            DeliveryExecutionCounterInterface::SERVICE_ID,
+            new DeliveryExecutionCounterService([
+                DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache'
+            ])
+        );
 
         /** @var EventManager $eventManager */
         $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
