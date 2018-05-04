@@ -203,7 +203,10 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('5.5.0', '6.0.0');
 
         if ($this->isVersion('6.0.0')) {
-            $attemptService = $this->getServiceManager()->get(AttemptServiceInterface::SERVICE_ID);
+            $attemptService = $this->safeLoadService(AttemptServiceInterface::SERVICE_ID);
+            if (!$attemptService instanceof AttemptServiceInterface) {
+                $attemptService = new AttemptService([]);
+            }
             $statesToExclude = $attemptService->getStatesToExclude();
             $newAttemptService = new AttemptService([]);
             $newAttemptService->setStatesToExclude($statesToExclude);
