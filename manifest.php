@@ -32,7 +32,7 @@ return array(
     'requires' => array(
         'generis' => '>=7.1.0',
         'tao' => '>=15.11.0',
-        'taoDeliveryRdf' => '>=4.13.0',
+        'taoDeliveryRdf' => '>=4.12.1',
         'taoLti' => '>=5.0.0',
         'taoResultServer' => '>=5.0.0',
         'taoDelivery' => '>=9.9.0',
