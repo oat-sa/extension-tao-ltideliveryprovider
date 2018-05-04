@@ -38,10 +38,7 @@ class RegisterLtiAttemptService extends InstallAction
      */
     public function __invoke($params)
     {
-        $attemptService = $this->safeLoadService(AttemptServiceInterface::SERVICE_ID);
-        if (!$attemptService instanceof AttemptServiceInterface) {
-            $attemptService = new AttemptService([]);
-        }
+        $attemptService = $this->getServiceManager()->get(AttemptServiceInterface::SERVICE_ID);
         $statesToExclude = $attemptService->getStatesToExclude();
         $newAttemptService = new AttemptService([]);
         $newAttemptService->setStatesToExclude($statesToExclude);
