@@ -40,6 +40,9 @@ use oat\taoResultServer\models\classes\ResultService;
 use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
 use oat\ltiDeliveryProvider\model\AttemptService;
 use oat\taoDelivery\model\AttemptServiceInterface;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterService;
+use common_report_Report as Report;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -212,6 +215,17 @@ class Updater extends \common_ext_ExtensionUpdater
             $newAttemptService->setStatesToExclude($statesToExclude);
             $this->getServiceManager()->register(AttemptServiceInterface::SERVICE_ID, $newAttemptService);
             $this->setVersion('6.1.0');
+        }
+
+        if ($this->isVersion('6.1.0')) {
+            $this->getServiceManager()->register(
+                DeliveryExecutionCounterInterface::SERVICE_ID,
+                new DeliveryExecutionCounterService([
+                    DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache'
+                ])
+            );
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of '.DeliveryExecutionCounterInterface::SERVICE_ID.' to common one'));
+            $this->setVersion('6.2.0');
         }
     }
 }
