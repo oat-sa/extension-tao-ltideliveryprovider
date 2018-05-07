@@ -54,6 +54,8 @@ class RegisterServices extends InstallAction
         /** @var EventManager $eventManager */
         $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
         $eventManager->attach(DeliveryExecutionState::class, [LtiOutcomeService::SERVICE_ID, 'deferTransmit']);
+        $eventManager->attach(DeliveryExecutionState::class, [DeliveryExecutionCounterInterface::SERVICE_ID, 'executionStateChanged']);
+        $eventManager->attach(DeliveryExecutionCreated::class, [DeliveryExecutionCounterInterface::SERVICE_ID, 'executionCreated']);
 
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 

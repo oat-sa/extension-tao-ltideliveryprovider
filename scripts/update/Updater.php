@@ -227,5 +227,13 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of '.DeliveryExecutionCounterInterface::SERVICE_ID.' to common one'));
             $this->setVersion('6.2.0');
         }
+
+        if ($this->isVersion('6.2.0')) {
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->attach(DeliveryExecutionState::class, [DeliveryExecutionCounterInterface::SERVICE_ID, 'executionStateChanged']);
+            $eventManager->attach(DeliveryExecutionCreated::class, [DeliveryExecutionCounterInterface::SERVICE_ID, 'executionCreated']);
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+            $this->setVersion('6.3.0');
+        }
     }
 }
