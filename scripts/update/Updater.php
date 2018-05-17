@@ -38,6 +38,11 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
 use oat\taoResultServer\models\classes\ResultService;
 use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
+use oat\ltiDeliveryProvider\model\AttemptService;
+use oat\taoDelivery\model\AttemptServiceInterface;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterService;
+use common_report_Report as Report;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -198,6 +203,31 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('5.5.0');
         }
 
-        $this->skip('5.5.0', '6.1.0');
+        $this->skip('5.5.0', '6.0.0');
+
+        if ($this->isVersion('6.0.0')) {
+            $attemptService = $this->safeLoadService(AttemptServiceInterface::SERVICE_ID);
+            if (!$attemptService instanceof AttemptServiceInterface) {
+                $attemptService = new AttemptService([]);
+            }
+            $statesToExclude = $attemptService->getStatesToExclude();
+            $newAttemptService = new AttemptService([]);
+            $newAttemptService->setStatesToExclude($statesToExclude);
+            $this->getServiceManager()->register(AttemptServiceInterface::SERVICE_ID, $newAttemptService);
+            $this->setVersion('6.1.0');
+        }
+
+        if ($this->isVersion('6.1.0')) {
+            $this->getServiceManager()->register(
+                DeliveryExecutionCounterInterface::SERVICE_ID,
+                new DeliveryExecutionCounterService([
+                    DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache'
+                ])
+            );
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of '.DeliveryExecutionCounterInterface::SERVICE_ID.' to common one'));
+            $this->setVersion('6.2.0');
+        }
+
+        $this->skip('6.2.0', '6.3.0');
     }
 }

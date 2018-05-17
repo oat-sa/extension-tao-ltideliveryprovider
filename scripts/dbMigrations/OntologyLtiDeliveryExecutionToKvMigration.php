@@ -52,7 +52,7 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
             $this->setVerbosity();
 
             /** @var LtiDeliveryExecutionService  $ltiDeliveryExecution */
-            $ltiDeliveryExecution = $this->getServiceLocator()->get('ltiDeliveryProvider/LtiDeliveryExecution');
+            $ltiDeliveryExecution = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
 
             if (!$ltiDeliveryExecution instanceof OntologyDeliveryExecutionService) {
                 return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' LtiDeliveryExecution migration must be done on a Ontology Service e.q. LtiDeliveryExecutionService.');
@@ -62,7 +62,7 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
                 KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $this->getKeyValuePersistenceName()
             ));
             if ($this->getOption('no-migrate-service') !== true) {
-                $this->registerService('ltiDeliveryProvider/LtiDeliveryExecution', $kvDeliveryExecutionService);
+                $this->registerService(LtiDeliveryExecutionService::SERVICE_ID, $kvDeliveryExecutionService);
                 $this->logNotice('LtiDeliveryExecution service was set to KeyValue implementation.');
             }
 

@@ -28,6 +28,7 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\DeliveryServerService;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiService;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
 
 /**
  * Class GetActiveDeliveryExecution
@@ -91,13 +92,13 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
 
     /**
      * @return int
-     * @throws \common_exception_Error
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     public function getNumberOfActiveActions()
     {
         /** @var LtiDeliveryExecutionService $deliveryExecutionService */
-        $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        return $deliveryExecutionService->getNumberOfActiveDeliveryExecutions();
+        $deliveryExecutionService = $this->getServiceManager()->get(DeliveryExecutionCounterInterface::SERVICE_ID);
+        return $deliveryExecutionService->count(DeliveryExecution::STATE_ACTIVE);
     }
 
     /**
