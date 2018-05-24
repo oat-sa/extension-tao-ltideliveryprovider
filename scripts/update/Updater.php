@@ -227,5 +227,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of '.DeliveryExecutionCounterInterface::SERVICE_ID.' to common one'));
             $this->setVersion('6.2.0');
         }
+
+        $this->skip('6.2.0', '6.2.1');
     }
 }

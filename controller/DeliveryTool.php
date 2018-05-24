@@ -19,8 +19,10 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use oat\ltiDeliveryProvider\model\event\LtiLaunchEvent;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
+use oat\oatbox\event\EventManager;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
@@ -105,6 +107,9 @@ class DeliveryTool extends ToolModule
                             $deliveryExecutionStateService = $this->getServiceManager()->get(StateServiceInterface::SERVICE_ID);
                             $deliveryExecutionStateService->pause($activeExecution);
                         }
+
+                        $this->triggerLaunchEvent();
+
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (ActionFullException $e) {
                         $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
@@ -122,6 +127,14 @@ class DeliveryTool extends ToolModule
                 $this->returnError(__('Access to this functionality is restricted to students'), false);
             }
         }
+    }
+
+    private function triggerLaunchEvent()
+    {
+        /** @var EventManager $eventManager */
+        $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+        $ltiLaunchEvent = new LtiLaunchEvent($this->getRequest());
+        $eventManager->trigger($ltiLaunchEvent);
     }
 
     /**
