@@ -23,6 +23,7 @@ namespace oat\ltiDeliveryProvider\model\execution\implementation;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
 use oat\tao\model\search\tasks\AddSearchIndex;
 use oat\tao\model\search\tasks\AddSearchIndexFromArray;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
@@ -32,7 +33,6 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\TaoLtiSession;
 use oat\taoResultServer\models\classes\ResultService;
-use oat\taoTaskQueue\model\QueueDispatcher;
 use oat\tao\model\search\Search;
 
 /**
@@ -98,7 +98,7 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
                     $body[LtiLaunchData::RESOURCE_LINK_ID] = $lunchData->getVariable(LtiLaunchData::RESOURCE_LINK_ID);
                 }
                 $id = $deliveryExecution->getIdentifier();
-                $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
+                $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
                 $queueDispatcher->createTask(new AddSearchIndexFromArray(), [$id, $body], __('Adding/Updating search index for %s', $deliveryExecution->getLabel()));
 
             }
