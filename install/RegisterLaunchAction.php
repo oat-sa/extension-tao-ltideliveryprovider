@@ -20,9 +20,12 @@
 
 namespace oat\ltiDeliveryProvider\install;
 
+use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
+use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\oatbox\extension\AbstractAction;
 use oat\tao\model\actionQueue\ActionQueue;
 use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
+use oat\tao\model\metrics\MetricsService;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\oatbox\event\EventManager;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -47,7 +50,9 @@ class RegisterLaunchAction extends AbstractAction
         $actionQueue = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
         $actions = $actionQueue->getOption(ActionQueue::OPTION_ACTIONS);
         $actions[GetActiveDeliveryExecution::class] = [
-            ActionQueue::ACTION_PARAM_LIMIT => 0,
+                'restrictions' => array(
+                    activeLimitRestriction::class => 0
+                ),
             ActionQueue::ACTION_PARAM_TTL => 3600, //one hour
         ];
         $actionQueue->setOption(ActionQueue::OPTION_ACTIONS, $actions);
@@ -58,6 +63,14 @@ class RegisterLaunchAction extends AbstractAction
         $eventManager->attach(DeliveryExecutionState::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionStateChanged']);
         $eventManager->attach(DeliveryExecutionCreated::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionCreated']);
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+
+        $metricsService = $this->getServiceManager()->get(MetricsService::class);
+        $metrics = $metricsService->getOption($metricsService::OPTION_METRICS);
+
+        $metrics[activeExecutionsMetrics::class]=new activeExecutionsMetrics([
+            activeExecutionsMetrics::OPTION_TTL => 360,
+            activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache'
+        ]);
 
         return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('GetActiveDeliveryExecution action registered'));
     }
