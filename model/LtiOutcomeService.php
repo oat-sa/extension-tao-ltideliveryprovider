@@ -23,11 +23,11 @@ namespace oat\ltiDeliveryProvider\model;
 use common_session_SessionManager;
 use oat\ltiDeliveryProvider\model\tasks\SendLtiOutcomeTask;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\TaoLtiSession;
-use oat\taoTaskQueue\model\QueueDispatcherInterface;
 
 class LtiOutcomeService extends ConfigurableService
 {

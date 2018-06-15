@@ -22,13 +22,16 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\LtiResultCustomFieldsService;
+use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
+use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
-use oat\tao\model\search\index\IndexService;
+use oat\tao\model\actionQueue\implementation\InstantActionQueue;
+use oat\tao\model\metrics\MetricsService;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
@@ -36,7 +39,6 @@ use oat\tao\model\actionQueue\ActionQueue;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
-use oat\taoResultServer\models\classes\ResultService;
 use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
 use oat\ltiDeliveryProvider\model\AttemptService;
 use oat\taoDelivery\model\AttemptServiceInterface;
@@ -229,5 +231,34 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('6.2.0', '6.3.0');
+
+        if ($this->isVersion('6.3.0')) {
+            $service = $this->getServiceManager()->get(InstantActionQueue::class);
+            $actions = $service->getOption('actions');
+            foreach ($actions as $action => $params) {
+                if (array_key_exists('limit', $params)) {
+                    $limit = $params['limit'];
+                    $params['restrictions'][activeLimitRestriction::class] = $limit;
+                    unset($params['limit']);
+                    $actions[$action] = $params;
+                }
+            }
+            $service->setOption('actions', $actions);
+
+            $this->getServiceManager()->register(InstantActionQueue::SERVICE_ID, $service);
+
+            $metricService = new MetricsService();
+            $limitMetric = new activeExecutionsMetrics();
+            $limitMetric->setOptions([
+                activeExecutionsMetrics::OPTION_TTL => 360,
+                activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache',
+            ]);
+            $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
+
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one'));
+
+            $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
+            $this->setVersion('6.4.0');
+        }
     }
 }
