@@ -68,7 +68,7 @@ class RegisterLaunchAction extends AbstractAction
         $metrics = $metricsService->getOption($metricsService::OPTION_METRICS);
 
         $metrics[activeExecutionsMetrics::class]=new activeExecutionsMetrics([
-            activeExecutionsMetrics::OPTION_TTL => 360,
+            activeExecutionsMetrics::OPTION_TTL => 1,
             activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache'
         ]);
 
