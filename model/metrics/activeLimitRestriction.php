@@ -39,8 +39,11 @@ class activeLimitRestriction extends basicRestriction
      */
     public function doesComplies($value)
     {
+        if ($value === 0) {
+            return true;
+        }
         $metric = $this->getServiceManager()->get(MetricsService::class)->getOneMetric(self::METRIC);
-        return $value === 0 || $value > $metric->collect();
+        return $value > $metric->collect();
     }
 
 
