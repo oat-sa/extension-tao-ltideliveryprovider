@@ -260,5 +260,15 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
             $this->setVersion('6.4.0');
         }
+
+        if ($this->isVersion('6.4.0')) {
+            $metricService = $this->getServiceManager()->get(MetricsService::class);
+            $limitMetric = $metricService->getOneMetric(activeExecutionsMetrics::class);
+            $limitMetric->setOption(activeExecutionsMetrics::OPTION_TTL, 1);
+            $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
+
+            $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
+            $this->setVersion('6.4.1');
+        }
     }
 }
