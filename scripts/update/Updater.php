@@ -267,13 +267,15 @@ class Updater extends \common_ext_ExtensionUpdater
             try {
                 $limitMetric = $metricService->getOneMetric(activeExecutionsMetrics::class);
             } catch (InconsistencyConfigException $exception) {
-                $limitMetric->setOptions([
-                    activeExecutionsMetrics::OPTION_TTL => 360,
-                    activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache',
-                ]);
-                $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
-                $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one ( like redis )'));
+                $limitMetric = new activeExecutionsMetrics();
             }
+            $limitMetric->setOptions([
+                activeExecutionsMetrics::OPTION_TTL => 1,
+                activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache',
+            ]);
+
+            $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one ( like redis )'));
             $limitMetric->setOption(activeExecutionsMetrics::OPTION_TTL, 1);
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
