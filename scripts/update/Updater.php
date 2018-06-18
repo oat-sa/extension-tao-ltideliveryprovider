@@ -31,6 +31,7 @@ use oat\ltiDeliveryProvider\model\ResultAliasService;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\actionQueue\implementation\InstantActionQueue;
+use oat\tao\model\metadata\exception\InconsistencyConfigException;
 use oat\tao\model\metrics\MetricsService;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
@@ -255,7 +256,7 @@ class Updater extends \common_ext_ExtensionUpdater
             ]);
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
-            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one'));
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one ( like redis )'));
 
             $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
             $this->setVersion('6.4.0');
@@ -263,7 +264,16 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('6.4.0')) {
             $metricService = $this->getServiceManager()->get(MetricsService::class);
-            $limitMetric = $metricService->getOneMetric(activeExecutionsMetrics::class);
+            try {
+                $limitMetric = $metricService->getOneMetric(activeExecutionsMetrics::class);
+            } catch (InconsistencyConfigException $exception) {
+                $limitMetric->setOptions([
+                    activeExecutionsMetrics::OPTION_TTL => 360,
+                    activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache',
+                ]);
+                $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
+                $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one ( like redis )'));
+            }
             $limitMetric->setOption(activeExecutionsMetrics::OPTION_TTL, 1);
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
