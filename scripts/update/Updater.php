@@ -247,7 +247,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->getServiceManager()->register(InstantActionQueue::SERVICE_ID, $service);
 
-            $metricService = new MetricsService();
+            $metricService = $this->getServiceManager()->get(MetricsService::class);
             $limitMetric = new activeExecutionsMetrics();
             $limitMetric->setOptions([
                 activeExecutionsMetrics::OPTION_TTL => 360,

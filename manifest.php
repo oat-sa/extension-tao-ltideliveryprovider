@@ -52,6 +52,7 @@ return array(
             \oat\ltiDeliveryProvider\scripts\install\OverrideResultCustomFieldsService::class,
             \oat\ltiDeliveryProvider\install\InstallDeliveryContainerService::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService::class,
+            \oat\ltiDeliveryProvider\scripts\install\RegisterMetrics::class,
         ),
         'rdf' => array(
             dirname(__FILE__). '/install/ontology/deliverytool.rdf'
