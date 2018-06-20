@@ -273,7 +273,6 @@ class Updater extends \common_ext_ExtensionUpdater
             ]);
 
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
-            $limitMetric->setOption(activeExecutionsMetrics::OPTION_TTL, 1);
 
             $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
             $this->setVersion('6.4.1');
