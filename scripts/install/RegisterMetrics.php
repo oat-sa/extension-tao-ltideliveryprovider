@@ -43,11 +43,17 @@ class RegisterMetrics extends InstallAction
      */
     public function __invoke($params)
     {
+
+        /** @var \common_persistence_Manager $pm */
+        $pm = $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID);
+        $pm->registerPersistence('metricsCache', ['driver' => 'phpfile',
+            'ttlMode' => true,]);
+
         $metricService = $this->getServiceManager()->get(MetricsService::class);
         $limitMetric = new activeExecutionsMetrics();
         $limitMetric->setOptions([
             activeExecutionsMetrics::OPTION_TTL => 1,
-            activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache',
+            activeExecutionsMetrics::OPTION_PERSISTENCE => 'metricsCache',
         ]);
         $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
