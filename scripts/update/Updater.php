@@ -256,8 +256,6 @@ class Updater extends \common_ext_ExtensionUpdater
             ]);
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
-            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one ( like redis )'));
-
             $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
             $this->setVersion('6.4.0');
         }
@@ -275,12 +273,27 @@ class Updater extends \common_ext_ExtensionUpdater
             ]);
 
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
-            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . MetricsService::SERVICE_ID . ' to common one ( like redis )'));
             $limitMetric->setOption(activeExecutionsMetrics::OPTION_TTL, 1);
-            $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
             $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
             $this->setVersion('6.4.1');
+        }
+
+        if ($this->isVersion('6.4.1')) {
+
+            /** @var \common_persistence_Manager $pm */
+            $pm = $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID);
+            $pm->registerPersistence('metricsCache', ['driver' => 'phpfile', 'ttlMode' => true,]);
+
+            $metricService = $this->getServiceManager()->get(MetricsService::class);
+            $limitMetric = $metricService->getOneMetric(activeExecutionsMetrics::class);
+            $limitMetric->setOption(activeExecutionsMetrics::OPTION_PERSISTENCE, 'metricsCache');
+            $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
+            $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
+
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence named *metricsCache* to common one ( like redis )'));
+
+            $this->setVersion('6.4.2');
         }
     }
 }
