@@ -46,6 +46,7 @@ use oat\taoDelivery\model\AttemptServiceInterface;
 use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
 use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterService;
 use common_report_Report as Report;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -293,6 +294,13 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence named *metricsCache* to common one ( like redis )'));
 
             $this->setVersion('6.4.2');
+        }
+
+        if ($this->isVersion('6.4.2')) {
+            $pm = $this->getServiceManager()->register(LtiNavigationService::SERVICE_ID, new LtiNavigationService([
+                LtiNavigationService::OPTION_THANK_YOU_SCREEN => true
+            ]));
+            $this->setVersion('6.5.0');
         }
     }
 }
