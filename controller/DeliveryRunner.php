@@ -35,6 +35,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\StateServiceInterface;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -69,14 +70,10 @@ class DeliveryRunner extends DeliveryServer
 
     public function ltiReturn()
     {
+        $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
-        if ($this->hasRequestParameter('warning')) {
-            $ltiMessage = new LtiMessage($this->getRequestParameter('warning'), null);
-        } else {
-            $ltiMessage = $this->getLtiMessage($deliveryExecution);
-        }
-        $redirectUrl = LTIDeliveryTool::singleton()->getFinishUrl($ltiMessage, $deliveryExecution);
-        $this->redirect($redirectUrl);
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+        $this->redirect($navigation->getReturnUrl($launchData, $deliveryExecution));
     }
 
     /**
