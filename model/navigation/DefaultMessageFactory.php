@@ -39,6 +39,9 @@ class DefaultMessageFactory extends ConfigurableService
             case DeliveryExecution::STATE_ACTIVE:
                 $code = 100;
                 break;
+            case DeliveryExecution::STATE_PAUSED:
+                $code = 101;
+                break;
             case DeliveryExecution::STATE_FINISHED:
                 $code = 200;
                 break;
