@@ -1,5 +1,6 @@
 <?php
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
 
 /**
  * This program is free software; you can redistribute it and/or
@@ -21,5 +22,6 @@ use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
 
 return new LtiNavigationService([
-    LtiNavigationService::OPTION_THANK_YOU_SCREEN => false
+    LtiNavigationService::OPTION_THANK_YOU_SCREEN => false,
+    LtiNavigationService::OPTION_MESSAGE_FACTORY => new DefaultMessageFactory()
 ]);
