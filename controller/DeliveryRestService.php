@@ -51,7 +51,7 @@ class DeliveryRestService extends \tao_actions_RestController
 
             $this->returnSuccess(LTIDeliveryTool::singleton()->getLaunchUrl(array('delivery' => $selectedDelivery->getUri())));
 
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
              $this->returnFailure($ex);
         }
         

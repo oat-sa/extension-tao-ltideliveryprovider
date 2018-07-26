@@ -32,6 +32,7 @@ use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\authorization\AuthorizationService;
+use oat\taoDelivery\model\authorization\AuthorizationProvider;
 
 class LTIDeliveryTool extends LtiTool {
 
