@@ -24,3 +24,10 @@ The expected roles are:
 
 Custom parameters:
 * `max_attempts` Overrides the number of executions allowed on the delivery. Expects a positive integer value or 0 for unlimited attempts. Attempts on LTI calls are calculated per `resource_link_id` instead of per delivery.
+
+Return Values:
+* `log message` will contain the status of the delivery execution
+  * **100** for an active delivery
+  * **101** for a paused delivery
+  * **200** for a finished delivery
+  * **201** for a terminated delivery
