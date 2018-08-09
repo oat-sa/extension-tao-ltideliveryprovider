@@ -302,9 +302,9 @@ class Updater extends \common_ext_ExtensionUpdater
                 LtiNavigationService::OPTION_THANK_YOU_SCREEN => true,
                 LtiNavigationService::OPTION_MESSAGE_FACTORY => new DefaultMessageFactory()
             ]));
-            $this->setVersion('6.5.1');
+            $this->setVersion('6.5.0');
         }
 
-        $this->skip('6.5.0', '6.5.1');
+        $this->skip('6.5.0', '6.5.2');
     }
 }
