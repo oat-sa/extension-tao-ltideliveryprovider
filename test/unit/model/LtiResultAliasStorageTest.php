@@ -19,11 +19,12 @@
  *
  */
 
-namespace oat\ltiDeliveryProvider\test\model\requestLog\rds;
+namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\oatbox\service\ServiceManager;
+use oat\taoDelivery\model\execution\DeliveryExecution;
 
 /**
  * Class LtiResultAliasStorageTest
@@ -113,10 +114,11 @@ class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
     protected function getDeliveryExecution($id = null)
     {
         if ($id === null) {
+            // @todo fix, no such property
             $id = $this->deliveryExecutionId;
         }
         $prophet = new \Prophecy\Prophet();
-        $deliveryExecutionProphecy = $prophet->prophesize('oat\taoDelivery\model\execution\DeliveryExecution');
+        $deliveryExecutionProphecy = $prophet->prophesize(DeliveryExecution::class);
         $deliveryExecutionProphecy->getIdentifier()->willReturn($id);
         return $deliveryExecutionProphecy->reveal();
     }
