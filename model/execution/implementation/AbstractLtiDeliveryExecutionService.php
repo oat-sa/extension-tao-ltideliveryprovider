@@ -97,10 +97,6 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
                 if ($lunchData->hasVariable(LtiLaunchData::RESOURCE_LINK_ID)) {
                     $body[LtiLaunchData::RESOURCE_LINK_ID] = $lunchData->getVariable(LtiLaunchData::RESOURCE_LINK_ID);
                 }
-                $id = $deliveryExecution->getIdentifier();
-                $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
-                $queueDispatcher->createTask(new AddSearchIndexFromArray(), [$id, $body], __('Adding/Updating search index for %s', $deliveryExecution->getLabel()));
-
             }
         }
     }
