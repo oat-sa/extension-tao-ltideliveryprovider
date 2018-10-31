@@ -33,6 +33,7 @@ use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\actionQueue\implementation\InstantActionQueue;
 use oat\tao\model\metadata\exception\InconsistencyConfigException;
 use oat\tao\model\metrics\MetricsService;
+use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
@@ -306,5 +307,11 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('6.5.0', '7.0.0');
+
+        if ($this->isVersion('7.0.0')) {
+            OntologyUpdater::syncModels();
+
+            $this->setVersion('7.0.0');
+        }
     }
 }
