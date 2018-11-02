@@ -4,16 +4,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
@@ -27,16 +27,16 @@ return array(
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '6.5.4',
+    'version' => '7.0.1',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'generis' => '>=7.1.0',
-        'tao' => '>=19.10.0',
-        'taoDeliveryRdf' => '>=4.11.0',
-        'taoLti' => '>=5.0.0',
-        'taoResultServer' => '>=5.0.0',
-        'taoDelivery' => '>=9.9.0',
-        'taoOutcomeUi' => '>=5.3.1'
+        'tao' => '>=21.0.0',
+        'taoDeliveryRdf' => '>=6.0.0',
+        'taoLti' => '>=7.0.0',
+        'taoResultServer' => '>=7.0.0',
+        'taoDelivery' => '>=11.0.0',
+        'taoOutcomeUi' => '>=7.0.0'
     ),
     'models' => array(
          'http://www.tao.lu/Ontologies/TAOLTI.rdf',
@@ -72,19 +72,19 @@ return array(
         array('grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class)
     ),
     'constants' => array(
-    
+
         # views directory
         "DIR_VIEWS"                => __DIR__.DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
-    
+
         # default module name
         'DEFAULT_MODULE_NAME'    => 'Browser',
-    
+
         #default action name
         'DEFAULT_ACTION_NAME'    => 'index',
-    
+
         #BASE PATH: the root path in the file system (usually the document root)
         'BASE_PATH'                => __DIR__.DIRECTORY_SEPARATOR ,
-    
+
         #BASE URL (usually the domain root)
         'BASE_URL'                => ROOT_URL . 'ltiDeliveryProvider/',
     ),

@@ -91,6 +91,14 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
     }
 
     /**
+     * Needed for statistics
+     */
+    public function getDelivery()
+    {
+        return $this->delivery;
+    }
+
+    /**
      * @return int
      * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
