@@ -24,7 +24,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
-use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 
 class LtiNavigationService extends ConfigurableService
 {
@@ -37,14 +37,14 @@ class LtiNavigationService extends ConfigurableService
      */
     const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
-    public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecution $deliveryExecution)
+    public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         return $this->showThankyou($launchData)
-            ? _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider')
+            ? $this->getThankYouUrl()
             : $this->getConsumerReturnUrl($launchData, $deliveryExecution);
     }
 
-    protected function getConsumerReturnUrl(LtiLaunchData $launchData, DeliveryExecution $deliveryExecution)
+    protected function getConsumerReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         $urlParts = parse_url($launchData->getReturnUrl());
         if (!isset($urlParts['query'])) {
@@ -55,7 +55,7 @@ class LtiNavigationService extends ConfigurableService
         return $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
     }
 
-    protected function getConsumerReturnParams(LtiLaunchData $launchData, DeliveryExecution $deliveryExecution)
+    protected function getConsumerReturnParams(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         $ltiMessage = $this->getSubService(self::OPTION_MESSAGE_FACTORY)->getLtiMessage($deliveryExecution);
         $params = $ltiMessage
@@ -67,11 +67,11 @@ class LtiNavigationService extends ConfigurableService
     }
 
     /**
-     * @param DeliveryExecution $deliveryExecution
+     * @param DeliveryExecutionInterface $deliveryExecution
      * @return LtiMessage
      * @throws \common_exception_NotFound
      */
-    protected function getLtiMessage(DeliveryExecution $deliveryExecution)
+    protected function getLtiMessage(DeliveryExecutionInterface $deliveryExecution)
     {
         $state = $deliveryExecution->getState()->getLabel();
         return new LtiMessage($state, null);
@@ -84,6 +84,10 @@ class LtiNavigationService extends ConfigurableService
      */
     protected function showThankyou(LtiLaunchData $launchData)
     {
+        if (!$launchData->hasReturnUrl()) {
+            return true;
+        }
+
         if ($launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU)) {
             switch ($launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU)) {
                 case 'true':
@@ -96,5 +100,13 @@ class LtiNavigationService extends ConfigurableService
             }
         }
         return $this->getOption(self::OPTION_THANK_YOU_SCREEN);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getThankYouUrl()
+    {
+        return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 }

@@ -21,31 +21,31 @@
 namespace oat\ltiDeliveryProvider\model\navigation;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
-use oat\taoDelivery\model\execution\DeliveryExecution;
 
 class DefaultMessageFactory extends ConfigurableService
 {
     /**
-     * @param DeliveryExecution $deliveryExecution
+     * @param DeliveryExecutionInterface $deliveryExecution
      * @return LtiMessage
      * @throws \common_exception_NotFound
      */
-    public function getLtiMessage(DeliveryExecution $deliveryExecution)
+    public function getLtiMessage(DeliveryExecutionInterface $deliveryExecution)
     {
         $state = $deliveryExecution->getState();
         $code = null;
         switch ($state->getUri()) {
-            case DeliveryExecution::STATE_ACTIVE:
+            case DeliveryExecutionInterface::STATE_ACTIVE:
                 $code = 100;
                 break;
-            case DeliveryExecution::STATE_PAUSED:
+            case DeliveryExecutionInterface::STATE_PAUSED:
                 $code = 101;
                 break;
-            case DeliveryExecution::STATE_FINISHED:
+            case DeliveryExecutionInterface::STATE_FINISHED:
                 $code = 200;
                 break;
-            case DeliveryExecution::STATE_TERMINATED:
+            case DeliveryExecutionInterface::STATE_TERMINATED:
                 $code = 201;
                 break;
         }
