@@ -35,10 +35,10 @@ use oat\taoLti\models\classes\TaoLtiSession;
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiAssignment extends ConfigurableService implements AssignmentAuthorizationInterface
+class LtiAssignmentAuthorizationService extends ConfigurableService implements AssignmentAuthorizationInterface
 {
     const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
-    const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
+    const SERVICE_ID = 'ltiDeliveryProvider/LtiAssignmentAuthorization';
 
     /**
      * @param string $deliveryIdentifier

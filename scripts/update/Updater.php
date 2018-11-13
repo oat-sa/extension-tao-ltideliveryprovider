@@ -18,7 +18,7 @@
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
-use oat\ltiDeliveryProvider\model\LtiAssignment;
+use oat\ltiDeliveryProvider\model\LtiAssignmentAuthorizationService;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\LtiResultCustomFieldsService;
@@ -62,11 +62,11 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('1.7.1')) {
             try {
-                $this->getServiceManager()->get(LtiAssignment::LTI_SERVICE_ID);
+                $this->getServiceManager()->get(LtiAssignmentAuthorizationService::SERVICE_ID);
             } catch (ServiceNotFoundException $e) {
-                $service = new LtiAssignment();
+                $service = new LtiAssignmentAuthorizationService();
                 $service->setServiceManager($this->getServiceManager());
-                $this->getServiceManager()->register(LtiAssignment::LTI_SERVICE_ID, $service);
+                $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
             }
             $this->setVersion('2.0.0');
         }
