@@ -21,10 +21,10 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\oatbox\service\ConfigurableService;
+use oat\taoDelivery\model\AssignmentAuthorizationInterface;
 use oat\taoDelivery\model\AttemptServiceInterface;
-use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
-use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\oatbox\user\User;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -35,7 +35,7 @@ use oat\taoLti\models\classes\TaoLtiSession;
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiAssignment extends GroupAssignment implements AssignmentService
+class LtiAssignment extends ConfigurableService implements AssignmentAuthorizationInterface
 {
     const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
     const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
