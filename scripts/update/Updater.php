@@ -303,9 +303,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('6.5.0');
         }
 
-        $this->skip('6.5.0', '7.0.1');
+        $this->skip('6.5.0', '7.1.0');
 
-        if ($this->isVersion('7.0.1')) {
+        if ($this->isVersion('7.1.0')) {
             if (!$this->getServiceManager()->has(LtiAssignmentAuthorizationService::SERVICE_ID)) {
                 $service = new LtiAssignmentAuthorizationService();
                 $this->getServiceManager()->propagate($service);
