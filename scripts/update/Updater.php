@@ -61,11 +61,9 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('0', '1.7.1');
 
         if ($this->isVersion('1.7.1')) {
-            try {
-                $this->getServiceManager()->get(LtiAssignmentAuthorizationService::SERVICE_ID);
-            } catch (ServiceNotFoundException $e) {
+            if (!$this->getServiceManager()->has(LtiAssignmentAuthorizationService::SERVICE_ID)) {
                 $service = new LtiAssignmentAuthorizationService();
-                $service->setServiceManager($this->getServiceManager());
+                $this->getServiceManager()->propagate($service);
                 $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
             }
             $this->setVersion('2.0.0');
@@ -306,5 +304,14 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('6.5.0', '7.0.1');
+
+        if ($this->isVersion('7.0.1')) {
+            if (!$this->getServiceManager()->has(LtiAssignmentAuthorizationService::SERVICE_ID)) {
+                $service = new LtiAssignmentAuthorizationService();
+                $this->getServiceManager()->propagate($service);
+                $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
+            }
+            $this->setVersion('7.2.0');
+        }
     }
 }
