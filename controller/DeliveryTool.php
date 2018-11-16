@@ -26,6 +26,7 @@ use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiService;
+use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use \tao_helpers_Uri;
 use \common_session_SessionManager;
 use \common_Logger;
@@ -105,6 +106,9 @@ class DeliveryTool extends ToolModule
                             $deliveryExecutionStateService->pause($activeExecution);
                         }
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
+                    } catch (QtiTestExtractionFailedException $e) {
+                        common_Logger::i($e->getMessage());
+                        throw new LtiException($e->getMessage());
                     } catch (ActionFullException $e) {
                         $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
                             'position' => $e->getPosition(),
