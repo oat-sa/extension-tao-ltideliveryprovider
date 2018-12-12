@@ -303,15 +303,15 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('6.5.0');
         }
 
-        $this->skip('6.5.0', '7.1.0');
+        $this->skip('6.5.0', '7.2.0');
 
-        if ($this->isVersion('7.1.0')) {
+        if ($this->isVersion('7.2.0')) {
             if (!$this->getServiceManager()->has(LtiAssignmentAuthorizationService::SERVICE_ID)) {
                 $service = new LtiAssignmentAuthorizationService();
                 $this->getServiceManager()->propagate($service);
                 $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
             }
-            $this->setVersion('7.2.0');
+            $this->setVersion('7.3.0');
         }
     }
 }
