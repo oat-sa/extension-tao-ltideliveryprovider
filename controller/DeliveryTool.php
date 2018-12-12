@@ -21,7 +21,6 @@ namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
-use oat\taoDelivery\model\AssignmentAuthorizationInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
@@ -168,7 +167,7 @@ class DeliveryTool extends ToolModule
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $activeExecution->getIdentifier()));
         }
 
-        /** @var AssignmentAuthorizationInterface $assignmentService */
+        /** @var LtiAssignmentAuthorizationService $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignmentAuthorizationService::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));

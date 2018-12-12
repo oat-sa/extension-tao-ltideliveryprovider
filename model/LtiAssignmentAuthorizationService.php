@@ -22,7 +22,6 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\AssignmentAuthorizationInterface;
 use oat\taoDelivery\model\AttemptServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\oatbox\user\User;
@@ -35,7 +34,7 @@ use oat\taoLti\models\classes\TaoLtiSession;
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiAssignmentAuthorizationService extends ConfigurableService implements AssignmentAuthorizationInterface
+class LtiAssignmentAuthorizationService extends ConfigurableService
 {
     const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
     const SERVICE_ID = 'ltiDeliveryProvider/LtiAssignmentAuthorization';
