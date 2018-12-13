@@ -167,7 +167,8 @@ class DeliveryTool extends ToolModule
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $activeExecution->getIdentifier()));
         }
 
-        $assignmentService = $this->getServiceLocator()->get(LtiAssignment::LTI_SERVICE_ID);
+        /** @var LtiAssignment $assignmentService */
+        $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
         } else {

@@ -21,10 +21,12 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\session\SessionService;
 use oat\taoDelivery\model\AttemptServiceInterface;
-use oat\taoDelivery\model\AssignmentService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
-use oat\taoDeliveryRdf\model\GroupAssignment;
 use oat\oatbox\user\User;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -35,10 +37,19 @@ use oat\taoLti\models\classes\TaoLtiSession;
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiAssignment extends GroupAssignment implements AssignmentService
+class LtiAssignment extends ConfigurableService
 {
+    use OntologyAwareTrait;
+    use LoggerAwareTrait;
+
     const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
+
+    /**
+     * @deprecated Use LtiAssignmentAuthorizationService::SERVICE_ID instead
+     */
     const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
+
+    const SERVICE_ID = 'ltiDeliveryProvider/assignment';
 
     /**
      * @param string $deliveryIdentifier
@@ -47,7 +58,8 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
      */
     public function isDeliveryExecutionAllowed($deliveryIdentifier, User $user)
     {
-        $delivery = new \core_kernel_classes_Resource($deliveryIdentifier);
+        $delivery = $this->getResource($deliveryIdentifier);
+
         return $this->verifyToken($delivery, $user);
     }
 
@@ -64,10 +76,10 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
      */
     protected function verifyToken(\core_kernel_classes_Resource $delivery, User $user)
     {
-        $propMaxExec = $delivery->getOnePropertyValue(new \core_kernel_classes_Property(DeliveryContainerService::PROPERTY_MAX_EXEC));
+        $propMaxExec = $delivery->getOnePropertyValue($this->getProperty(DeliveryContainerService::PROPERTY_MAX_EXEC));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
 
-        $currentSession = \common_session_SessionManager::getSession();
+        $currentSession = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
 
         if ($currentSession instanceof TaoLtiSession) {
             $launchData = $currentSession->getLaunchData();
@@ -88,7 +100,7 @@ class LtiAssignment extends GroupAssignment implements AssignmentService
             ->getAttempts($delivery->getUri(), $user));
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
-            \common_Logger::d("Attempt to start the compiled delivery ".$delivery->getUri(). " without tokens");
+            $this->logDebug("Attempt to start the compiled delivery ".$delivery->getUri(). " without tokens");
             throw new LtiException(
                 __('Attempts limit has been reached.'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
