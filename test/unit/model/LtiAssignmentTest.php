@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
  * Class LtiAssignmentAuthorizationServiceTest
  * @package oat\ltiDeliveryProvider\test\unit\model\requestLog\rds
  */
-class LtiAssignmentAuthorizationServiceTest extends TestCase
+class LtiAssignmentTest extends TestCase
 {
     /** @var LtiAssignment */
     private $object;
