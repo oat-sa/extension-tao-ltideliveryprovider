@@ -66,6 +66,11 @@ class Updater extends \common_ext_ExtensionUpdater
                 $this->getServiceManager()->propagate($service);
                 $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
             }
+
+            if ($this->getServiceManager()->has(LtiAssignmentAuthorizationService::LTI_SERVICE_ID)) {
+                $this->getServiceManager()->unregister(LtiAssignmentAuthorizationService::LTI_SERVICE_ID);
+            }
+
             $this->setVersion('2.0.0');
         }
         $this->skip('2.0.0', '2.0.1');
@@ -311,7 +316,12 @@ class Updater extends \common_ext_ExtensionUpdater
                 $this->getServiceManager()->propagate($service);
                 $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
             }
-            $this->setVersion('7.3.0');
+
+            if ($this->getServiceManager()->has(LtiAssignmentAuthorizationService::LTI_SERVICE_ID)) {
+                $this->getServiceManager()->unregister(LtiAssignmentAuthorizationService::LTI_SERVICE_ID);
+            }
+
+            $this->setVersion('8.0.0');
         }
     }
 }

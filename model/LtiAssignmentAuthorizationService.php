@@ -43,6 +43,12 @@ class LtiAssignmentAuthorizationService extends ConfigurableService
     use LoggerAwareTrait;
 
     const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
+
+    /**
+     * @deprecated Use LtiAssignmentAuthorizationService::SERVICE_ID instead
+     */
+    const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
+
     const SERVICE_ID = 'ltiDeliveryProvider/LtiAssignmentAuthorization';
 
     /**
