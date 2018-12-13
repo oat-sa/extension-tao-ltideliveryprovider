@@ -37,7 +37,7 @@ use oat\taoLti\models\classes\TaoLtiSession;
  * @package oat\ltiDeliveryProvider\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiAssignmentAuthorizationService extends ConfigurableService
+class LtiAssignment extends ConfigurableService
 {
     use OntologyAwareTrait;
     use LoggerAwareTrait;
@@ -49,7 +49,7 @@ class LtiAssignmentAuthorizationService extends ConfigurableService
      */
     const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
 
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiAssignmentAuthorization';
+    const SERVICE_ID = 'ltiDeliveryProvider/assignment';
 
     /**
      * @param string $deliveryIdentifier

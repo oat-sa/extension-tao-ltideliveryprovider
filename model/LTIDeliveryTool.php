@@ -101,8 +101,8 @@ class LTIDeliveryTool extends LtiTool {
 	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
         $this->getAuthorizationProvider()->verifyStartAuthorization($delivery->getUri(), $user);
 
-        /** @var LtiAssignmentAuthorizationService $assignmentService */
-        $assignmentService = $this->getServiceLocator()->get(LtiAssignmentAuthorizationService::SERVICE_ID);
+        /** @var LtiAssignment $assignmentService */
+        $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }

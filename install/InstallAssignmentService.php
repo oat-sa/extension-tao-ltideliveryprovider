@@ -20,7 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\install;
 
-use oat\ltiDeliveryProvider\model\LtiAssignmentAuthorizationService;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
 
 class InstallAssignmentService extends \oat\oatbox\extension\InstallAction
 {
@@ -30,7 +30,7 @@ class InstallAssignmentService extends \oat\oatbox\extension\InstallAction
      */
     public function __invoke($params)
     {
-        $ltiAssignment = new LtiAssignmentAuthorizationService();
-        $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $ltiAssignment);
+        $ltiAssignment = new LtiAssignment();
+        $this->getServiceManager()->register(LtiAssignment::SERVICE_ID, $ltiAssignment);
     }
 }

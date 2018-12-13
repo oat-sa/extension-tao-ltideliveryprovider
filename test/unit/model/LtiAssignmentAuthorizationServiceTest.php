@@ -22,7 +22,7 @@ namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
 use oat\generis\model\data\Model;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
-use oat\ltiDeliveryProvider\model\LtiAssignmentAuthorizationService;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\session\SessionService;
 use oat\oatbox\user\User;
 use oat\taoDelivery\model\AttemptServiceInterface;
@@ -37,7 +37,7 @@ use Psr\Log\LoggerInterface;
  */
 class LtiAssignmentAuthorizationServiceTest extends TestCase
 {
-    /** @var LtiAssignmentAuthorizationService */
+    /** @var LtiAssignment */
     private $object;
 
     /** @var SessionService|\PHPUnit_Framework_MockObject_MockObject */
@@ -90,7 +90,7 @@ class LtiAssignmentAuthorizationServiceTest extends TestCase
             ->method('getProperty')
             ->willReturn(new \core_kernel_classes_Property('PROP'));
 
-        $this->object = new LtiAssignmentAuthorizationService([]);
+        $this->object = new LtiAssignment([]);
         $this->object->setServiceLocator($servileLocatorMock);
         $this->object->setModel($modelMock);
         $this->object->setLogger($this->loggerMock);

@@ -18,7 +18,7 @@
  */
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
-use oat\ltiDeliveryProvider\model\LtiAssignmentAuthorizationService;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\LtiResultCustomFieldsService;
@@ -61,14 +61,10 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('0', '1.7.1');
 
         if ($this->isVersion('1.7.1')) {
-            if (!$this->getServiceManager()->has(LtiAssignmentAuthorizationService::SERVICE_ID)) {
-                $service = new LtiAssignmentAuthorizationService();
-                $this->getServiceManager()->propagate($service);
-                $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
-            }
-
-            if ($this->getServiceManager()->has(LtiAssignmentAuthorizationService::LTI_SERVICE_ID)) {
-                $this->getServiceManager()->unregister(LtiAssignmentAuthorizationService::LTI_SERVICE_ID);
+            if (!$this->getServiceManager()->has(LtiAssignment::SERVICE_ID)) {
+                $service = new LtiAssignment();
+                $service->setServiceLocator($this->getServiceManager());
+                $this->getServiceManager()->register(LtiAssignment::SERVICE_ID, $service);
             }
 
             $this->setVersion('2.0.0');
@@ -308,20 +304,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('6.5.0');
         }
 
-        $this->skip('6.5.0', '7.2.0');
-
-        if ($this->isVersion('7.2.0')) {
-            if (!$this->getServiceManager()->has(LtiAssignmentAuthorizationService::SERVICE_ID)) {
-                $service = new LtiAssignmentAuthorizationService();
-                $this->getServiceManager()->propagate($service);
-                $this->getServiceManager()->register(LtiAssignmentAuthorizationService::SERVICE_ID, $service);
-            }
-
-            if ($this->getServiceManager()->has(LtiAssignmentAuthorizationService::LTI_SERVICE_ID)) {
-                $this->getServiceManager()->unregister(LtiAssignmentAuthorizationService::LTI_SERVICE_ID);
-            }
-
-            $this->setVersion('8.0.0');
-        }
+        $this->skip('6.5.0', '8.0.0');
     }
 }

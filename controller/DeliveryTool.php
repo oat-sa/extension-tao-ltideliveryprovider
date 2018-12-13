@@ -34,7 +34,7 @@ use \core_kernel_classes_Resource;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
-use oat\ltiDeliveryProvider\model\LtiAssignmentAuthorizationService;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\tao\model\actionQueue\ActionFullException;
 
 /**
@@ -167,8 +167,8 @@ class DeliveryTool extends ToolModule
             return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $activeExecution->getIdentifier()));
         }
 
-        /** @var LtiAssignmentAuthorizationService $assignmentService */
-        $assignmentService = $this->getServiceLocator()->get(LtiAssignmentAuthorizationService::SERVICE_ID);
+        /** @var LtiAssignment $assignmentService */
+        $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
         } else {
