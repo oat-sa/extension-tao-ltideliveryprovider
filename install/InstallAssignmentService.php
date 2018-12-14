@@ -31,7 +31,6 @@ class InstallAssignmentService extends \oat\oatbox\extension\InstallAction
     public function __invoke($params)
     {
         $ltiAssignment = new LtiAssignment();
-        $this->getServiceManager()->register(LtiAssignment::LTI_SERVICE_ID, $ltiAssignment);
-
+        $this->getServiceManager()->register(LtiAssignment::SERVICE_ID, $ltiAssignment);
     }
 }
