@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint15\n"
-"PO-Revision-Date: 2016-02-19T14:22:05\n"
+"Project-Id-Version: TAO 3.3.0-sprint91\n"
+"PO-Revision-Date: 2018-12-14T15:02:40\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -25,6 +25,12 @@ msgstr "L'accesso a questa funzionalità è limitato"
 msgid "Access to this functionality is restricted to students"
 msgstr "L'accesso a questa funzionalità è riservato agli studenti"
 
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr ""
+
+msgid "Attempts limit has been reached."
+msgstr ""
+
 msgid "Available Deliveries"
 msgstr "Somministrazioni disponibili"
 
@@ -47,6 +53,9 @@ msgstr "Copia e incolla il seguente URL all'interno del tuo consumer tool compat
 msgid "Deliveries"
 msgstr "Somministrazioni"
 
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr ""
+
 msgid "Executions"
 msgstr "Esecuzioni"
 
@@ -56,6 +65,9 @@ msgstr "Lancia l' URL"
 #, tao-public
 msgid "LTI"
 msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr ""
 
 msgid "No deliveries available"
 msgstr "Nessuna somministrazione disponibile"
@@ -93,11 +105,11 @@ msgstr "Somministrazione selezionata"
 msgid "Selected Delivery"
 msgstr "Somministrazione selezionata"
 
+msgid "Test Launch Queue"
+msgstr ""
+
 msgid "Thank you"
 msgstr "Grazie"
-
-msgid "The delivery is not associated to a Result server storage policy"
-msgstr "Questa somministrazione non è associata ad un criterio di archiviazione 'Result server' "
 
 msgid "This tool has been configured:"
 msgstr " Questo strumento è stato configurato : "
@@ -107,6 +119,12 @@ msgstr "Questa funzionalità non è ancora stata configurata, si prega di contat
 
 msgid "Tool consumer(s)"
 msgstr "Tool consumer(s)"
+
+msgid "User is not authorized to run this delivery"
+msgstr ""
+
+msgid "Wrong value of \"secure\" variable."
+msgstr ""
 
 msgid "You have already taken this test."
 msgstr "Hai già preso questo test"

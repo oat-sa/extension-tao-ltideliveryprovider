@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint72-½\n"
-"PO-Revision-Date: 2018-03-21T13:43:17\n"
+"Project-Id-Version: TAO 3.3.0-sprint91\n"
+"PO-Revision-Date: 2018-12-14T15:02:38\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-CA\n"
@@ -23,9 +23,6 @@ msgid "Access to this functionality is restricted"
 msgstr ""
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
-
-msgid "Adding/Updating search index for %s"
 msgstr ""
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
@@ -124,6 +121,9 @@ msgid "Tool consumer(s)"
 msgstr ""
 
 msgid "User is not authorized to run this delivery"
+msgstr ""
+
+msgid "Wrong value of \"secure\" variable."
 msgstr ""
 
 msgid "You have already taken this test."

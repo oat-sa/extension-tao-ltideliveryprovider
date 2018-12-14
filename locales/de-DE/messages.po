@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint33\n"
-"PO-Revision-Date: 2016-08-25T14:35:25\n"
+"Project-Id-Version: TAO 3.3.0-sprint91\n"
+"PO-Revision-Date: 2018-12-14T15:02:37\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de-DE\n"
@@ -25,6 +25,12 @@ msgstr "Zugriff auf diese Funktion ist beschränkt."
 msgid "Access to this functionality is restricted to students"
 msgstr "Zugriff auf diese Funktion ist auf Testteilnehmer beschränkt"
 
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr ""
+
+msgid "Attempts limit has been reached."
+msgstr ""
+
 msgid "Available Deliveries"
 msgstr "Verfügbare Bereitstellungen"
 
@@ -47,6 +53,9 @@ msgstr "Kopieren Sie folgende URL und fügen Sie diese in das LTI kompatible Too
 msgid "Deliveries"
 msgstr "Bereitstellungen"
 
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr ""
+
 msgid "Executions"
 msgstr "Ausführungen"
 
@@ -56,6 +65,9 @@ msgstr "URL aufrufen"
 #, tao-public
 msgid "LTI"
 msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr ""
 
 msgid "No deliveries available"
 msgstr "Keine Bereitstellungen verfügbar"
@@ -93,11 +105,11 @@ msgstr "Bereitstellung auswählen"
 msgid "Selected Delivery"
 msgstr "Ausgewählte Bereitstellung"
 
+msgid "Test Launch Queue"
+msgstr ""
+
 msgid "Thank you"
 msgstr "Vielen Dank"
-
-msgid "The delivery is not associated to a Result server storage policy"
-msgstr "Die Bereitstellung steht nicht mit einer Server-Speichermethode für Ergebnisse in Verbindung"
 
 msgid "This tool has been configured:"
 msgstr "Dieses Werkzeug wurde konfiguriert:"
@@ -107,6 +119,12 @@ msgstr "Dieses Werkzeug wurde noch nicht konfiguriert, Bitte kontaktieren Sie ih
 
 msgid "Tool consumer(s)"
 msgstr "Werkzeug-Nutzer"
+
+msgid "User is not authorized to run this delivery"
+msgstr ""
+
+msgid "Wrong value of \"secure\" variable."
+msgstr ""
 
 msgid "You have already taken this test."
 msgstr "Sie haben an diesem Test schon teilgenommen."

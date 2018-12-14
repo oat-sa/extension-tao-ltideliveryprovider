@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.1.0-sprint33\n"
-"PO-Revision-Date: 2016-08-25T14:32:27\n"
+"Project-Id-Version: TAO 3.3.0-sprint91\n"
+"PO-Revision-Date: 2018-12-14T15:02:40\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -25,6 +25,12 @@ msgstr "この機能へのアクセスが制限されています"
 msgid "Access to this functionality is restricted to students"
 msgstr "この機能へのアクセスは学生には制限されています"
 
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr ""
+
+msgid "Attempts limit has been reached."
+msgstr ""
+
 msgid "Available Deliveries"
 msgstr "利用できるデリバリ"
 
@@ -47,6 +53,9 @@ msgstr "下記のURLをコピーして、LTIのコンシューマ側にペース
 msgid "Deliveries"
 msgstr "デリバリ"
 
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr ""
+
 msgid "Executions"
 msgstr "実行"
 
@@ -56,6 +65,9 @@ msgstr "URLを起動"
 #, tao-public
 msgid "LTI"
 msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr ""
 
 msgid "No deliveries available"
 msgstr "デリバリ可能なものがありません"
@@ -93,11 +105,11 @@ msgstr "デリバリを選択"
 msgid "Selected Delivery"
 msgstr "デリバリを選択しました"
 
+msgid "Test Launch Queue"
+msgstr ""
+
 msgid "Thank you"
 msgstr "ありがとうございました"
-
-msgid "The delivery is not associated to a Result server storage policy"
-msgstr "デリバリは、リザルトサーバー・ストレージ・ポリシーに関連付けられていません"
 
 msgid "This tool has been configured:"
 msgstr "このツールは、設定されています"
@@ -107,6 +119,12 @@ msgstr "このツールはまだ設定されていません。指導者に問い
 
 msgid "Tool consumer(s)"
 msgstr "ツールコンシューマ"
+
+msgid "User is not authorized to run this delivery"
+msgstr ""
+
+msgid "Wrong value of \"secure\" variable."
+msgstr ""
 
 msgid "You have already taken this test."
 msgstr "このテストは既に受験しています"
