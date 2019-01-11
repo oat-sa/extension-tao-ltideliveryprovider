@@ -147,7 +147,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      */
     protected function getDeliveryExecutionLinks($userUri, $deliveryExecutionUri)
     {
-        $linksOfExecutionAndUser = $this->getPersistence()->get(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri . '_');
+        $linksOfExecutionAndUser = $this->getPersistence()->get(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri);
 
         if (empty($linksOfExecutionAndUser)) {
             $linksOfExecutionAndUser = [];
