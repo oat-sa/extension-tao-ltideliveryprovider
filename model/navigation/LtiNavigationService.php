@@ -52,7 +52,13 @@ class LtiNavigationService extends ConfigurableService
         }
         parse_str($urlParts['query'], $params);
         $urlParts['query'] = http_build_query(array_merge($params, $this->getConsumerReturnParams($launchData, $deliveryExecution)));
-        return $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
+
+        $port = '';
+        if (array_key_exists('port', $urlParts)) {
+            $port = ':' . $urlParts['port'];
+        }
+
+        return $urlParts['scheme'] . '://' . $urlParts['host'] . $port . $urlParts['path'] . '?' . $urlParts['query'];
     }
 
     protected function getConsumerReturnParams(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
