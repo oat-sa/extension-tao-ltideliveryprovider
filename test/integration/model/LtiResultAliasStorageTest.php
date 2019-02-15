@@ -19,7 +19,7 @@
  *
  */
 
-namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
+namespace oat\ltiDeliveryProvider\test\integration\model\requestLog\rds;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
