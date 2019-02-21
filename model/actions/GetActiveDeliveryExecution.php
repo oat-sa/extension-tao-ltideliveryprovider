@@ -29,6 +29,7 @@ use oat\taoDelivery\model\execution\DeliveryServerService;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
+use oat\taoDelivery\model\AttemptServiceInterface;
 
 /**
  * Class GetActiveDeliveryExecution
@@ -71,6 +72,14 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
             } else {
                 $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($this->delivery, $remoteLink, $user->getIdentifier());
             }
+
+            /** @var AttemptServiceInterface $attemptService */
+            $attemptService = $this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID);
+            $satesToExclude = $attemptService->getStatesToExclude();
+            //filter sates which should not be treated as an attempt
+            $executions = array_filter($executions, function ($execution) use ($satesToExclude) {
+                return !in_array($execution->getState()->getUri(), $satesToExclude);
+            });
 
             if (empty($executions)) {
                 $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
