@@ -19,9 +19,9 @@
  *
  */
 
-namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
+namespace oat\ltiDeliveryProvider\test\integration\model\requestLog\rds;
 
-use oat\tao\test\TaoPhpUnitTestRunner;
+use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\model\execution\DeliveryExecution;
@@ -31,9 +31,8 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
  * @package oat\ltiDeliveryProvider\test\model
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class LtiResultAliasStorageTest extends TaoPhpUnitTestRunner
+class LtiResultAliasStorageTest extends TestCase
 {
-
     private $deId = 'http://sample/first.rdf#i1450191587554175';
 
     public function testStoreResultAlias()
