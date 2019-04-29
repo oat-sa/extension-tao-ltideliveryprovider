@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:10:54\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ca-ES-valencia\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ca-ES-valencia\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s Tool Provider"
+msgstr "Proveïdor de l'eina %s"
+
+msgid "%s\" has been configured:"
+msgstr "%s\" s'ha configurat:"
+
+msgid "Access to this functionality is restricted"
+msgstr "L'accés a aquesta funcionalitat està restringit"
+
+msgid "Access to this functionality is restricted to students"
+msgstr "L'accés a aquesta funcionalitat està restringit sols als estudiants"
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr ""
+
+msgid "Attempts limit has been reached."
+msgstr "S'ha arribat al límit d'intents."
+
+msgid "Available Deliveries"
+msgstr "Aplicacions disponibles"
+
+msgid "Back"
+msgstr "Anterior"
+
+msgid "Click on the back button to return to %s."
+msgstr "Feu clic al botó \"Anterior\" per a tornar a %s"
+
+msgid "Click on the back button to return."
+msgstr "Feu clic al botó \"Anterior\" per a tornar"
+
+msgid "Configured LTI Link"
+msgstr "L'enllaç s'ha configurat"
+
+msgid "Copy and paste the following URL into your LTI compatible tool consumer."
+msgstr "Copieu i apegueu l'URL següent en l'eina externa compatible amb LTI"
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Aplicacions"
+
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr ""
+
+msgid "Executions"
+msgstr "Execucions"
+
+msgid "Launch URL"
+msgstr "Obri l'URL"
+
+#, tao-public
+msgid "LTI"
+msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr "la variable màx_intents\" ha de ser numèrica."
+
+msgid "No deliveries available"
+msgstr "No hi ha aplicacions disponibles"
+
+msgid "No LTI consumers defined"
+msgstr "No hi ha  consumidors LTI definits"
+
+msgid "no monitoring"
+msgstr "sense seguiment"
+
+msgid "Please select a delivery"
+msgstr "Seleccioneu una aplicació programada"
+
+msgid "Please select a delivery for \"%s"
+msgstr "Seleccioneu una aplicació programada per a \"%s"
+
+msgid "Repeat"
+msgstr "Repetició"
+
+msgid "Repeat the test"
+msgstr "Repetició de la prova"
+
+msgid "Retake the test"
+msgstr "Torna a realitzar la prova"
+
+msgid "Return to %s."
+msgstr "Torna a %s"
+
+msgid "Select"
+msgstr "Selecciona"
+
+msgid "Select Delivery"
+msgstr "Selecciona l'aplicació"
+
+msgid "Selected Delivery"
+msgstr "Aplicació seleccionada"
+
+msgid "Test Launch Queue"
+msgstr ""
+
+msgid "Thank you"
+msgstr "Gràcies"
+
+msgid "This tool has been configured:"
+msgstr "Aquesta eina s'ha configurat:"
+
+msgid "This tool has not yet been configured, please contact your instructor"
+msgstr "Aquesta eina no s'ha configurat encara, contacteu amb el vostre instructor"
+
+msgid "Tool consumer(s)"
+msgstr "Consumidors d'eines"
+
+msgid "User is not authorized to run this delivery"
+msgstr "L'usuari no està autoritzat a executar aquesta aplicació"
+
+msgid "Wrong value of \"secure\" variable."
+msgstr ""
+
+msgid "You have already taken this test."
+msgstr "Ja heu realitzat aquesta prova."
+
+msgid "You have finished the test!"
+msgstr "He finalitzat la prova."
+

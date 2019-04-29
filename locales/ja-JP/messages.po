@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint91\n"
-"PO-Revision-Date: 2018-12-14T15:02:40\n"
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:06:29\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -32,7 +32,7 @@ msgid "Attempts limit has been reached."
 msgstr ""
 
 msgid "Available Deliveries"
-msgstr "利用できるデリバリ"
+msgstr "利用できるデリバリー"
 
 msgid "Back"
 msgstr "戻る"
@@ -51,7 +51,7 @@ msgstr "下記のURLをコピーして、LTIのコンシューマ側にペース
 
 #, tao-public
 msgid "Deliveries"
-msgstr "デリバリ"
+msgstr "デリバリー"
 
 msgid "Delivery does not exist. Please contact your instructor."
 msgstr ""
@@ -70,7 +70,7 @@ msgid "max_attempts\" variable must me numeric."
 msgstr ""
 
 msgid "No deliveries available"
-msgstr "デリバリ可能なものがありません"
+msgstr "デリバリー可能なものがありません。"
 
 msgid "No LTI consumers defined"
 msgstr "LTIコンシューマが定義されていません"
@@ -79,10 +79,10 @@ msgid "no monitoring"
 msgstr "モニタリングがありません"
 
 msgid "Please select a delivery"
-msgstr "デリバリを選んでください"
+msgstr "デリバリーを選んでください。"
 
 msgid "Please select a delivery for \"%s"
-msgstr "\"%s でデリバリするものを選んでください"
+msgstr "\"%s でデリバリーするものを選んでください。"
 
 msgid "Repeat"
 msgstr "リピート"
@@ -100,10 +100,10 @@ msgid "Select"
 msgstr "選択"
 
 msgid "Select Delivery"
-msgstr "デリバリを選択"
+msgstr "デリバリーを選択"
 
 msgid "Selected Delivery"
-msgstr "デリバリを選択しました"
+msgstr "デリバリーを選択しました。"
 
 msgid "Test Launch Queue"
 msgstr ""
@@ -112,7 +112,7 @@ msgid "Thank you"
 msgstr "ありがとうございました"
 
 msgid "This tool has been configured:"
-msgstr "このツールは、設定されています"
+msgstr "このツールは設定されています:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
 msgstr "このツールはまだ設定されていません。指導者に問い合わせてください。"

@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:14:00\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: lt-LT\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: lt-LT\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s Tool Provider"
+msgstr "%s Įrankio Tiekėjas"
+
+msgid "%s\" has been configured:"
+msgstr "%s\" buvo sukonfigūruotas."
+
+msgid "Access to this functionality is restricted"
+msgstr "Prieiga prie šio funkcionalumo yra apribota"
+
+msgid "Access to this functionality is restricted to students"
+msgstr "Prieiga prie šio funkcionalumo apribota studentams"
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr ""
+
+msgid "Attempts limit has been reached."
+msgstr "Bandymų limitas buvo pasiektas."
+
+msgid "Available Deliveries"
+msgstr "Galimos Pateiktys"
+
+msgid "Back"
+msgstr "Atgal"
+
+msgid "Click on the back button to return to %s."
+msgstr "Spausk ant mygtuko, kad grįžti į %s."
+
+msgid "Click on the back button to return."
+msgstr "Spausk ant mygtuko, kad sugrįžti."
+
+msgid "Configured LTI Link"
+msgstr "Konfigūruota LTI Nuoroda"
+
+msgid "Copy and paste the following URL into your LTI compatible tool consumer."
+msgstr "Kopijuoti ir įklijuoti nurodytą URL į jūsų LTI palaikomą įrankio naudotoją."
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Pateiktys"
+
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr ""
+
+msgid "Executions"
+msgstr "Vykdymai"
+
+msgid "Launch URL"
+msgstr "Paleidimo nuoroda"
+
+#, tao-public
+msgid "LTI"
+msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr "max_attempts\" kintamasis privalo būti skaitmeninis."
+
+msgid "No deliveries available"
+msgstr "Nėra galimų pateikčių"
+
+msgid "No LTI consumers defined"
+msgstr "Nenustatyti LTI naudotojai"
+
+msgid "no monitoring"
+msgstr "nėra stebėjimo"
+
+msgid "Please select a delivery"
+msgstr "Prašome pasirinkti pateiktį"
+
+msgid "Please select a delivery for \"%s"
+msgstr "Prašome pasirinkti pateiktį \"%s"
+
+msgid "Repeat"
+msgstr "Kartoti"
+
+msgid "Repeat the test"
+msgstr "Kartoti testą"
+
+msgid "Retake the test"
+msgstr "Pakartoti testą"
+
+msgid "Return to %s."
+msgstr "Grįžti į %s."
+
+msgid "Select"
+msgstr "Pasirinkti"
+
+msgid "Select Delivery"
+msgstr "Pasirinkti Pateiktį"
+
+msgid "Selected Delivery"
+msgstr "Pasirinkta Pateiktis"
+
+msgid "Test Launch Queue"
+msgstr ""
+
+msgid "Thank you"
+msgstr "Ačiū"
+
+msgid "This tool has been configured:"
+msgstr "Šis įrankis buvo konfigūruotas:"
+
+msgid "This tool has not yet been configured, please contact your instructor"
+msgstr "Šis įrankis nebuvo konfigūruotas, prašome pranešti instruktoriui"
+
+msgid "Tool consumer(s)"
+msgstr "Įrankio naudotojas(–iai)"
+
+msgid "User is not authorized to run this delivery"
+msgstr "Vartotojas nėra autorizuotas vykdyti šią pateiktį"
+
+msgid "Wrong value of \"secure\" variable."
+msgstr ""
+
+msgid "You have already taken this test."
+msgstr "Jūs jau priėmėte šį testą."
+
+msgid "You have finished the test!"
+msgstr "Jūs atlikote šį testą!"
+

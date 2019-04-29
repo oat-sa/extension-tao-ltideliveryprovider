@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:10:54\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ca-ES-valencia\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ca-ES-valencia\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "LTI Delivery Execution Tool"
+msgstr "Eina per a execució de lliuraments LTI"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Tool to allow test takers to take a delivery from within an tool consumer."
+msgstr "Eina que permet als participants realitzar una prova des d'una eina externa"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Linked delivery"
+msgstr "Aplicació de proves vinculades"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "LTI Delivery Link Execution"
+msgstr "Execució de l'eina de proves vinculades LTI"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Link between delivery Tool and Consumer"
+msgstr "Enllaç entre l'eina per a l'aplicació de proves i l'eina externa"
+

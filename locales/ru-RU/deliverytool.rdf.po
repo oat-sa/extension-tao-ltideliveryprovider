@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint91\n"
-"PO-Revision-Date: 2018-12-14T15:02:41\n"
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:12:42\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ru-RU\n"
@@ -18,7 +18,7 @@ msgstr "LTI Delivery Execution Tool"
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Tool to allow test takers to take a delivery from within an tool consumer."
-msgstr ""
+msgstr "Средство, позволяющее тем, кто проходит тест, использовать средства внутри потребительского инструмента."
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -33,7 +33,7 @@ msgstr "LTI Delivery Link Execution"
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Link between delivery Tool and Consumer"
-msgstr ""
+msgstr "Связь между Инструментом поставки и Потребителем"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"

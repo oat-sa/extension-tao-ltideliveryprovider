@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint91\n"
-"PO-Revision-Date: 2018-12-14T15:02:42\n"
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:05:03\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sk-SK\n"
@@ -14,16 +14,16 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Tool Provider"
-msgstr ""
+msgstr "%s Poskytovateľ nástrojov"
 
 msgid "%s\" has been configured:"
-msgstr ""
+msgstr "%s\" bol nakonfigurovaný:"
 
 msgid "Access to this functionality is restricted"
-msgstr ""
+msgstr "Prístup k tejto funkcii je obmedzený"
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "Prístup k tejto funkcii je obmedzený pre študentov"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
 msgstr ""
@@ -32,93 +32,93 @@ msgid "Attempts limit has been reached."
 msgstr ""
 
 msgid "Available Deliveries"
-msgstr ""
+msgstr "Dostupné doručenia"
 
 msgid "Back"
-msgstr ""
+msgstr "Späť"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "Kliknutím na tlačidlo Späť sa vrátite na %s."
 
 msgid "Click on the back button to return."
-msgstr ""
+msgstr "Kliknutím na tlačidlo späť sa vrátite."
 
 msgid "Configured LTI Link"
-msgstr ""
+msgstr "Konfigurovaný LTI Link"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
+msgstr "Skopírujte a vložte nasledujúcu adresu URL do vášho LTI kompatibilného spotrebiteľského nástroja."
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Doručenia"
 
 msgid "Delivery does not exist. Please contact your instructor."
 msgstr ""
 
 msgid "Executions"
-msgstr ""
+msgstr "Realizácia"
 
 msgid "Launch URL"
-msgstr ""
+msgstr "Spustiť webovú adresu"
 
 #, tao-public
 msgid "LTI"
-msgstr ""
+msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
 msgstr ""
 
 msgid "No deliveries available"
-msgstr ""
+msgstr "Nie sú k dispozícii žiadne doručenia"
 
 msgid "No LTI consumers defined"
-msgstr ""
+msgstr "Nie sú definovaný žiadny LTI spotrebitelia"
 
 msgid "no monitoring"
-msgstr ""
+msgstr "žiadne monitorovanie"
 
 msgid "Please select a delivery"
-msgstr ""
+msgstr "Vyberte prosím doručenie"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "Prosím vyberte doručenie pre \"%s"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Opakovať"
 
 msgid "Repeat the test"
-msgstr ""
+msgstr "Opakovať test"
 
 msgid "Retake the test"
-msgstr ""
+msgstr "Zopakovať test"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "Návrat na %s."
 
 msgid "Select"
-msgstr ""
+msgstr "Vybrať"
 
 msgid "Select Delivery"
-msgstr ""
+msgstr "Vybrať doručenie"
 
 msgid "Selected Delivery"
-msgstr ""
+msgstr "Vybrané doručenie"
 
 msgid "Test Launch Queue"
 msgstr ""
 
 msgid "Thank you"
-msgstr ""
+msgstr "Ďakujeme"
 
 msgid "This tool has been configured:"
-msgstr ""
+msgstr "Tento nástroj bol nakonfigurovaný:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Tento nástroj ešte nebol nakonfigurovaný, obráťte sa prosím na svojho inštruktora"
 
 msgid "Tool consumer(s)"
-msgstr ""
+msgstr "Spotrebitelia nástrojov"
 
 msgid "User is not authorized to run this delivery"
 msgstr ""
@@ -127,8 +127,8 @@ msgid "Wrong value of \"secure\" variable."
 msgstr ""
 
 msgid "You have already taken this test."
-msgstr ""
+msgstr "Už ste vykonali tento test."
 
 msgid "You have finished the test!"
-msgstr ""
+msgstr "Test ste dokončili!"
 
