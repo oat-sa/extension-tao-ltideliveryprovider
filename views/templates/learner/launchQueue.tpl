@@ -9,7 +9,7 @@ use oat\tao\helpers\Layout;
         <title><?=__('Test Launch Queue');?></title>
         <?= \tao_helpers_Scriptloader::render() ?>
         <link rel="stylesheet" type="text/css" href="<?= Template::css('reset.css','tao') ?>" />
-        <link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.8.22.custom.css','tao') ?>" />
+        <link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.9.2.custom.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('errors.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('userError.css','tao') ?>" />
         <?= Layout::getAmdLoader(Template::js('loader/app.min.js', 'tao'), 'controller/app', get_data('client_params')) ?>
