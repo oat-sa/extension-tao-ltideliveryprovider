@@ -33,8 +33,11 @@ use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
+use oat\tao\model\mutex\LockTrait;
 
 class LTIDeliveryTool extends LtiTool {
+
+    use LockTrait;
 
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
 	
@@ -89,16 +92,20 @@ class LTIDeliveryTool extends LtiTool {
         return $redirectUrl;
     }
 
-	/**
-	 * Start a new delivery execution
-	 * 
-	 * @param core_kernel_classes_Resource $delivery
-	 * @param core_kernel_classes_Resource $link
-	 * @param User $user
-	 * @return DeliveryExecution
+    /**
+     * Start a new delivery execution
+     *
+     * @param core_kernel_classes_Resource $delivery
+     * @param core_kernel_classes_Resource $link
+     * @param User $user
+     * @return DeliveryExecution
      * @throws \common_exception_Unauthorized
-	 */
-	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
+     */
+    public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user)
+    {
+        $lock = $this->createLock(__METHOD__.$delivery->getUri().$user->getIdentifier());
+        $lock->acquire(true);
+
         $this->getAuthorizationProvider()->verifyStartAuthorization($delivery->getUri(), $user);
 
         /** @var LtiAssignment $assignmentService */
@@ -108,11 +115,12 @@ class LTIDeliveryTool extends LtiTool {
         }
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
-
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
 
-	    return $deliveryExecution;
-	}
+        $lock->release();
+
+        return $deliveryExecution;
+    }
 
     /**
      * Gives you the authorization provider for the given execution.
