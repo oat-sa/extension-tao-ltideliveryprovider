@@ -27,13 +27,13 @@ use oat\taoLti\models\classes\LtiTool;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
 use oat\oatbox\user\User;
+use oat\oatbox\mutex\LockTrait;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
-use oat\tao\model\mutex\LockTrait;
 
 class LTIDeliveryTool extends LtiTool {
 
