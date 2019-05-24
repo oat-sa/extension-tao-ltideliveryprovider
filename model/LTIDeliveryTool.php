@@ -103,7 +103,7 @@ class LTIDeliveryTool extends LtiTool {
      */
     public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user)
     {
-        $lock = $this->createLock(__METHOD__.$delivery->getUri().$user->getIdentifier());
+        $lock = $this->createLock(__METHOD__.$delivery->getUri().$user->getIdentifier(), 30);
         $lock->acquire(true);
 
         $this->getAuthorizationProvider()->verifyStartAuthorization($delivery->getUri(), $user);
@@ -111,14 +111,13 @@ class LTIDeliveryTool extends LtiTool {
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
+            $lock->release();
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
-
         $lock->release();
-
         return $deliveryExecution;
     }
 
