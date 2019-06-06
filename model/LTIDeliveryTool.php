@@ -27,6 +27,7 @@ use oat\taoLti\models\classes\LtiTool;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
 use oat\oatbox\user\User;
+use oat\oatbox\mutex\LockTrait;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
@@ -35,6 +36,8 @@ use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
 
 class LTIDeliveryTool extends LtiTool {
+
+    use LockTrait;
 
 	const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
 	
@@ -89,30 +92,34 @@ class LTIDeliveryTool extends LtiTool {
         return $redirectUrl;
     }
 
-	/**
-	 * Start a new delivery execution
-	 * 
-	 * @param core_kernel_classes_Resource $delivery
-	 * @param core_kernel_classes_Resource $link
-	 * @param User $user
-	 * @return DeliveryExecution
+    /**
+     * Start a new delivery execution
+     *
+     * @param core_kernel_classes_Resource $delivery
+     * @param core_kernel_classes_Resource $link
+     * @param User $user
+     * @return DeliveryExecution
      * @throws \common_exception_Unauthorized
-	 */
-	public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user) {
+     */
+    public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user)
+    {
+        $lock = $this->createLock(__METHOD__.$delivery->getUri().$user->getIdentifier(), 30);
+        $lock->acquire(true);
+
         $this->getAuthorizationProvider()->verifyStartAuthorization($delivery->getUri(), $user);
 
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user) ) {
+            $lock->release();
             throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
-
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
-
-	    return $deliveryExecution;
-	}
+        $lock->release();
+        return $deliveryExecution;
+    }
 
     /**
      * Gives you the authorization provider for the given execution.
