@@ -304,8 +304,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('6.5.0');
         }
 
-        $this->skip('6.5.0', '9.0.0');
-        if ($this->isVersion('9.0.0')) {
+        $this->skip('6.5.0', '9.0.1');
+
+        if ($this->isVersion('9.0.1')) {
             $service = $this->getServiceManager()->get(LtiNavigationService::SERVICE_ID);
             if(!$service->getOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS)){
                 $service->setOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS, false);
