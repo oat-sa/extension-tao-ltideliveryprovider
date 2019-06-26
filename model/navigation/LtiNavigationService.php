@@ -30,6 +30,8 @@ class LtiNavigationService extends ConfigurableService
 {
     const SERVICE_ID = 'ltiDeliveryProvider/LtiNavigation';
 
+    const OPTION_DELIVERY_RETURN_STATUS = 'delivery_return_status';
+
     const OPTION_MESSAGE_FACTORY = 'message';
 
     /**
@@ -37,6 +39,16 @@ class LtiNavigationService extends ConfigurableService
      */
     const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
+
+    /**
+     * @param LtiLaunchData $launchData
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @return string
+     * @throws \common_exception_NotFound
+     * @throws \oat\oatbox\service\exception\InvalidService
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws \oat\taoLti\models\classes\LtiException
+     */
     public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         return $this->showThankyou($launchData)
@@ -44,6 +56,15 @@ class LtiNavigationService extends ConfigurableService
             : $this->getConsumerReturnUrl($launchData, $deliveryExecution);
     }
 
+    /**
+     * @param LtiLaunchData $launchData
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @return string
+     * @throws \common_exception_NotFound
+     * @throws \oat\oatbox\service\exception\InvalidService
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws \oat\taoLti\models\classes\LtiException
+     */
     protected function getConsumerReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         $urlParts = parse_url($launchData->getReturnUrl());
@@ -61,6 +82,14 @@ class LtiNavigationService extends ConfigurableService
         return $urlParts['scheme'] . '://' . $urlParts['host'] . $port . $urlParts['path'] . '?' . $urlParts['query'];
     }
 
+    /**
+     * @param LtiLaunchData $launchData
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @return array
+     * @throws \common_exception_NotFound
+     * @throws \oat\oatbox\service\exception\InvalidService
+     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     */
     protected function getConsumerReturnParams(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         $ltiMessage = $this->getSubService(self::OPTION_MESSAGE_FACTORY)->getLtiMessage($deliveryExecution);
@@ -69,6 +98,9 @@ class LtiNavigationService extends ConfigurableService
             : []
         ;
         $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
+        if ($this->getOption(self::OPTION_DELIVERY_RETURN_STATUS)){
+            $params['deliveryExecutionStatus'] = $deliveryExecution->getState()->getLabel();
+        }
         return $params;
     }
 
@@ -101,8 +133,8 @@ class LtiNavigationService extends ConfigurableService
                 case 'false':
                     return true;
                 default:
-                    $this->logWarning('Unexpected value for \''.DeliveryTool::PARAM_SKIP_THANKYOU.'\': '
-                        .$launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU));
+                    $this->logWarning('Unexpected value for \'' . DeliveryTool::PARAM_SKIP_THANKYOU . '\': '
+                        . $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU));
             }
         }
         return $this->getOption(self::OPTION_THANK_YOU_SCREEN);
