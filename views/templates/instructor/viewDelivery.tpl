@@ -11,7 +11,7 @@
 <body class="tao-scope">
     <div style="padding: 0 0 10px 0">
     	<?= has_data('linkTitle')
-    	   ? __('"%s" has been configured:', get_data('linkTitle'))
+    	   ? __('"%s" has been configured:', _dh(get_data('linkTitle')))
     	   : __('This tool has been configured:')?>
     </div>
 
@@ -19,7 +19,7 @@
         <div class="col-3">
             <table class="matrix">
                 <tbody>
-                <tr><th><?=__('Selected Delivery');?></th><td><?= get_data('delivery')->getLabel()?></td></tr>
+                <tr><th><?=__('Selected Delivery');?></th><td><?= _dh(get_data('delivery')->getLabel())?></td></tr>
                 <?php if(has_data('executionCount')) :?>
                 <tr><th><?=__('Executions');?></th><td><?= get_data('executionCount')?></td></tr>
                 <?php else :?>
