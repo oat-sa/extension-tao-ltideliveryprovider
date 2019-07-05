@@ -4,7 +4,7 @@ use oat\tao\helpers\Template;
 
 
 <div class="main-container flex-container-main-form">
-    <h2><?=__('%s Tool Provider', get_data('deliveryLabel'))?></h2>
+    <h2><?=__('%s Tool Provider', _dh(get_data('deliveryLabel')))?></h2>
     <div id="form-container" class="form-content">
         <div class="xhtml_form">
             <form>
