@@ -23,6 +23,7 @@ namespace oat\ltiDeliveryProvider\model;
 use common_exception_Error;
 use core_kernel_classes_Container;
 use core_kernel_classes_Resource;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
 
@@ -33,13 +34,14 @@ use oat\taoLti\models\classes\LtiLaunchData;
  */
 class LtiLaunchDataService extends ConfigurableService
 {
+    use OntologyAwareTrait;
 
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
      * @param LtiLaunchData $launchData
-     * @return \core_kernel_classes_Resource
-     * @throws \common_exception_Error
+     * @return core_kernel_classes_Resource
+     * @throws common_exception_Error
      */
     public function findDeliveryFromLaunchData(LtiLaunchData $launchData)
     {
@@ -66,7 +68,7 @@ class LtiLaunchDataService extends ConfigurableService
     private function findResource($uri)
     {
         return $uri !== null
-            ? new core_kernel_classes_Resource($uri)
+            ? $this->getResource($uri)
             : LTIDeliveryTool::singleton()->getDeliveryFromLink();
     }
 }
