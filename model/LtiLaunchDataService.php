@@ -36,7 +36,7 @@ class LtiLaunchDataService extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    public const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
+    const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
      * @param LtiLaunchData $launchData
