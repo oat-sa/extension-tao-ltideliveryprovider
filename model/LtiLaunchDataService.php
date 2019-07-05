@@ -20,7 +20,6 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use common_exception_Error;
 use core_kernel_classes_Container;
 use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
@@ -31,6 +30,8 @@ use oat\taoLti\models\classes\LtiLaunchData;
  * Class LtiLaunchDataService
  * @package oat\ltiDeliveryProvider\model
  * @author Aleksej Tikhanovich, <aleksej@taotesting.com>
+ *
+ * TODO: Cover by unit tests
  */
 class LtiLaunchDataService extends ConfigurableService
 {
@@ -41,7 +42,6 @@ class LtiLaunchDataService extends ConfigurableService
     /**
      * @param LtiLaunchData $launchData
      * @return core_kernel_classes_Resource
-     * @throws common_exception_Error
      */
     public function findDeliveryFromLaunchData(LtiLaunchData $launchData)
     {
@@ -52,7 +52,6 @@ class LtiLaunchDataService extends ConfigurableService
      * @param LtiLaunchData $launchData
      *
      * @return core_kernel_classes_Container|core_kernel_classes_Resource
-     * @throws common_exception_Error
      */
     public function findDeliveryExecutionFromLaunchData(LtiLaunchData $launchData)
     {
@@ -63,7 +62,6 @@ class LtiLaunchDataService extends ConfigurableService
      * @param $uri
      *
      * @return core_kernel_classes_Container|core_kernel_classes_Resource
-     * @throws common_exception_Error
      */
     private function findResource($uri)
     {
