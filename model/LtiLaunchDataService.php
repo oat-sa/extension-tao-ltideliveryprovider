@@ -20,6 +20,9 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_exception_Error;
+use core_kernel_classes_Container;
+use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
 
@@ -40,16 +43,30 @@ class LtiLaunchDataService extends ConfigurableService
      */
     public function findDeliveryFromLaunchData(LtiLaunchData $launchData)
     {
-        $deliveryUri = $launchData->getCustomParameter('delivery');
+        return $this->findResource($launchData->getCustomParameter('delivery'));
+    }
 
-        if (!is_null($deliveryUri)) {
+    /**
+     * @param LtiLaunchData $launchData
+     *
+     * @return core_kernel_classes_Container|core_kernel_classes_Resource
+     * @throws common_exception_Error
+     */
+    public function findDeliveryExecutionFromLaunchData(LtiLaunchData $launchData)
+    {
+        return $this->findResource($launchData->getCustomParameter('execution'));
+    }
 
-            $delivery = new \core_kernel_classes_Resource($deliveryUri);
-        } else {
-            // stored in link
-            $delivery = LTIDeliveryTool::singleton()->getDeliveryFromLink();
-        }
-
-        return $delivery;
+    /**
+     * @param $uri
+     *
+     * @return core_kernel_classes_Container|core_kernel_classes_Resource
+     * @throws common_exception_Error
+     */
+    private function findResource($uri)
+    {
+        return $uri !== null
+            ? new core_kernel_classes_Resource($uri)
+            : LTIDeliveryTool::singleton()->getDeliveryFromLink();
     }
 }
