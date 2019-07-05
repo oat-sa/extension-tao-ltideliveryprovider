@@ -20,6 +20,9 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use core_kernel_classes_Container;
+use core_kernel_classes_Resource;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
 
@@ -27,29 +30,43 @@ use oat\taoLti\models\classes\LtiLaunchData;
  * Class LtiLaunchDataService
  * @package oat\ltiDeliveryProvider\model
  * @author Aleksej Tikhanovich, <aleksej@taotesting.com>
+ *
+ * TODO: Cover by unit tests
  */
 class LtiLaunchDataService extends ConfigurableService
 {
+    use OntologyAwareTrait;
 
     const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
      * @param LtiLaunchData $launchData
-     * @return \core_kernel_classes_Resource
-     * @throws \common_exception_Error
+     * @return core_kernel_classes_Resource
      */
     public function findDeliveryFromLaunchData(LtiLaunchData $launchData)
     {
-        $deliveryUri = $launchData->getCustomParameter('delivery');
+        return $this->findResource($launchData->getCustomParameter('delivery'));
+    }
 
-        if (!is_null($deliveryUri)) {
+    /**
+     * @param LtiLaunchData $launchData
+     *
+     * @return core_kernel_classes_Container|core_kernel_classes_Resource
+     */
+    public function findDeliveryExecutionFromLaunchData(LtiLaunchData $launchData)
+    {
+        return $this->findResource($launchData->getCustomParameter('execution'));
+    }
 
-            $delivery = new \core_kernel_classes_Resource($deliveryUri);
-        } else {
-            // stored in link
-            $delivery = LTIDeliveryTool::singleton()->getDeliveryFromLink();
-        }
-
-        return $delivery;
+    /**
+     * @param $uri
+     *
+     * @return core_kernel_classes_Container|core_kernel_classes_Resource
+     */
+    private function findResource($uri)
+    {
+        return $uri !== null
+            ? $this->getResource($uri)
+            : LTIDeliveryTool::singleton()->getDeliveryFromLink();
     }
 }
