@@ -61,7 +61,7 @@ class LtiLaunchDataServiceTest extends TestCase
 
     public function testFindIncompleteLaunchDataByDeliveryExecutionId()
     {
-        $service = $this->getLtiLaunchDataService([]);
+        $service = $this->getLtiLaunchDataService([['something']]);
 
         $this->expectException(RuntimeException::class);
 
