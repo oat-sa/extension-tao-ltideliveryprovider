@@ -89,70 +89,70 @@ No options
 
 ### LaunchQueue.conf.php
 
-#### Configuration option "relaunchInterval"
+#### Configuration option `relaunchInterval`
 
 *Description:* specifies time (in seconds) for a test taker to wait before the page is reloaded when waiting in LTI queue
 
 *Possible values:*
 * Any numerical value (> 0)
 
-#### Configuration option "relaunchIntervalDeviation"
+#### Configuration option `relaunchIntervalDeviation`
 
-*Description:* specifies time (in seconds) to pick a random amount of seconds between 0 and relaunchIntervalDeviation, then the random result is randomly added to or subtracted from relaunchInterval for each time the queue page is being reloaded. 
+*Description:* specifies time (in seconds) to pick a random amount of seconds between 0 and `relaunchIntervalDeviation`, then the random result is randomly added to or subtracted from relaunchInterval for each time the queue page is being reloaded. 
 The goal of this option is to prevent knocking the backend simultaneously by multiple clients. 
 
 *Possible values:*
-* Any numerical value between 0 and relaunchInterval
+* Any numerical value between 0 and `relaunchInterval`
 
 ### LtiDeliveryExecution.conf.php
 
-#### Configuration option "queue_persistence"
+#### Configuration option `queue_persistence`
 
-*Description:* a persistence that LTI delivery execution service should work based on. Should be a persistence name that's registered in generis/persistences.conf.php
+*Description:* a persistence that LTI delivery execution service should work based on. Should be a persistence name that's registered in `generis/persistences.conf.php`
 
 *Value example:* 
-* default
-* cache
+* `default`
+* `cache`
 
 ### LtiLaunchData.conf.php
 No options
 
 ### LtiNavigation.conf.php
-#### Configuration option "thankyouScreen"
+#### Configuration option `thankyouScreen`
 
-*Description:* whether to 'thank you' screen should be shown once a test is passed through LTI.
- It only takes effect if the 'custom_skip_thankyou' LTI parameter is omitted. Otherwise, it's only depends on the LTI parameter.
+*Description:* whether the 'thank you' screen should be shown once a test is passed through LTI.
+ It only takes effect if the `custom_skip_thankyou` LTI parameter is omitted. Otherwise, it's only depends on the LTI parameter.
 
 *Possible values:* 
-* true
-* false
+* `true`
+* `false`
 
-#### Configuration option "delivery_return_status"
+#### Configuration option `delivery_return_status`
 
-*Description:* if enabled, the 'deliveryExecutionStatus' return parameter will be included in a consumer return URL.
+*Description:* if enabled, the `deliveryExecutionStatus` return parameter will be included in a consumer return URL.
 This parameter will always be set to a delivery execution state label.
 
 *Possible values:* 
-* true: include the parameter in consumer return URLs
-* false: omit the parameter
+* `true`: include the parameter in consumer return URLs
+* `false`: omit the parameter
 
-#### Configuration option "message"
+#### Configuration option `message`
 
 *Description:* a factory for producing LTI messages
 
 *Possible values:* 
-* an instance of any class that have the 'getLtiMessage' method
+* an instance of any class that has the `getLtiMessage` method
 
 *Value example:* 
-* new oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory()
+* `new oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory()`
 
 ### LtiOutcome.conf.php
 No options
 
 ### LtiResultIdStorage.conf.php
-#### Configuration option "persistence"
-*Description:* a persistence that LTI result aliases should be stored in. Should be a persistence name that's registered in generis/persistences.conf.php
+#### Configuration option `persistence`
+*Description:* a persistence that LTI result aliases should be stored in. Should be a persistence name that's registered in `generis/persistences.conf.php`
 
 *Value example:* 
-* default
-* cache
+* `default`
+* `cache`
