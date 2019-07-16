@@ -79,13 +79,7 @@ As a system administrator you also install it through the TAO Extension Manager:
 ## LTI Endpoints
 -->
 
-## Extension Wiki
-You can find the [extension wiki here](https://github.com/oat-sa/extension-tao-ltideliveryprovider/wiki).
-
 ## Configuration options
-
-### assignment.conf.php
-No options
 
 ### LaunchQueue.conf.php
 
@@ -113,9 +107,6 @@ The goal of this option is to prevent knocking the backend simultaneously by mul
 *Value example:* 
 * `default`
 * `cache`
-
-### LtiLaunchData.conf.php
-No options
 
 ### LtiNavigation.conf.php
 #### Configuration option `thankyouScreen`
@@ -146,9 +137,6 @@ This parameter will always be set to a delivery execution state label.
 *Value example:* 
 * `new oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory()`
 
-### LtiOutcome.conf.php
-No options
-
 ### LtiResultIdStorage.conf.php
 #### Configuration option `persistence`
 *Description:* a persistence that LTI result aliases should be stored in. Should be a persistence name that's registered in `generis/persistences.conf.php`
@@ -156,3 +144,6 @@ No options
 *Value example:* 
 * `default`
 * `cache`
+
+## Extension Wiki
+You can find the [extension wiki here](https://github.com/oat-sa/extension-tao-ltideliveryprovider/wiki).
