@@ -21,34 +21,19 @@
 namespace oat\ltiDeliveryProvider\model;
 
 
-use core_kernel_classes_Container;
-use core_kernel_classes_Resource;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 
-class LtiDeliveryFactory extends ConfigurableService
+/**
+ * Class LTIDeliveryService
+ * @package oat\ltiDeliveryProvider\model
+ * @method
+ */
+class LTIDeliveryToolFactory extends ConfigurableService
 {
-    use OntologyAwareTrait;
+    const SERVICE_ID = 'ltiDeliveryProvider/LTIDeliveryToolFactory';
 
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryFactory';
-
-    /**
-     * @param $uri
-     *
-     * @return core_kernel_classes_Container|core_kernel_classes_Resource
-     */
-    public function create($uri)
+    public function create()
     {
-        return $uri !== null
-            ? $this->getResource($uri)
-            : $this->getLTIDeliveryTool()->getDeliveryFromLink();
-    }
-
-    /**
-     * @return LTIDeliveryTool
-     */
-    private function getLTIDeliveryTool()
-    {
-        return $this->getServiceLocator()->get(LTIDeliveryToolFactory::SERVICE_ID)->create();
+        return LTIDeliveryTool::singleton();
     }
 }
