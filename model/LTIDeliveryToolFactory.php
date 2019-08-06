@@ -23,11 +23,6 @@ namespace oat\ltiDeliveryProvider\model;
 
 use oat\oatbox\service\ConfigurableService;
 
-/**
- * Class LTIDeliveryService
- * @package oat\ltiDeliveryProvider\model
- * @method
- */
 class LTIDeliveryToolFactory extends ConfigurableService
 {
     const SERVICE_ID = 'ltiDeliveryProvider/LTIDeliveryToolFactory';
