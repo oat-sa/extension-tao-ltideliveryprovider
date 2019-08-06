@@ -33,7 +33,7 @@ class LtiDeliveryFactory extends ConfigurableService
     const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryFactory';
 
     /**
-     * @param $uri
+     * @param string $uri
      *
      * @return core_kernel_classes_Container|core_kernel_classes_Resource
      */
