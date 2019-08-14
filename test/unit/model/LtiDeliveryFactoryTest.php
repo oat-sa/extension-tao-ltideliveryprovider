@@ -21,28 +21,13 @@
 namespace oat\ltiDeliveryProvider\tests\model;
 
 
-use core_kernel_classes_Resource;
+use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LTIDeliveryToolFactory;
-use oat\tao\test\TaoPhpUnitTestRunner;
 
-class LtiDeliveryFactoryTest extends TaoPhpUnitTestRunner
+class LtiDeliveryFactoryTest extends TestCase
 {
-    protected function setUp()
-    {
-        $this->disableCache();
-    }
-
-    public function testCreate()
-    {
-        $factory = new LtiDeliveryFactory();
-
-        $result = $factory->create('http://url');
-
-        $this->assertInstanceOf(core_kernel_classes_Resource::class, $result);
-    }
-
     public function testCreateFromLtiSession()
     {
         $tool = $this->getMockBuilder(LTIDeliveryTool::class)->disableOriginalConstructor()->getMock();
