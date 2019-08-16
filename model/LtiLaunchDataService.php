@@ -22,7 +22,6 @@ namespace oat\ltiDeliveryProvider\model;
 
 use core_kernel_classes_Container;
 use core_kernel_classes_Resource;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoProctoring\model\deliveryLog\DeliveryLog;
@@ -31,13 +30,9 @@ use RuntimeException;
 /**
  * @package oat\ltiDeliveryProvider\model
  * @author Aleksej Tikhanovich, <aleksej@taotesting.com>
- *
- * TODO: Cover by unit tests
  */
 class LtiLaunchDataService extends ConfigurableService
 {
-    use OntologyAwareTrait;
-
     const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
@@ -83,8 +78,6 @@ class LtiLaunchDataService extends ConfigurableService
      */
     private function findResource($uri)
     {
-        return $uri !== null
-            ? $this->getResource($uri)
-            : LTIDeliveryTool::singleton()->getDeliveryFromLink();
+        return $this->getServiceLocator()->get(LtiDeliveryFactory::SERVICE_ID)->create($uri);
     }
 }
