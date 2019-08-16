@@ -19,6 +19,8 @@
 namespace oat\ltiDeliveryProvider\scripts\update;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
+use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
+use oat\ltiDeliveryProvider\model\LTIDeliveryToolFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\LtiResultCustomFieldsService;
@@ -316,5 +318,11 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('9.1.0', '9.3.0');
+
+        if ($this->isVersion('9.3.0')) {
+            $this->getServiceManager()->register(LtiDeliveryFactory::SERVICE_ID, new LtiDeliveryFactory());
+            $this->getServiceManager()->register(LTIDeliveryToolFactory::SERVICE_ID, new LTIDeliveryToolFactory());
+            $this->setVersion('9.4.0');
+        }
     }
 }
