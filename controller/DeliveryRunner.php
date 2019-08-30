@@ -101,6 +101,8 @@ class DeliveryRunner extends DeliveryServer
 
         try {
             $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
+            $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
+            $deliveryExecutionStateService->pause($newExecution);
             $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
         } catch (\common_exception_Unauthorized $e) {
             $ltiException = new LtiException(
