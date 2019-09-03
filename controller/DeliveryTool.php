@@ -211,7 +211,7 @@ class DeliveryTool extends ToolModule
      * @throws LtiException
      * @throws \common_exception_Error
      */
-    private function getDelivery()
+    protected function getDelivery()
     {
         $returnValue = null;
         //passed as aprameter
