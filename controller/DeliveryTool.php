@@ -14,18 +14,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2019 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_http_Request;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
+use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
+use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use \tao_helpers_Uri;
 use \common_session_SessionManager;
@@ -38,7 +41,7 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\tao\model\actionQueue\ActionFullException;
 
 /**
- * 
+ *
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package ltiDeliveryProvider
@@ -47,12 +50,12 @@ class DeliveryTool extends ToolModule
 {
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
-     * and will start a new testsession whenever the lti tool is launched 
-     * 
+     * and will start a new testsession whenever the lti tool is launched
+     *
      * @var string
      */
     const PARAM_FORCE_RESTART = 'custom_force_restart';
-    
+
     /**
      * Setting this parameter to 'true' will prevent the thank you screen to be shown after
      * the test and skip directly to the return url
@@ -79,7 +82,7 @@ class DeliveryTool extends ToolModule
      * @throws \common_exception_Error
      * @throws \common_exception_IsAjaxAction
      * @throws \common_exception_NotFound
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     * @throws LtiVariableMissingException
      */
     public function run()
     {
@@ -118,7 +121,7 @@ class DeliveryTool extends ToolModule
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
                     $this->returnError(__('Access to this functionality is restricted'), false);
-                }   
+                }
             } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
             } else {
@@ -130,6 +133,7 @@ class DeliveryTool extends ToolModule
     /**
      * @throws LtiException
      * @throws \common_exception_Error
+     * @throws \common_ext_ExtensionException
      */
     public function launchQueue()
     {
@@ -188,7 +192,7 @@ class DeliveryTool extends ToolModule
         $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
         return $deliveryExecutionService->getActiveDeliveryExecution($delivery);
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see ToolModule::getTool()
@@ -214,7 +218,7 @@ class DeliveryTool extends ToolModule
         if ($this->hasRequestParameter('delivery')) {
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
-            
+
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
 
             /** @var LtiLaunchDataService $launchDataService */
@@ -223,5 +227,22 @@ class DeliveryTool extends ToolModule
         }
         return $returnValue;
     }
-    
+
+    /**
+     * Build launch data from request and add extra parameters
+     *
+     * @param common_http_Request $request
+     * @return LtiLaunchData
+     * @throws LtiException
+     * @throws \ResolverException
+     * @throws \common_exception_Error
+     */
+    protected function buildLaunchData(common_http_Request $request)
+    {
+        return LtiLaunchData::fromRequest($request, [
+                LtiLaunchData::LIS_RESULT_SOURCEDID => $this->getDelivery()->getUri(),
+                LtiLaunchData::LIS_OUTCOME_SERVICE_URL => _url('manageResults', 'ResultController', 'taoLtiConsumer')
+            ]
+        );
+    }
 }
