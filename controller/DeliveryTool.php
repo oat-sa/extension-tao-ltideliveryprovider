@@ -14,45 +14,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2019 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_Logger;
+use common_session_SessionManager;
+use core_kernel_classes_Resource;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
+use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
+use oat\tao\model\actionQueue\ActionFullException;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
-use oat\taoLti\models\classes\LtiService;
-use oat\taoQtiTest\models\QtiTestExtractionFailedException;
-use \tao_helpers_Uri;
-use \common_session_SessionManager;
-use \common_Logger;
-use \core_kernel_classes_Resource;
-use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
-use oat\ltiDeliveryProvider\model\LtiAssignment;
-use oat\tao\model\actionQueue\ActionFullException;
+use oat\taoLti\models\classes\LtiRoles;
+use oat\taoLti\models\classes\LtiService;
+use oat\taoLti\models\classes\LtiVariableMissingException;
+use oat\taoQtiTest\models\QtiTestExtractionFailedException;
+use tao_helpers_Uri;
 
-/**
- * 
- * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
- * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
- * @package ltiDeliveryProvider
- */
 class DeliveryTool extends ToolModule
 {
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
-     * and will start a new testsession whenever the lti tool is launched 
-     * 
+     * and will start a new testsession whenever the lti tool is launched
+     *
      * @var string
      */
     const PARAM_FORCE_RESTART = 'custom_force_restart';
-    
     /**
      * Setting this parameter to 'true' will prevent the thank you screen to be shown after
      * the test and skip directly to the return url
@@ -60,7 +54,6 @@ class DeliveryTool extends ToolModule
      * @var string
      */
     const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
-
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
      * page. (no effect if PARAM_SKIP_THANKYOU is set to 'true')
@@ -79,7 +72,7 @@ class DeliveryTool extends ToolModule
      * @throws \common_exception_Error
      * @throws \common_exception_IsAjaxAction
      * @throws \common_exception_NotFound
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     * @throws LtiVariableMissingException
      */
     public function run()
     {
@@ -112,15 +105,15 @@ class DeliveryTool extends ToolModule
                     } catch (ActionFullException $e) {
                         $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
                             'position' => $e->getPosition(),
-                            'delivery' => $compiledDelivery->getUri()
+                            'delivery' => $compiledDelivery->getUri(),
                         ]));
                     }
                 } else {
                     common_Logger::e('Lti learner has no access to delivery runner');
                     $this->returnError(__('Access to this functionality is restricted'), false);
-                }   
+                }
             } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
-                $this->redirect(_url('showDelivery', 'LinkConfiguration', null, array('uri' => $compiledDelivery->getUri())));
+                $this->redirect(_url('showDelivery', 'LinkConfiguration', null, ['uri' => $compiledDelivery->getUri()]));
             } else {
                 $this->returnError(__('Access to this functionality is restricted to students'), false);
             }
@@ -130,14 +123,15 @@ class DeliveryTool extends ToolModule
     /**
      * @throws LtiException
      * @throws \common_exception_Error
+     * @throws \common_ext_ExtensionException
      */
     public function launchQueue()
     {
         $delivery = $this->getDelivery();
         if (!$delivery->exists()) {
             throw new LtiException(
-            __('Delivery does not exist. Please contact your instructor.'),
-            LtiErrorMessage::ERROR_INVALID_PARAMETER);
+                __('Delivery does not exist. Please contact your instructor.'),
+                LtiErrorMessage::ERROR_INVALID_PARAMETER);
         }
         $runUrl = _url('run', 'DeliveryTool', null, ['delivery' => $delivery->getUri()]);
         $config = $this->getServiceLocator()->get('ltiDeliveryProvider/LaunchQueue')->getConfig();
@@ -151,7 +145,8 @@ class DeliveryTool extends ToolModule
 
     /**
      * @param core_kernel_classes_Resource $delivery
-     * @param DeliveryExecution $activeExecution
+     * @param DeliveryExecution            $activeExecution
+     *
      * @return string
      * @throws LtiException
      * @throws \common_exception_Error
@@ -164,13 +159,13 @@ class DeliveryTool extends ToolModule
         }
 
         if ($activeExecution !== null) {
-            return _url('runDeliveryExecution', 'DeliveryRunner', null, array('deliveryExecution' => $activeExecution->getIdentifier()));
+            return _url('runDeliveryExecution', 'DeliveryRunner', null, ['deliveryExecution' => $activeExecution->getIdentifier()]);
         }
 
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
-            return _url('ltiOverview', 'DeliveryRunner', null, array('delivery' => $delivery->getUri()));
+            return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
         } else {
             throw new LtiException(
                 __('User is not authorized to run this delivery'),
@@ -181,6 +176,7 @@ class DeliveryTool extends ToolModule
 
     /**
      * @param core_kernel_classes_Resource $delivery
+     *
      * @return mixed|null|DeliveryExecution
      */
     protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
@@ -188,7 +184,7 @@ class DeliveryTool extends ToolModule
         $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
         return $deliveryExecutionService->getActiveDeliveryExecution($delivery);
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see ToolModule::getTool()
@@ -207,14 +203,13 @@ class DeliveryTool extends ToolModule
      * @throws LtiException
      * @throws \common_exception_Error
      */
-    private function getDelivery()
+    protected function getDelivery()
     {
         $returnValue = null;
         //passed as aprameter
         if ($this->hasRequestParameter('delivery')) {
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
-            
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
 
             /** @var LtiLaunchDataService $launchDataService */
@@ -223,5 +218,4 @@ class DeliveryTool extends ToolModule
         }
         return $returnValue;
     }
-    
 }
