@@ -168,27 +168,4 @@ class DeliveryRunner extends DeliveryServer
         $state = $deliveryExecution->getState()->getLabel();
         return new LtiMessage($state, null);
     }
-
-    /**
-     * @param $compiledDelivery
-     * @param $executionIdentifier
-     * @param $userId
-     * @throws LtiException
-     * @throws \common_exception_Error
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
-     */
-    protected function initResultServer($compiledDelivery, $executionIdentifier, $userId)
-    {
-        // lis_outcome_service_url This value should not change from one launch to the next and in general,
-        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
-        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid') ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
-
-        /** @var LtiResultAliasStorage $ltiResultIdStorage */
-        $ltiResultIdStorage = $this->getServiceManager()->get(LtiResultAliasStorage::SERVICE_ID);
-        $ltiResultIdStorage->storeResultAlias($executionIdentifier, $resultIdentifier);
-
-        parent::initResultServer($compiledDelivery, $executionIdentifier, $userId);
-    }
-
 }
