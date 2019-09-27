@@ -34,6 +34,7 @@ use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
+use oat\taoLti\models\classes\LtiLaunchData;
 
 class LTIDeliveryTool extends LtiTool {
 
@@ -53,8 +54,8 @@ class LTIDeliveryTool extends LtiTool {
 	}
 	
 	public function getDeliveryFromLink() {
-		$remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-		return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
+	    $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+	    return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
 	}
 	
 	public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution) {
@@ -117,8 +118,24 @@ class LTIDeliveryTool extends LtiTool {
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+        $this->storeAlias($launchData, $deliveryExecution->getIdentifier());
         $lock->release();
         return $deliveryExecution;
+    }
+
+    /**
+     * Store the lti result id as result alias
+     * @param LtiLaunchData $launchData
+     * @param string $deliveryExecutionId
+     */
+    public function storeAlias(LtiLaunchData $launchData, $deliveryExecutionId)
+    {
+        if ($launchData->hasVariable(LtiLaunchData::LIS_RESULT_SOURCEDID)) {
+            $ltiResultId = $launchData->getVariable(LtiLaunchData::LIS_RESULT_SOURCEDID);
+            $ltiResultIdStorage = $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
+            $ltiResultIdStorage->storeResultAlias($deliveryExecutionId, $ltiResultId);
+        }
     }
 
     /**
