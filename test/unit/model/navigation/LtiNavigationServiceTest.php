@@ -23,6 +23,7 @@ use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\generis\test\TestCase;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoLti\models\classes\LtiLaunchData;
+use oat\generis\test\MockObject;
 
 /**
  * Class LtiNavigationServiceTest
@@ -31,17 +32,17 @@ use oat\taoLti\models\classes\LtiLaunchData;
 class LtiNavigationServiceTest extends TestCase
 {
     /**
-     * @var LtiNavigationService|\PHPUnit_Framework_MockObject_MockObject
+     * @var LtiNavigationService|MockObject
      */
     private $object;
 
     /**
-     * @var LtiLaunchData|\PHPUnit_Framework_MockObject_MockObject
+     * @var LtiLaunchData|MockObject
      */
     private $launchDataMock;
 
     /**
-     * @var DeliveryExecutionInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var DeliveryExecutionInterface|MockObject
      */
     private $deliveryExecutionMock;
 

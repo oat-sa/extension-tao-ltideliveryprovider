@@ -30,6 +30,7 @@ use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\TaoLtiSession;
 use Psr\Log\LoggerInterface;
+use oat\generis\test\MockObject;
 
 /**
  * Class LtiAssignmentAuthorizationServiceTest
@@ -40,25 +41,25 @@ class LtiAssignmentTest extends TestCase
     /** @var LtiAssignment */
     private $object;
 
-    /** @var SessionService|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var SessionService|MockObject */
     private $sessionServiceMock;
 
-    /** @var AttemptServiceInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var AttemptServiceInterface|MockObject */
     private $attemptServiceMock;
 
-    /** @var User|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var User|MockObject */
     private $userMock;
 
-    /** @var \core_kernel_classes_Resource|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \core_kernel_classes_Resource|MockObject */
     private $deliveryMock;
 
-    /** @var \common_session_Session|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \common_session_Session|MockObject */
     private $sessionMock;
 
-    /** @var LtiLaunchData|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var LtiLaunchData|MockObject */
     private $launchDataMock;
 
-    /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var LoggerInterface|MockObject */
     private $loggerMock;
 
     /**
