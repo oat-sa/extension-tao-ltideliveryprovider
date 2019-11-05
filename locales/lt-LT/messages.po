@@ -32,7 +32,7 @@ msgid "Attempts limit has been reached."
 msgstr "Bandymų limitas buvo pasiektas."
 
 msgid "Available Deliveries"
-msgstr "Galimos Pateiktys"
+msgstr "Galimi testai"
 
 msgid "Back"
 msgstr "Atgal"
@@ -70,7 +70,7 @@ msgid "max_attempts\" variable must me numeric."
 msgstr "max_attempts\" kintamasis privalo būti skaitmeninis."
 
 msgid "No deliveries available"
-msgstr "Nėra galimų pateikčių"
+msgstr "Nėra galimų testų"
 
 msgid "No LTI consumers defined"
 msgstr "Nenustatyti LTI naudotojai"
