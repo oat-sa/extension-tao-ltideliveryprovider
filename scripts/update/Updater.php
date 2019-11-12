@@ -50,6 +50,9 @@ use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterService;
 use common_report_Report as Report;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
+use oat\tao\scripts\update\OntologyUpdater;
+use oat\ltiDeliveryProvider\model\Queue\QueuedUser;
+use oat\ltiDeliveryProvider\controller\Delivery;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -325,5 +328,11 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('9.4.0');
         }
         $this->skip('9.4.0', '10.0.0');
+
+        if ($this->isVersion('10.0.0')) {
+            OntologyUpdater::syncModels();
+            AclProxy::applyRule(new AccessRule('grant', QueuedUser::INSTANCE_ROLE, Delivery::class));
+            $this->setVersion('10.1.0');
+        }
     }
 }
