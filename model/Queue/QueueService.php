@@ -27,6 +27,7 @@ use oat\generis\persistence\PersistenceManager;
 
 class QueueService extends ConfigurableService
 {
+    const SERVICE_ID = 'ltiDeliveryProvider/QueueService';
     /**
      * KeyValue Persistence to store the queued tickets
      * @var string
