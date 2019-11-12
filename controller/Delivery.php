@@ -29,6 +29,9 @@ use oat\ltiDeliveryProvider\model\Queue\QueueService;
 use oat\ltiDeliveryProvider\model\Queue\Ticket;
 use common_http_Request;
 use oat\oatbox\session\SessionService;
+use oat\ltiDeliveryProvider\model\Queue\QueuedUser;
+use oat\tao\helpers\Template;
+use oat\tao\model\security\SecurityException;
 
 /**
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
@@ -45,39 +48,67 @@ class Delivery extends Controller implements ServiceLocatorAwareInterface
     public function index()
     {
         $request = $this->getPsrRequest();
-        // validate request
-        /*
-        $ltiLaunchData = LtiLaunchData::fromRequest($request);
-        $this->logLti($ltiLaunchData->getVariables());
-        $validator = $this->getServiceLocator()->get(LtiValidatorService::SERVICE_ID);
-        $validator->validateLaunchData($ltiLaunchData);
-        */
+        // @todo validate request
 
-        // check availability
-        // @todo
         $queueService = $this->getServiceLocator()->get(QueueService::class);
         $ticket = $queueService->createTicket($request);
         if (Ticket::STATUS_QUEUED == $ticket->getStatus()) {
-            // return launch queue client
-            return $this->getPsrResponse()->withStatus(500)->withBody('Overloaded');
+            $session = new \common_session_DefaultSession(new QueuedUser($ticket->getId()));
+            $this->getServiceLocator()->get(SessionService::SERVICE_ID)->setSession($session);
+            return $this->forward('queue', null, null, ['ticket' => $ticket->getId()]);
         }
-
         return $this->launchTicket($ticket);
     }
 
-    public function ticket() {
-        return $this->getPsrResponse()->withBody(json_encode([
-            'id' => $this->getGetParameter('id'),
-            'status' => Ticket::STATUS_READY
-        ]))->withHeader('Content-Type', 'application/json');
+    /**
+     * Load the queue view
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function queue() {
+        $renderer = new \Renderer();
+        $renderer->setTemplate(Template::getTemplate('Deliver/queue.tpl', 'ltiDeliveryProvider'));
+        $renderer->setData('ticketId', $this->getGetParameter('ticket'));
+        return $this->getPsrResponse()->withBody(stream_for($renderer->render()));
     }
 
+    /**
+     * Retrieve the ticket informaion
+     * @throws SecurityException
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function ticket() {
+        $queueService = $this->getServiceLocator()->get(QueueService::class);
+        $ticket = $queueService->getTicket($this->getGetParameter('id'));
+        if ($ticket->getId() !== $this->getTicketIdFromSession()) {
+            throw new SecurityException('User tried to access invalid ticket');
+        }
+        return $this->getPsrResponse()->withBody(stream_for(json_encode([
+            'id' => $ticket->getId(),
+            'status' => $ticket->getStatus()
+        ])))->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Launch the queued action
+     * @throws \common_exception_InconsistentData
+     * @throws SecurityException
+     */
     public function launch() {
         $queueService = $this->getServiceLocator()->get(QueueService::class);
         $ticket = $queueService->getTicket($this->getGetParameter('ticket'));
-        $this->launch($ticket);
+        if ($ticket->getStatus() !== Ticket::STATUS_READY) {
+            throw new \common_exception_InconsistentData('User trying to launch a call that is not ready');
+        }
+        if ($ticket->getId() !== $this->getTicketIdFromSession()) {
+            throw new SecurityException('User tried to access invalid ticket');
+        }
+        $this->launchTicket($ticket);
     }
 
+    /**
+     * Wrap the request, validate the session, and redirect to the lti tool
+     * @param Ticket $ticket
+     */
     protected function launchTicket(Ticket $ticket)
     {
         $ltiService = $this->getServiceLocator()->get(LtiService::class);
@@ -92,6 +123,19 @@ class Delivery extends Controller implements ServiceLocatorAwareInterface
         );
         $session = $ltiService->createLtiSession($legacyRequest);
         $this->getServiceLocator()->get(SessionService::SERVICE_ID)->setSession($session);
-        $this->forward('run', 'DeliveryTool', 'ltiDeliveryProvider', $request->getQueryParams());
+        \common_Logger::w(var_export($request->getQueryParams(), true));
+        $this->redirect(_url('run', 'DeliveryTool', 'ltiDeliveryProvider', $request->getQueryParams()));
+    }
+
+    /**
+     * @return string ticekt from session
+     */
+    protected function getTicketIdFromSession()
+    {
+        $session = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
+        if (!$session->getUser() instanceof QueuedUser) {
+            throw new \common_exception_InconsistentData('User is not queued');
+        }
+        return $session->getUser()->getAsociatedTicket();
     }
 }

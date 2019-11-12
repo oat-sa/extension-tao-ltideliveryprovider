@@ -21,6 +21,7 @@
 namespace oat\ltiDeliveryProvider\model\Queue;
 
 use Psr\Http\Message\ServerRequestInterface;
+use GuzzleHttp\Psr7\ServerRequest;
 
 class Ticket implements \JsonSerializable
 {
@@ -76,9 +77,42 @@ class Ticket implements \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'request' => $this->request,
+            'request' => $this->serializeRequest($this->request),
             'creation' => $this->creationTime,
             'status' => $this->getStatus()
         ];
+    }
+
+    /**
+     * Allow the serialization of the PsrRequest object
+     * @param ServerRequestInterface $request
+     * @return array
+     */
+    private function serializeRequest(ServerRequestInterface $request)
+    {
+        return [
+            'url' => $request->getUri()->__toString(),
+            'method' => $request->getMethod(),
+            'get' => $request->getQueryParams(),
+            'post' => $request->getParsedBody(),
+            'headers' => $request->getHeaders()
+        ];
+    }
+
+    /**
+     * Restore a ticket from json array
+     * @param array $json
+     * @return Ticket
+     */
+    public static function fromJson($json)
+    {
+        $request = new ServerRequest(
+            $json['request']['method'],
+            $json['request']['url'],
+            $json['request']['headers']
+        );
+        $request = $request->withParsedBody($json['request']['post'])
+            ->withQueryParams($json['request']['get']);
+        return new self($json['id'], $request, $json['creation'], $json['status']);
     }
 }

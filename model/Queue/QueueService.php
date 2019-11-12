@@ -22,20 +22,70 @@ namespace oat\ltiDeliveryProvider\model\Queue;
 
 use oat\oatbox\service\ConfigurableService;
 use Psr\Http\Message\RequestInterface;
+use oat\taoDelivery\model\Capacity\CapacityInterface;
+use oat\generis\persistence\PersistenceManager;
 
 class QueueService extends ConfigurableService
 {
+    /**
+     * KeyValue Persistence to store the queued tickets
+     * @var string
+     */
+    const OPTION_PERSISTENCE = 'default_kv';
+
+    /**
+     * Time To Live for the tickets before they expire
+     * @var string
+     */
+    const OPTION_TTL = 'ttl';
+
+    /**
+     * Prefix to use in the keyvalue store
+     * @var string
+     */
+    const PREFIX_PERSISTENCE = 'queue:';
+
+    /**
+     * Create a new ticket, with the correct status based on capacity 
+     * @param RequestInterface $request
+     * @return \oat\ltiDeliveryProvider\model\Queue\Ticket
+     */
     public function createTicket(RequestInterface $request) {
-        return new Ticket(openssl_random_pseudo_bytes(20),
+        $capacityService = $this->getServiceLocator()->get(CapacityInterface::SERVICE_ID);
+        $success = $capacityService->consume();
+        $ticket = new Ticket(bin2hex(openssl_random_pseudo_bytes(20)),
             $request,
             time(),
-            Ticket::STATUS_READY
-            );
+            $success ? Ticket::STATUS_READY : Ticket::STATUS_QUEUED
+        );
+        if (!$success) {
+            $this->getPersistence()->set(self::PREFIX_PERSISTENCE.$ticket->getId(), json_encode($ticket), $this->getOption(self::OPTION_TTL));
+        }
+        return $ticket;
     }
 
     public function getTicket($ticketId) {
+        $json = json_decode($this->getPersistence()->get(self::PREFIX_PERSISTENCE.$ticketId), true);
+        if (!is_array($json)) {
+            throw new \common_exception_NotFound('Unable to load ticket '.$ticketId);
+        }
+        return Ticket::fromJson($json);
     }
 
+    /**
+     * Called if new slots are available
+     * @param int $count
+     * @return int unqueued tickets
+     */
     public function unqueue($count) {
+        return 0;
+    }
+
+    /**
+     * @return \common_persistence_AdvKeyValuePersistence
+     */
+    protected function getPersistence() {
+        $pm = $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID);
+        return $pm->getPersistenceById($this->getOption(self::OPTION_PERSISTENCE));
     }
 }
