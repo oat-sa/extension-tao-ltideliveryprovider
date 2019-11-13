@@ -123,7 +123,6 @@ class Delivery extends Controller implements ServiceLocatorAwareInterface
         );
         $session = $ltiService->createLtiSession($legacyRequest);
         $this->getServiceLocator()->get(SessionService::SERVICE_ID)->setSession($session);
-        \common_Logger::w(var_export($request->getQueryParams(), true));
         $this->redirect(_url('run', 'DeliveryTool', 'ltiDeliveryProvider', $request->getQueryParams()));
     }
 

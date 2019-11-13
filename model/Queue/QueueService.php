@@ -23,28 +23,13 @@ namespace oat\ltiDeliveryProvider\model\Queue;
 use oat\oatbox\service\ConfigurableService;
 use Psr\Http\Message\RequestInterface;
 use oat\taoDelivery\model\Capacity\CapacityInterface;
-use oat\generis\persistence\PersistenceManager;
+use oat\tao\model\actionQueue\event\InstantActionOnQueueEvent;
+use oat\oatbox\event\EventManager;
+use oat\oatbox\user\AnonymousUser;
 
 class QueueService extends ConfigurableService
 {
     const SERVICE_ID = 'ltiDeliveryProvider/QueueService';
-    /**
-     * KeyValue Persistence to store the queued tickets
-     * @var string
-     */
-    const OPTION_PERSISTENCE = 'default_kv';
-
-    /**
-     * Time To Live for the tickets before they expire
-     * @var string
-     */
-    const OPTION_TTL = 'ttl';
-
-    /**
-     * Prefix to use in the keyvalue store
-     * @var string
-     */
-    const PREFIX_PERSISTENCE = 'queue:';
 
     /**
      * Create a new ticket, with the correct status based on capacity 
@@ -53,24 +38,23 @@ class QueueService extends ConfigurableService
      */
     public function createTicket(RequestInterface $request) {
         $capacityService = $this->getServiceLocator()->get(CapacityInterface::SERVICE_ID);
-        $success = $capacityService->consume();
-        $ticket = new Ticket(bin2hex(openssl_random_pseudo_bytes(20)),
-            $request,
-            time(),
-            $success ? Ticket::STATUS_READY : Ticket::STATUS_QUEUED
-        );
-        if (!$success) {
-            $this->getPersistence()->set(self::PREFIX_PERSISTENCE.$ticket->getId(), json_encode($ticket), $this->getOption(self::OPTION_TTL));
+        $repo = $this->getServiceLocator()->get(TicketRepository::SERVICE_ID);
+        $ticket = $repo->createTicket($request);
+        if ($capacityService->consume()) {
+            $ticket->setStatus(Ticket::STATUS_READY);
+        } else {
+            $this->queueTicket($ticket);
         }
         return $ticket;
     }
 
     public function getTicket($ticketId) {
-        $json = json_decode($this->getPersistence()->get(self::PREFIX_PERSISTENCE.$ticketId), true);
-        if (!is_array($json)) {
-            throw new \common_exception_NotFound('Unable to load ticket '.$ticketId);
+        $ticket = $this->getServiceLocator()->get(TicketRepository::SERVICE_ID)->loadTicket($ticketId);
+        $capacityService = $this->getServiceLocator()->get(CapacityInterface::SERVICE_ID);
+        if ($capacityService->consume()) {
+            $this->unQueueTicket($ticket);
         }
-        return Ticket::fromJson($json);
+        return $ticket;
     }
 
     /**
@@ -82,11 +66,21 @@ class QueueService extends ConfigurableService
         return 0;
     }
 
-    /**
-     * @return \common_persistence_AdvKeyValuePersistence
-     */
-    protected function getPersistence() {
-        $pm = $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID);
-        return $pm->getPersistenceById($this->getOption(self::OPTION_PERSISTENCE));
+    protected function queueTicket(Ticket $ticket) {
+        $ticket->setStatus(Ticket::STATUS_QUEUED);
+        $event = new InstantActionOnQueueEvent($ticket->getId(), new AnonymousUser(), 0, 'queue');
+        $this->getServiceLocator()->get(EventManager::SERVICE_ID)->trigger($event);
+        $this->saveTicket($ticket);
+    }
+
+    protected function unQueueTicket(Ticket $ticket) {
+        $ticket->setStatus(Ticket::STATUS_READY);
+        $event = new InstantActionOnQueueEvent($ticket->getId(), new AnonymousUser, 0, 'dequeue');
+        $this->getServiceLocator()->get(EventManager::SERVICE_ID)->trigger($event);
+        $this->saveTicket($ticket);
+    }
+
+    protected function saveTicket(Ticket $ticket) {
+        $this->getServiceLocator()->get(TicketRepository::SERVICE_ID)->saveTicket($ticket);
     }
 }

@@ -22,12 +22,15 @@ namespace oat\ltiDeliveryProvider\model\Queue;
 
 use Psr\Http\Message\ServerRequestInterface;
 use GuzzleHttp\Psr7\ServerRequest;
+use JsonSerializable;
 
-class Ticket implements \JsonSerializable
+class Ticket implements JsonSerializable
 {
-    const STATUS_QUEUED = 0;
+    const STATUS_INITIAL = 0;
 
     const STATUS_READY = 1;
+
+    const STATUS_QUEUED = 2;
 
     private $id;
 
@@ -73,6 +76,19 @@ class Ticket implements \JsonSerializable
         return $this->status;
     }
 
+    /**
+     * @param int $status
+     * @return Ticket
+     */
+    public function setStatus($status) {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see JsonSerializable::jsonSerialize()
+     */
     public function jsonSerialize()
     {
         return [
