@@ -22,6 +22,7 @@ namespace oat\ltiDeliveryProvider\controller;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
+use function GuzzleHttp\Psr7\stream_for;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -141,6 +142,23 @@ class DeliveryTool extends ToolModule
         $this->setData('position', intval($this->getRequestParameter('position')));
         $this->setData('client_params', $config);
         $this->setView('learner/launchQueue.tpl');
+    }
+
+    public function checkCapacity()
+    {
+        /** @var \oat\taoDelivery\model\Capacity\CapacityInterface $capacityService */
+        $capacityService = $this->getServiceLocator()->get(\oat\taoDelivery\model\Capacity\CapacityInterface::SERVICE_ID);
+        $capacity = $capacityService->getCapacity();
+        $payload = [
+            'id' => '',
+            'status' => 0,
+        ];
+        if ($capacity === -1 || $capacity > 0) {
+            $payload['status'] = 1;
+        }
+
+        return $this->getPsrResponse()->withBody(stream_for(json_encode($payload)))
+            ->withHeader('Content-Type', 'application/json');
     }
 
     /**
