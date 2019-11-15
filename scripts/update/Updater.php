@@ -324,6 +324,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LTIDeliveryToolFactory::SERVICE_ID, new LTIDeliveryToolFactory());
             $this->setVersion('9.4.0');
         }
-        $this->skip('9.4.0', '10.0.1');
+        $this->skip('9.4.0', '10.1.0');
     }
 }
