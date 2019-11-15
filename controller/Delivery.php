@@ -24,14 +24,16 @@ use oat\tao\model\http\Controller;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use function GuzzleHttp\Psr7\stream_for;
-use oat\taoLti\models\classes\LtiService;
 use oat\ltiDeliveryProvider\model\Queue\QueueService;
 use oat\ltiDeliveryProvider\model\Queue\Ticket;
-use common_http_Request;
 use oat\oatbox\session\SessionService;
 use oat\ltiDeliveryProvider\model\Queue\QueuedUser;
 use oat\tao\helpers\Template;
 use oat\tao\model\security\SecurityException;
+use oat\tao\model\oauth\OauthService;
+use oat\taoLti\models\classes\LtiLaunchData;
+use oat\taoLti\models\classes\TaoLtiSession;
+use oat\taoLti\models\classes\user\LtiUserService;
 
 /**
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
@@ -49,9 +51,11 @@ class Delivery extends Controller implements ServiceLocatorAwareInterface
     {
         $request = $this->getPsrRequest();
         // @todo validate request
+        $this->getServiceLocator()->get(OauthService::SERVICE_ID)->validatePsrRequest($request);
+        $launchData = LtiLaunchData::fromPsrRequest($request);
 
         $queueService = $this->getServiceLocator()->get(QueueService::class);
-        $ticket = $queueService->createTicket($request);
+        $ticket = $queueService->createTicket($launchData);
         if (Ticket::STATUS_QUEUED == $ticket->getStatus()) {
             $session = new \common_session_DefaultSession(new QueuedUser($ticket->getId()));
             $this->getServiceLocator()->get(SessionService::SERVICE_ID)->setSession($session);
@@ -111,19 +115,12 @@ class Delivery extends Controller implements ServiceLocatorAwareInterface
      */
     protected function launchTicket(Ticket $ticket)
     {
-        $ltiService = $this->getServiceLocator()->get(LtiService::class);
-        $request = $ticket->getRequest();
-        $combined = array_merge($request->getQueryParams(), $request->getParsedBody());
-        $legacyRequest = new common_http_Request(
-            $request->getUri()->__toString(),
-            $request->getMethod(),
-            $combined,
-            $request->getHeaders(),
-            $request->getBody()
-        );
-        $session = $ltiService->createLtiSession($legacyRequest);
+        $ltiLaunchData = $ticket->getRequest();
+        $userService = $this->getServiceLocator()->get(LtiUserService::SERVICE_ID);
+        $user = $userService->findOrSpawnUser($ltiLaunchData);
+        $session = new TaoLtiSession($user);
         $this->getServiceLocator()->get(SessionService::SERVICE_ID)->setSession($session);
-        $this->redirect(_url('run', 'DeliveryTool', 'ltiDeliveryProvider', $request->getQueryParams()));
+        $this->redirect(_url('run', 'DeliveryTool', 'ltiDeliveryProvider', $ltiLaunchData->getCustomParameters()));
     }
 
     /**

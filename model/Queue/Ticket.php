@@ -20,9 +20,8 @@
 
 namespace oat\ltiDeliveryProvider\model\Queue;
 
-use Psr\Http\Message\ServerRequestInterface;
-use GuzzleHttp\Psr7\ServerRequest;
 use JsonSerializable;
+use oat\taoLti\models\classes\LtiLaunchData;
 
 class Ticket implements JsonSerializable
 {
@@ -40,7 +39,7 @@ class Ticket implements JsonSerializable
 
     private $status;
 
-    public function __construct($id, $request, $creationTime, $status)
+    public function __construct($id, LtiLaunchData $request, $creationTime, $status)
     {
         $this->id = $id;
         $this->request = $request;
@@ -56,7 +55,7 @@ class Ticket implements JsonSerializable
     }
 
     /**
-     * @return ServerRequestInterface
+     * @return LtiLaunchData
      */
     public function getRequest() {
         return $this->request;
@@ -93,25 +92,9 @@ class Ticket implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'request' => $this->serializeRequest($this->request),
+            'request' => $this->request,
             'creation' => $this->creationTime,
             'status' => $this->getStatus()
-        ];
-    }
-
-    /**
-     * Allow the serialization of the PsrRequest object
-     * @param ServerRequestInterface $request
-     * @return array
-     */
-    private function serializeRequest(ServerRequestInterface $request)
-    {
-        return [
-            'url' => $request->getUri()->__toString(),
-            'method' => $request->getMethod(),
-            'get' => $request->getQueryParams(),
-            'post' => $request->getParsedBody(),
-            'headers' => $request->getHeaders()
         ];
     }
 
@@ -122,13 +105,7 @@ class Ticket implements JsonSerializable
      */
     public static function fromJson($json)
     {
-        $request = new ServerRequest(
-            $json['request']['method'],
-            $json['request']['url'],
-            $json['request']['headers']
-        );
-        $request = $request->withParsedBody($json['request']['post'])
-            ->withQueryParams($json['request']['get']);
+        $request = LtiLaunchData::fromJsonArray($json['request']);
         return new self($json['id'], $request, $json['creation'], $json['status']);
     }
 }

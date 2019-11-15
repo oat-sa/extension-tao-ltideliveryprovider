@@ -21,9 +21,9 @@
 namespace oat\ltiDeliveryProvider\model\Queue;
 
 use oat\oatbox\service\ConfigurableService;
-use Psr\Http\Message\RequestInterface;
 use oat\generis\persistence\PersistenceManager;
 use oat\generis\model\kernel\uri\UriProvider;
+use oat\taoLti\models\classes\LtiLaunchData;
 
 class TicketRepository extends ConfigurableService
 {
@@ -48,10 +48,10 @@ class TicketRepository extends ConfigurableService
 
     /**
      * Create a new ticket, with the correct status based on capacity 
-     * @param RequestInterface $request
+     * @param LtiLaunchData $request
      * @return \oat\ltiDeliveryProvider\model\Queue\Ticket
      */
-    public function createTicket(RequestInterface $request) {
+    public function createTicket(LtiLaunchData $request) {
         return new Ticket(
             $this->getServiceLocator()->get(UriProvider::SERVICE_ID)->provide(),
             $request,

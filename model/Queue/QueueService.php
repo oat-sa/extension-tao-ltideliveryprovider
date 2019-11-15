@@ -26,6 +26,7 @@ use oat\taoDelivery\model\Capacity\CapacityInterface;
 use oat\tao\model\actionQueue\event\InstantActionOnQueueEvent;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\user\AnonymousUser;
+use oat\taoLti\models\classes\LtiLaunchData;
 
 class QueueService extends ConfigurableService
 {
@@ -36,7 +37,7 @@ class QueueService extends ConfigurableService
      * @param RequestInterface $request
      * @return \oat\ltiDeliveryProvider\model\Queue\Ticket
      */
-    public function createTicket(RequestInterface $request) {
+    public function createTicket(LtiLaunchData $request) {
         $capacityService = $this->getServiceLocator()->get(CapacityInterface::SERVICE_ID);
         $repo = $this->getServiceLocator()->get(TicketRepository::SERVICE_ID);
         $ticket = $repo->createTicket($request);
