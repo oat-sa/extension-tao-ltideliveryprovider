@@ -47,7 +47,7 @@ define([
                         dataType: 'json',
                     })
                         .then(({ status }) => {
-                            if (status) {
+                            if (status == 1) {
                                 async.reject();
                                 window.location = runUrl;
                             } else {
