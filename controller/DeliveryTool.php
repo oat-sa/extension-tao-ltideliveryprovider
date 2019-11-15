@@ -137,6 +137,7 @@ class DeliveryTool extends ToolModule
         $runUrl = _url('run', 'DeliveryTool', null, ['delivery' => $delivery->getUri()]);
         $config = $this->getServiceLocator()->get('ltiDeliveryProvider/LaunchQueue')->getConfig();
         $config['runUrl'] = $runUrl;
+        $config['capacityCheckUrl'] = _url('checkCapacity', 'DeliveryTool');
         $this->defaultData();
         $this->setData('delivery', $delivery);
         $this->setData('position', intval($this->getRequestParameter('position')));
