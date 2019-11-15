@@ -53,6 +53,8 @@ use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\ltiDeliveryProvider\model\Queue\QueuedUser;
 use oat\ltiDeliveryProvider\controller\Delivery;
+use oat\ltiDeliveryProvider\model\Queue\QueueService;
+use oat\ltiDeliveryProvider\model\Queue\TicketRepository;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -332,6 +334,14 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('10.0.0')) {
             OntologyUpdater::syncModels();
             AclProxy::applyRule(new AccessRule('grant', QueuedUser::INSTANCE_ROLE, Delivery::class));
+
+            $this->getServiceManager()->register(TicketRepository::SERVICE_ID, new TicketRepository(array(
+              'default_kv' => 'default_kv',
+              'ttl' => 86400
+            )));
+
+            $this->getServiceManager()->register(QueueService::SERVICE_ID, new QueueService([]));
+
             $this->setVersion('10.1.0');
         }
     }

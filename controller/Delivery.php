@@ -32,6 +32,7 @@ use oat\oatbox\session\SessionService;
 use oat\ltiDeliveryProvider\model\Queue\QueuedUser;
 use oat\tao\helpers\Template;
 use oat\tao\model\security\SecurityException;
+use oat\tao\helpers\JavaScript;
 
 /**
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
@@ -66,8 +67,9 @@ class Delivery extends Controller implements ServiceLocatorAwareInterface
      */
     public function queue() {
         $renderer = new \Renderer();
-        $renderer->setTemplate(Template::getTemplate('Deliver/queue.tpl', 'ltiDeliveryProvider'));
+        $renderer->setTemplate(Template::getTemplate('delivery/queue.tpl', 'ltiDeliveryProvider'));
         $renderer->setData('ticketId', $this->getGetParameter('ticket'));
+        $renderer->setData('client_config_url', JavaScript::getClientConfigUrl());
         return $this->getPsrResponse()->withBody(stream_for($renderer->render()));
     }
 
