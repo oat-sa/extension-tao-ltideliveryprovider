@@ -19,36 +19,48 @@
 
 define([
     'lodash',
-    'jquery'
-], function (_, $) {
+    'module',
+    'core/polling',
+    'core/request',
+], function (_, module, polling, request) {
     'use strict';
 
-    var _defaultParams = {
-        "relaunchInterval" : 30,
-        "relaunchIntervalDeviation" : 5
+    const _defaultConfig = {
+        relaunchInterval: 30,
     };
 
     /**
      * @exports
      */
     return {
-        start: function() {
-            var loaderScript = $('#amd-loader');
-            var params = loaderScript.data('params');
-            var interval;
-            var deviation;
+        start() {
+            const { relaunchConfig = {} } = module.config();
+            const { capacityCheckUrl, relaunchInterval, runUrl } = _.defaults(relaunchConfig, _defaultConfig);
 
-            params = _.defaults(params, _defaultParams);
+            polling({
+                action: function () {
+                    const async = this.async();
 
-            interval = params.relaunchInterval;
-            deviation = parseInt(params.relaunchIntervalDeviation) - (Math.random() * parseInt(params.relaunchIntervalDeviation) * 2);
-            interval = (interval + deviation) * 1000;
-
-            if (params.runUrl) {
-                setTimeout(function () {
-                    window.location = params.runUrl;
-                }, interval);
-            }
+                    request({
+                        url: capacityCheckUrl,
+                        method: 'GET',
+                        dataType: 'json',
+                    })
+                        .then(({ status }) => {
+                            if (status) {
+                                async.reject();
+                                window.location = runUrl;
+                            } else {
+                                async.resolve();
+                            }
+                        })
+                        .catch(() => {
+                            async.resolve();
+                        });
+                },
+                interval: relaunchInterval * 1000,
+                autoStart: true,
+            });
         }
     };
 });
