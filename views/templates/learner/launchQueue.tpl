@@ -12,7 +12,7 @@ use oat\tao\helpers\Layout;
         <link rel="stylesheet" type="text/css" href="<?= Template::css('custom-theme/jquery-ui-1.9.2.custom.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('errors.css','tao') ?>" />
         <link rel="stylesheet" type="text/css" href="<?= Template::css('userError.css','tao') ?>" />
-        <?= Layout::getAmdLoader(Template::js('loader/app.min.js', 'tao'), 'controller/app', get_data('client_params')) ?>
+        <?= Layout::getAmdLoader(Template::js('loader/tao.min.js', 'tao'), 'controller/app') ?>
     </head>
     <body>
         <div id="main" class="ui-widget-content ui-corner-all">
@@ -25,3 +25,13 @@ use oat\tao\helpers\Layout;
         </div>
     </body>
 </html>
+<script>
+    requirejs.config({
+        config : {
+            'ltiDeliveryProvider/controller/DeliveryTool/launchQueue' : {
+                relaunchConfig: <?=json_encode(get_data('client_params'))?>
+            }
+        }
+    });
+</script>
+
