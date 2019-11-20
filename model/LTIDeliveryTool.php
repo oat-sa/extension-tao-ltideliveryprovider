@@ -116,6 +116,7 @@ class LTIDeliveryTool extends LtiTool {
         }
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
+        $this->linkLtiResultId($deliveryExecution);
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
         $lock->release();
         return $deliveryExecution;
@@ -145,6 +146,27 @@ class LTIDeliveryTool extends LtiTool {
 	    $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
         $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
         return $executions;
+    }
+
+    /**
+     * Link `lis_result_sourcedid` to delivery execution in order to be able to retrieve delivery execution by lis_result_sourcedid
+     *
+     * @param DeliveryExecution $deliveryExecution
+     * @throws \common_exception_Error
+     * @throws \oat\taoLti\models\classes\LtiException
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     */
+    protected function linkLtiResultId(DeliveryExecution $deliveryExecution)
+    {
+        $executionIdentifier = $deliveryExecution->getIdentifier();
+        // lis_outcome_service_url This value should not change from one launch to the next and in general,
+        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+        $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid') ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
+
+        /** @var LtiResultAliasStorage $ltiResultIdStorage */
+        $ltiResultIdStorage = $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
+        $ltiResultIdStorage->storeResultAlias($executionIdentifier, $resultIdentifier);
     }
 
 }
