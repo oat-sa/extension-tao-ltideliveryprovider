@@ -33,7 +33,7 @@ class LtiDeliveryFactoryTest extends TestCase
         $tool = $this->getMockBuilder(LTIDeliveryTool::class)->disableOriginalConstructor()->getMock();
         $tool->expects($this->once())->method('getDeliveryFromLink')->willReturn(true);
 
-        $toolFactory = $this->getMock(LTIDeliveryToolFactory::class);
+        $toolFactory = $this->createMock(LTIDeliveryToolFactory::class);
         $toolFactory->expects($this->once())->method('create')->willReturn($tool);
 
         $serviceLocator = $this->getServiceLocatorMock(
