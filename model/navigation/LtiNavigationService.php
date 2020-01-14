@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -98,7 +99,7 @@ class LtiNavigationService extends ConfigurableService
             : []
         ;
         $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
-        if ($this->getOption(self::OPTION_DELIVERY_RETURN_STATUS)){
+        if ($this->getOption(self::OPTION_DELIVERY_RETURN_STATUS)) {
             $params['deliveryExecutionStatus'] = $deliveryExecution->getState()->getLabel();
         }
         return $params;

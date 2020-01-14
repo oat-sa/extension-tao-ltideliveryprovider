@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,8 +43,10 @@ class LtiOutcomeService extends ConfigurableService
      */
     public function deferTransmit(DeliveryExecutionState $event)
     {
-        if (DeliveryExecutionInterface::STATE_FINISHIED === $event->getState() && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
-            && common_session_SessionManager::getSession() instanceof TaoLtiSession) {
+        if (
+            DeliveryExecutionInterface::STATE_FINISHIED === $event->getState() && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
+            && common_session_SessionManager::getSession() instanceof TaoLtiSession
+        ) {
 
             /** @var QueueDispatcherInterface $taskQueue */
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
@@ -55,6 +58,5 @@ class LtiOutcomeService extends ConfigurableService
                 $taskQueue->createTask(new SendLtiOutcomeTask(), $params, 'Submit LTI results');
             }
         }
-
     }
 }

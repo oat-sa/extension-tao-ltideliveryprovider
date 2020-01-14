@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +44,7 @@ class LtiLinksStorage extends InstallAction
         $migrated = false;
         $persistenceOption = $ltiDeliveryExecution->getOption(KvLtiDeliveryExecutionService::OPTION_PERSISTENCE);
         $persistence = (is_object($persistenceOption)) ? $persistenceOption : \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
-        $keys = $persistence->getDriver()->keys(KvLtiDeliveryExecutionService::LTI_DE_LINK_LINK .'*');
+        $keys = $persistence->getDriver()->keys(KvLtiDeliveryExecutionService::LTI_DE_LINK_LINK . '*');
 
         foreach ($keys as $key) {
             $data = $persistence->get($key);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -90,7 +91,7 @@ class LtiResultAliasStorageTest extends TestCase
     protected function getService()
     {
         $persistenceManager = $this->getSqlMock('test_LtiResultIdStorageTest');
-        (new \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage)->createTable($persistenceManager->getPersistenceById('test_LtiResultIdStorageTest'));
+        (new \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage())->createTable($persistenceManager->getPersistenceById('test_LtiResultIdStorageTest'));
         $storage = new LtiResultAliasStorage([
             LtiResultAliasStorage::OPTION_PERSISTENCE => 'test_LtiResultIdStorageTest'
         ]);
@@ -105,7 +106,7 @@ class LtiResultAliasStorageTest extends TestCase
     protected function loadFixtures(LtiResultAliasStorage $storage)
     {
         for ($i = 0; $i < 5; $i++) {
-            $deId = $this->deId .$i;
+            $deId = $this->deId . $i;
             $storage->storeResultAlias($deId, $i);
         }
     }
