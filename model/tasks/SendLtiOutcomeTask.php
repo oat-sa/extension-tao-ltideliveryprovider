@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,7 +32,6 @@ use taoResultServer_models_classes_OutcomeVariable;
 
 class SendLtiOutcomeTask extends AbstractAction
 {
-
     use LoggerAwareTrait;
 
     const VARIABLE_IDENTIFIER = 'LtiOutcome';
@@ -60,7 +60,7 @@ class SendLtiOutcomeTask extends AbstractAction
                     break;
                 }
             }
-            if (0 === $submitted){
+            if (0 === $submitted) {
                 throw new \common_Exception('No LTI Outcome has been submitter for execution' . $deliveryResultIdentifier);
             }
         } catch (\Exception $exception) {
@@ -69,7 +69,6 @@ class SendLtiOutcomeTask extends AbstractAction
 
         $report->setType(\common_report_Report::TYPE_SUCCESS);
         return $report;
-
     }
 
     /**
@@ -95,7 +94,7 @@ class SendLtiOutcomeTask extends AbstractAction
         $credentialResource = LtiService::singleton()->getCredential($consumerKey);
         $credentials = new \tao_models_classes_oauth_Credentials($credentialResource);
         //Building POX raw http message
-        $unSignedOutComeRequest = new \common_http_Request($serviceUrl, 'POST', array());
+        $unSignedOutComeRequest = new \common_http_Request($serviceUrl, 'POST', []);
         $unSignedOutComeRequest->setBody($message);
         $signingService = new \tao_models_classes_oauth_Service();
         $signedRequest = $signingService->sign($unSignedOutComeRequest, $credentials, true);
@@ -105,7 +104,6 @@ class SendLtiOutcomeTask extends AbstractAction
         $response = $signedRequest->send();
 
         if ('200' != $response->httpCode) {
-
             $this->logWarning("Request sent (Body)\n" . $signedRequest->getBody() . "\n");
             $this->logWarning("Request sent (Headers)\n" . serialize($signedRequest->getHeaders()) . "\n");
             $this->logWarning("\nHTTP Code received: " . $response->httpCode . "\n");
@@ -115,7 +113,7 @@ class SendLtiOutcomeTask extends AbstractAction
 
             throw new \common_exception_Error('An HTTP level problem occurred when sending the outcome to the service url');
         } else {
-            $this->logInfo('Submited LTI score with id "'.$deliveryResultIdentifier.'"');
+            $this->logInfo('Submited LTI score with id "' . $deliveryResultIdentifier . '"');
         }
         return true;
     }

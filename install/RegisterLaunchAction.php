@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -50,10 +51,10 @@ class RegisterLaunchAction extends AbstractAction
         $actionQueue = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
         $actions = $actionQueue->getOption(ActionQueue::OPTION_ACTIONS);
         $actions[GetActiveDeliveryExecution::class] = [
-                'restrictions' => array(
+                'restrictions' => [
                     activeLimitRestriction::class => 0
-                ),
-            ActionQueue::ACTION_PARAM_TTL => 3600, //one hour
+                ],
+                ActionQueue::ACTION_PARAM_TTL => 3600, //one hour
         ];
         $actionQueue->setOption(ActionQueue::OPTION_ACTIONS, $actions);
         $this->getServiceManager()->register(ActionQueue::SERVICE_ID, $actionQueue);
@@ -67,7 +68,7 @@ class RegisterLaunchAction extends AbstractAction
         $metricsService = $this->getServiceManager()->get(MetricsService::class);
         $metrics = $metricsService->getOption($metricsService::OPTION_METRICS);
 
-        $metrics[activeExecutionsMetrics::class]=new activeExecutionsMetrics([
+        $metrics[activeExecutionsMetrics::class] = new activeExecutionsMetrics([
             activeExecutionsMetrics::OPTION_TTL => 1,
             activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache'
         ]);

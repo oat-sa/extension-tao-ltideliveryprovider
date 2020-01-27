@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -76,7 +77,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
         $ltiDeliveryExecutionLinks = KvLTIDeliveryExecutionLink::unSerialize($data);
 
         $results = [];
-        foreach ($ltiDeliveryExecutionLinks as $ltiDeliveryExecutionLink){
+        foreach ($ltiDeliveryExecutionLinks as $ltiDeliveryExecutionLink) {
             $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($ltiDeliveryExecutionLink->getDeliveryExecutionId());
             if ($delivery->equals($deliveryExecution->getDelivery())) {
                 $results[] = $deliveryExecution;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -81,7 +82,7 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(self::RESULT_ID);
-        $queryBuilder->where('t.'.self::DELIVERY_EXECUTION_ID . '=?');
+        $queryBuilder->where('t.' . self::DELIVERY_EXECUTION_ID . '=?');
         $queryBuilder->setParameters([$deliveryExecutionId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
         $result = $stmt->fetch(\PDO::FETCH_COLUMN);
@@ -99,7 +100,7 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(self::DELIVERY_EXECUTION_ID);
-        $queryBuilder->where('t.'.self::RESULT_ID . '=?');
+        $queryBuilder->where('t.' . self::RESULT_ID . '=?');
         $queryBuilder->setParameters([$aliasId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -141,7 +142,7 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->delete(static::TABLE_NAME)
-            ->where(static::DELIVERY_EXECUTION_ID .'=:deliveryExecutionId')
+            ->where(static::DELIVERY_EXECUTION_ID . '=:deliveryExecutionId')
             ->setParameter('deliveryExecutionId', $request->getDeliveryExecution()->getIdentifier());
 
         return $this->persistence->exec($queryBuilder->getSQL(), $queryBuilder->getParameters());

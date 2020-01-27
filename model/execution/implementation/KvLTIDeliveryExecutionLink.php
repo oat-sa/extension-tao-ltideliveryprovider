@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,8 +22,6 @@
 
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
-
-
 use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
 
 /**
@@ -30,7 +29,8 @@ use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
  * Key value implementation of LTIDeliveryExecutionLink
  * @package oat\ltiDeliveryProvider\model\execution\implementation
  */
-class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSerializable {
+class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSerializable
+{
 
 
     private $userId;
@@ -107,9 +107,9 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
     public static function unSerialize($values)
     {
         $links = [];
-        $data = $values !== false ? json_decode($values,true) : array();
+        $data = $values !== false ? json_decode($values, true) : [];
 
-        if(isset($data['userId']) && isset($data['linkId']) && isset($data['deliveryExecutionId'])){
+        if (isset($data['userId']) && isset($data['linkId']) && isset($data['deliveryExecutionId'])) {
             $links[] = new self($data['userId'], $data['deliveryExecutionId'], $data['linkId']);
         }
 
@@ -125,6 +125,4 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
             'linkId' => $this->getLinkId(),
         ];
     }
-
-
 }
