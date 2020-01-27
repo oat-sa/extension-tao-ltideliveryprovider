@@ -45,6 +45,4 @@ class activeLimitRestriction extends basicRestriction
         $metric = $this->getServiceManager()->get(MetricsService::class)->getOneMetric(self::METRIC);
         return $value > $metric->collect();
     }
-
-
 }

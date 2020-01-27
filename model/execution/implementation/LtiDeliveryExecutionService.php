@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -61,17 +62,17 @@ class LtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
         return $result;
     }
 
-	 /**
+     /**
      * @inheritdoc
      */
     public function createDeliveryExecutionLink($userUri, $link, $deliveryExecutionUri)
     {
         $class = new \core_kernel_classes_Class(OntologyLTIDeliveryExecutionLink::CLASS_LTI_DELIVERYEXECUTION_LINK);
-        $link = $class->createInstanceWithProperties(array(
+        $link = $class->createInstanceWithProperties([
             OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER => $userUri,
             OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK => $link,
             OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID => $deliveryExecutionUri
-        ));
+        ]);
 
         return $link;
     }
@@ -92,7 +93,7 @@ class LtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
         ]);
 
         /** @var \core_kernel_classes_Resource $resource */
-        foreach ($resources as $resource){
+        foreach ($resources as $resource) {
             $removed[] = $resource->delete();
         }
 

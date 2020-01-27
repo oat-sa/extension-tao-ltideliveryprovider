@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +24,7 @@ namespace oat\ltiDeliveryProvider\scripts\dbMigrations;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Schema\Schema;
+
 /**
  * Class LtiResultAliasStorage_v1
  *
@@ -55,7 +57,7 @@ class LtiResultAliasStorage_v1
             $table->addOption('engine', 'MyISAM');
 
             $table->addColumn(self::DELIVERY_EXECUTION_ID, "string", ["notnull" => true, 'comment' => 'Delivery Execution Identifier']);
-            $table->addColumn(self::RESULT_ID,             "string", ["notnull" => true, 'comment' => 'Results Identifier']);
+            $table->addColumn(self::RESULT_ID, "string", ["notnull" => true, 'comment' => 'Results Identifier']);
 
             $table->setPrimaryKey([self::DELIVERY_EXECUTION_ID]);
             $table->addUniqueIndex([self::RESULT_ID], 'IDX_' . self::RESULT_ID . '_UNIQUE');

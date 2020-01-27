@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +39,7 @@ use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
- * 
+ *
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package ltiDeliveryProvider
@@ -52,7 +53,8 @@ class DeliveryRunner extends DeliveryServer
      *
      * @return boolean
      */
-    protected function showControls() {
+    protected function showControls()
+    {
         $themeService = $this->getServiceManager()->get(ThemeServiceInterface::SERVICE_ID);
         if ($themeService instanceof ThemeServiceInterface || $themeService instanceof LtiHeadless) {
             return !$themeService->isHeadless();
@@ -60,9 +62,13 @@ class DeliveryRunner extends DeliveryServer
         return false;
     }
 
-    protected function getReturnUrl() {
+    protected function getReturnUrl()
+    {
         $deliveryExecution = $this->getCurrentDeliveryExecution();
-        return _url('ltiReturn', 'DeliveryRunner', 'ltiDeliveryProvider',
+        return _url(
+            'ltiReturn',
+            'DeliveryRunner',
+            'ltiDeliveryProvider',
             ['deliveryExecution' => $deliveryExecution->getIdentifier()]
         );
     }
@@ -78,7 +84,8 @@ class DeliveryRunner extends DeliveryServer
     /**
      * Shown uppon returning to a finished delivery execution
      */
-    public function ltiOverview() {
+    public function ltiOverview()
+    {
         $this->setData('delivery', $this->getRequestParameter('delivery'));
         $this->setData('allowRepeat', true);
         $this->setView('learner/overview.tpl');
@@ -92,7 +99,8 @@ class DeliveryRunner extends DeliveryServer
      * @throws \common_exception_IsAjaxAction
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
-    public function repeat() {
+    public function repeat()
+    {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
 
         $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
@@ -102,7 +110,7 @@ class DeliveryRunner extends DeliveryServer
             $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
             $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
             $deliveryExecutionStateService->pause($newExecution);
-            $this->redirect(_url('runDeliveryExecution', null, null, array('deliveryExecution' => $newExecution->getIdentifier())));
+            $this->redirect(_url('runDeliveryExecution', null, null, ['deliveryExecution' => $newExecution->getIdentifier()]));
         } catch (\common_exception_Unauthorized $e) {
             $ltiException = new LtiException(
                 $e->getMessage(),
@@ -117,12 +125,13 @@ class DeliveryRunner extends DeliveryServer
      * @throws \common_exception_Error
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
-    public function thankYou() {
+    public function thankYou()
+    {
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
         
         if ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
-        } elseif($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)) {
+        } elseif ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION));
         }
         

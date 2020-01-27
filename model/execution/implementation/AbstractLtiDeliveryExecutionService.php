@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -67,9 +68,9 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
     {
         $persistence = $this->getPersistence();
         if ($event->getState() === DeliveryExecution::STATE_ACTIVE) {
-            $persistence->incr(self::class.'_'.'active_executions');
-        } else if ($event->getPreviousState() === DeliveryExecution::STATE_ACTIVE) {
-            $persistence->decr(self::class.'_'.'active_executions');
+            $persistence->incr(self::class . '_' . 'active_executions');
+        } elseif ($event->getPreviousState() === DeliveryExecution::STATE_ACTIVE) {
+            $persistence->decr(self::class . '_' . 'active_executions');
         }
     }
 
@@ -81,7 +82,7 @@ abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService i
     {
         $persistence = $this->getPersistence();
         if ($event->getDeliveryExecution()->getState()->getUri() === DeliveryExecution::STATE_ACTIVE) {
-            $persistence->incr(self::class.'_'.'active_executions');
+            $persistence->incr(self::class . '_' . 'active_executions');
         }
         $searchService = $this->getServiceLocator()->get(Search::SERVICE_ID);
         if ($searchService->supportCustomIndex()) {
