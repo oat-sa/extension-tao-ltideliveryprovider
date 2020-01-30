@@ -45,6 +45,7 @@ define([
                         url: capacityCheckUrl,
                         method: 'GET',
                         dataType: 'json',
+                        noToken: true,
                     })
                         .then(({ status }) => {
                             if (status == 1) {
