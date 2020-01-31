@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +21,7 @@
  */
 
 namespace oat\ltiDeliveryProvider\model;
+
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
 use oat\taoProctoring\model\deliveryLog\DeliveryLog;

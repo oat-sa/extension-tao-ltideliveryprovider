@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -58,9 +59,9 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
                 return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' LtiDeliveryExecution migration must be done on a Ontology Service e.q. LtiDeliveryExecutionService.');
             }
 
-            $kvDeliveryExecutionService = new KvLtiDeliveryExecutionService(array(
+            $kvDeliveryExecutionService = new KvLtiDeliveryExecutionService([
                 KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $this->getKeyValuePersistenceName()
-            ));
+            ]);
             if ($this->getOption('no-migrate-service') !== true) {
                 $this->registerService(LtiDeliveryExecutionService::SERVICE_ID, $kvDeliveryExecutionService);
                 $this->logNotice('LtiDeliveryExecution service was set to KeyValue implementation.');
@@ -70,12 +71,11 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
             $iterator = new \core_kernel_classes_ResourceIterator($class);
             $i = 0;
             foreach ($iterator as $instance) {
-
-                $properties = $instance->getPropertiesValues(array(
+                $properties = $instance->getPropertiesValues([
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER,
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK,
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID,
-                ));
+                ]);
 
                 $user = $this->getPropertyValue($properties, OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER);
                 $link = $this->getPropertyValue($properties, OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_LINK);
@@ -84,18 +84,17 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
                 if ($kvDeliveryExecutionService->createDeliveryExecutionLink($user, $link, $deliveryExecution)) {
                     if ($this->getOption('no-delete') !== true) {
                         $instance->delete();
-                        $this->logInfo('LtiDeliveryExecution "' . $instance->getUri() .'" deleted from ontology storage.');
+                        $this->logInfo('LtiDeliveryExecution "' . $instance->getUri() . '" deleted from ontology storage.');
                     }
-                    $this->logNotice('LtiDeliveryExecution "' . $instance->getUri() .'" successfully migrated.');
+                    $this->logNotice('LtiDeliveryExecution "' . $instance->getUri() . '" successfully migrated.');
                     $i++;
                 } else {
-                    $this->logError('LtiDeliveryExecution "' . $instance->getUri() .'" cannot be migrated.');
+                    $this->logError('LtiDeliveryExecution "' . $instance->getUri() . '" cannot be migrated.');
                 }
             }
             $this->logNotice('LtiDeliveryExecution migrated: ' . $i);
         } catch (\Exception $e) {
             return \common_report_Report::createFailure('LtiDeliveryExecution migration has failed with error message : ' . $e->getMessage());
-
         }
 
         return \common_report_Report::createSuccess('LtiDeliveryExecution successfully has been migrated from Ontology to KV value. Count of LtiDeliveryExecution migrated: ' . $i);
@@ -155,10 +154,10 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
     {
         if ($this->getOption('verbose') === true) {
             $verboseLogger = VerboseLoggerFactory::getInstance(['-nc', '-vv']);
-            $this->setLogger(new LoggerAggregator(array(
+            $this->setLogger(new LoggerAggregator([
                 $this->getLogger(),
                 $verboseLogger
-            )));
+            ]));
         }
     }
 
@@ -170,30 +169,30 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
     protected function provideOptions()
     {
         return [
-            'kv-persistence' => array(
+            'kv-persistence' => [
                 'prefix' => 'kv',
                 'longPrefix' => 'kv-persistence',
                 'required' => true,
                 'description' => 'The KeyValue persistence where you want to migrate to.',
-            ),
-            'no-migrate-service' => array(
+            ],
+            'no-migrate-service' => [
                 'prefix' => 'nms',
                 'longPrefix' => 'no-migrate-service',
                 'flag' => true,
                 'description' => 'Don\'t migrate the ontology LtiDeliveryExecutionService to KvLtiDeliveryExecutionService.',
-            ),
-            'no-delete' => array(
+            ],
+            'no-delete' => [
                 'prefix' => 'nd',
                 'longPrefix' => 'no-delete',
                 'flag' => true,
                 'description' => 'Don\'t delete ontology LtiDeliveryExecution after migration.',
-            ),
-            'verbose' => array(
+            ],
+            'verbose' => [
                 'prefix' => 'v',
                 'longPrefix' => 'verbose',
                 'flag' => true,
                 'description' => 'Output the log as command output.',
-            ),
+            ],
         ];
     }
 

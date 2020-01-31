@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -68,7 +69,7 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
             $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
             if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
                 // ignore existing executions to force restart
-                $executions = array();
+                $executions = [];
             } else {
                 $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($this->delivery, $remoteLink, $user->getIdentifier());
             }
@@ -93,7 +94,7 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
                 }
             }
         } else {
-            $this->logNotice('Attempt to invoke action `' . $this->getId() .'` without delivery');
+            $this->logNotice('Attempt to invoke action `' . $this->getId() . '` without delivery');
         }
 
         return $active;

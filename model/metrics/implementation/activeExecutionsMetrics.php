@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * This program is free software; you can redistribute it and/or
@@ -44,7 +45,5 @@ class activeExecutionsMetrics extends abstractMetrics
             $this->getPersistence()->set(self::class, $active, $this->getOption(self::OPTION_TTL));
         }
         return $active;
-
-
     }
 }

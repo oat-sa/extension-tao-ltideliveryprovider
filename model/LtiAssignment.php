@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -91,7 +92,7 @@ class LtiAssignment extends ConfigurableService
                         LtiErrorMessage::ERROR_INVALID_PARAMETER
                     );
                 }
-                $maxExec = (integer) $val;
+                $maxExec = (int) $val;
             }
         }
 
@@ -100,7 +101,7 @@ class LtiAssignment extends ConfigurableService
             ->getAttempts($delivery->getUri(), $user));
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
-            $this->logDebug("Attempt to start the compiled delivery ".$delivery->getUri(). " without tokens");
+            $this->logDebug("Attempt to start the compiled delivery " . $delivery->getUri() . " without tokens");
             throw new LtiException(
                 __('Attempts limit has been reached.'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN

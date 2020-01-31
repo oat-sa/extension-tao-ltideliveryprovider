@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +23,9 @@ namespace oat\ltiDeliveryProvider\controller;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
+
 use function GuzzleHttp\Psr7\stream_for;
+
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -86,7 +89,8 @@ class DeliveryTool extends ToolModule
                 // user NOT authorised to select the Delivery
                 throw new LtiException(
                     __('This tool has not yet been configured, please contact your instructor'),
-                    LtiErrorMessage::ERROR_INVALID_PARAMETER);
+                    LtiErrorMessage::ERROR_INVALID_PARAMETER
+                );
             }
         } else {
             $user = common_session_SessionManager::getSession()->getUser();
@@ -132,7 +136,8 @@ class DeliveryTool extends ToolModule
         if (!$delivery->exists()) {
             throw new LtiException(
                 __('Delivery does not exist. Please contact your instructor.'),
-                LtiErrorMessage::ERROR_INVALID_PARAMETER);
+                LtiErrorMessage::ERROR_INVALID_PARAMETER
+            );
         }
         $runUrl = _url('run', 'DeliveryTool', null, ['delivery' => $delivery->getUri()]);
         $config = $this->getServiceLocator()->get('ltiDeliveryProvider/LaunchQueue')->getConfig();

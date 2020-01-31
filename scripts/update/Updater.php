@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,7 +17,9 @@
  *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
  */
+
 namespace oat\ltiDeliveryProvider\scripts\update;
+
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
@@ -155,7 +158,6 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         if ($this->isVersion('3.6.0')) {
-
             $ltiDeliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
             $ltiDeliveryExecutionService->setOption(LtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE, 'cache');
             $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecutionService);
@@ -166,7 +168,6 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('3.7.0', '3.8.1');
 
         if ($this->isVersion('3.8.1')) {
-
             $ltiLaunchDataService = new LtiLaunchDataService();
             $this->getServiceManager()->register(LtiLaunchDataService::SERVICE_ID, $ltiLaunchDataService);
 
@@ -176,7 +177,6 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('3.9.0', '3.11.5');
 
         if ($this->isVersion('3.11.5')) {
-
             $ltiOutcome = new LtiOutcomeService();
             $this->getServiceManager()->register(LtiOutcomeService::SERVICE_ID, $ltiOutcome);
 
@@ -230,7 +230,7 @@ class Updater extends \common_ext_ExtensionUpdater
                     DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache'
                 ])
             );
-            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of '.DeliveryExecutionCounterInterface::SERVICE_ID.' to common one'));
+            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . DeliveryExecutionCounterInterface::SERVICE_ID . ' to common one'));
             $this->setVersion('6.2.0');
         }
 
@@ -310,7 +310,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('9.0.1')) {
             $service = $this->getServiceManager()->get(LtiNavigationService::SERVICE_ID);
-            if(!$service->getOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS)){
+            if (!$service->getOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS)) {
                 $service->setOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS, false);
                 $this->getServiceManager()->register(LtiNavigationService::SERVICE_ID, $service);
             }
@@ -324,6 +324,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LTIDeliveryToolFactory::SERVICE_ID, new LTIDeliveryToolFactory());
             $this->setVersion('9.4.0');
         }
-        $this->skip('9.4.0', '10.1.2');
+        $this->skip('9.4.0', '10.1.4');
     }
 }
