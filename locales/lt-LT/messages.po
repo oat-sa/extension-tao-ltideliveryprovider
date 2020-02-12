@@ -127,7 +127,7 @@ msgid "Wrong value of \"secure\" variable."
 msgstr "Neteisinga \"secure\" kintamojo reikšmė."
 
 msgid "You have already taken this test."
-msgstr "Jūs jau priėmėte šį testą."
+msgstr "Jūs jau atlikote šį testą."
 
 msgid "You have finished the test!"
 msgstr "Jūs atlikote šį testą!"
