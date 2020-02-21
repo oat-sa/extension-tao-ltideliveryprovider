@@ -110,7 +110,7 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
         $data = $values !== false ? json_decode($values, true) : [];
 
         foreach ($data as $linkData) {
-            if (isset($linkData['userId']) && isset($linkData['linkId']) && isset($linkData['deliveryExecutionId'])) {
+            if (isset($linkData['userId'], $linkData['linkId'], $linkData['deliveryExecutionId'])) {
                 $links[] = new self($linkData['userId'], $linkData['deliveryExecutionId'], $linkData['linkId']);
             }
         }
