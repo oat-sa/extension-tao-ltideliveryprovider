@@ -67,33 +67,56 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      * @param \core_kernel_classes_Resource $delivery
      * @param \core_kernel_classes_Resource $link
      * @param string $userId
+     *
+     * @throws \common_exception_NotFound
+     *
      * @return DeliveryExecution[]
      */
-    public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId)
-    {
-
+    public function getLinkedDeliveryExecutions(
+        \core_kernel_classes_Resource $delivery,
+        \core_kernel_classes_Resource $link,
+        $userId
+    ) {
         $data = $this->getPersistence()->get(self::LTI_DE_LINK_LINK . $link->getUri() . $userId);
-
         $ltiDeliveryExecutionLinks = KvLTIDeliveryExecutionLink::unSerialize($data);
 
         $results = [];
         foreach ($ltiDeliveryExecutionLinks as $ltiDeliveryExecutionLink) {
-            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($ltiDeliveryExecutionLink->getDeliveryExecutionId());
+            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
+                $ltiDeliveryExecutionLink->getDeliveryExecutionId()
+            );
+
             if ($delivery->equals($deliveryExecution->getDelivery())) {
                 $results[] = $deliveryExecution;
             }
         }
+
         return $results;
     }
 
-
     /**
-     * @inheritdoc
+     * @param string $userUri
+     * @param string $link
+     * @param string $deliveryExecutionUri
+     *
+     * @throws \common_Exception
+     *
+     * @return KvLTIDeliveryExecutionLink
      */
     public function createDeliveryExecutionLink($userUri, $link, $deliveryExecutionUri)
     {
+        $persistence = $this->getPersistence();
         $ltiDeliveryExecutionLink = new KvLTIDeliveryExecutionLink($userUri, $deliveryExecutionUri, $link);
-        $this->getPersistence()->set(self::LTI_DE_LINK_LINK . $link . $userUri, json_encode($ltiDeliveryExecutionLink));
+        $key = self::LTI_DE_LINK_LINK . $link . $userUri;
+
+        $ltiDeliveryExecutions = json_decode($persistence->get($key), true);
+
+        if (!is_array($ltiDeliveryExecutions)) {
+            $ltiDeliveryExecutions = [];
+        }
+
+        $ltiDeliveryExecutions[] = $ltiDeliveryExecutionLink->jsonSerialize();
+        $persistence->set($key, json_encode($ltiDeliveryExecutions));
         $this->saveLinkReference($link, $userUri, $deliveryExecutionUri);
 
         return $ltiDeliveryExecutionLink;
