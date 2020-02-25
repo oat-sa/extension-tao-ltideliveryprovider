@@ -82,7 +82,8 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 
         $results = [];
         foreach ($ltiDeliveryExecutionLinks as $ltiDeliveryExecutionLink) {
-            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
+            /** @var DeliveryExecution $deliveryExecution */
+            $deliveryExecution = $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID)->getDeliveryExecution(
                 $ltiDeliveryExecutionLink->getDeliveryExecutionId()
             );
 
