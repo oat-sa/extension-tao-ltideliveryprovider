@@ -64,15 +64,13 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
             self::DELIVERY_EXECUTION_ID => $deliveryExecutionId,
             self::RESULT_ID => $resultId,
         ];
-
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->delete($this->getTableName());
-        $queryBuilder->where(self::RESULT_ID . '=? OR ' . self::DELIVERY_EXECUTION_ID . '= ?');
-        $queryBuilder->setParameters([$resultId, $deliveryExecutionId]);
-        $this->persistence->query($queryBuilder->getSQL())->execute($queryBuilder->getParameters());
-
-        $result = $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
-        return $result;
+        $queryBuilder->where(self::RESULT_ID . "=:" . self::RESULT_ID);
+        $queryBuilder->orWhere(self::DELIVERY_EXECUTION_ID . "=:" . self::DELIVERY_EXECUTION_ID);
+        $queryBuilder->setParameters([self::RESULT_ID => $resultId, self::DELIVERY_EXECUTION_ID => $deliveryExecutionId]);
+        $queryBuilder->execute();
+        return $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
     }
 
     /**
