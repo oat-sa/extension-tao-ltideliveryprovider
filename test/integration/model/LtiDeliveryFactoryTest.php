@@ -27,7 +27,7 @@ use oat\tao\test\TaoPhpUnitTestRunner;
 
 class LtiDeliveryFactoryTest extends TaoPhpUnitTestRunner
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->disableCache();
     }

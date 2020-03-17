@@ -29,10 +29,10 @@ return [
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '10.2.0',
+    'version' => '10.3.0',
     'author' => 'Open Assessment Technologies',
     'requires' => [
-        'generis' => '>=12.5.0',
+        'generis' => '>=12.15.0',
         'tao' => '>=39.4.0',
         'taoDeliveryRdf' => '>=6.0.0',
         'taoLti' => '>=10.5.0',
