@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint122\n"
-"PO-Revision-Date: 2020-02-28T09:26:17\n"
+"Project-Id-Version: TAO 3.4.0-sprint124\n"
+"PO-Revision-Date: 2020-03-20T08:13:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -14,121 +14,121 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Tool Provider"
-msgstr ""
+msgstr "Fournisseur d'outil %s"
 
 msgid "%s\" has been configured:"
-msgstr ""
+msgstr "%s\" a été configuré :"
 
 msgid "Access to this functionality is restricted"
-msgstr ""
+msgstr "L'accès à cette fonctionnalité est limité."
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "L'accès à cette fonctionnalité est limité aux étudiants."
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "Un nombre anormalement élevé d'utilisateurs est en train de passer des tests, votre test va démarrer d'ici quelques instants pour s'assurer qu'il se déroule bien. Merci de votre patience!"
 
 msgid "Attempts limit has been reached."
-msgstr ""
+msgstr "La limite du nombre de tentatives a été atteinte."
 
 msgid "Available Deliveries"
-msgstr ""
+msgstr "Passations disponibles"
 
 msgid "Back"
-msgstr ""
+msgstr "Précédent"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "Cliquez sur le bouton Précédent pour revenir à %s."
 
 msgid "Click on the back button to return."
-msgstr ""
+msgstr "Cliquez sur le bouton retour pour revenir."
 
 msgid "Configured LTI Link"
-msgstr ""
+msgstr "Lien LTI configuré"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
+msgstr "Copiez-collez l'URL suivante dans votre outil utilisateur compatible LTI."
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Passations"
 
 msgid "Delivery does not exist. Please contact your instructor."
-msgstr ""
+msgstr "La passation de test n'existe pas. Veuillez contacter votre instructeur."
 
 msgid "Executions"
-msgstr ""
+msgstr "Exécutions"
 
 msgid "Launch URL"
-msgstr ""
+msgstr "URL de démarrage"
 
 #, tao-public
 msgid "LTI"
-msgstr ""
+msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr ""
+msgstr "La variable max_attempts\" doit être numérique."
 
 msgid "No deliveries available"
-msgstr ""
+msgstr "Pas de passation disponible"
 
 msgid "No LTI consumers defined"
-msgstr ""
+msgstr "Pas de consommateurs LTI définis."
 
 msgid "no monitoring"
-msgstr ""
+msgstr "pas de surveillance"
 
 msgid "Please select a delivery"
-msgstr ""
+msgstr "Veuillez choisir une passation"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "Veuillez choisir une passation pour \"%s"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Répétition"
 
 msgid "Repeat the test"
-msgstr ""
+msgstr "Répéter le test"
 
 msgid "Retake the test"
-msgstr ""
+msgstr "Reprendre le test"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "Revenir à %s"
 
 msgid "Select"
-msgstr ""
+msgstr "Choisir"
 
 msgid "Select Delivery"
-msgstr ""
+msgstr "Choisir une passation"
 
 msgid "Selected Delivery"
-msgstr ""
+msgstr "Choisissez une passation"
 
 msgid "Test Launch Queue"
-msgstr ""
+msgstr "File d'attente de lancement de test"
 
 msgid "Thank you"
-msgstr ""
+msgstr "Merci"
 
 msgid "This tool has been configured:"
-msgstr ""
+msgstr "Cet outil a été configuré :"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Cet outil n'a pas encore été configuré, veuillez contacter votre instructeur"
 
 msgid "Tool consumer(s)"
-msgstr ""
+msgstr "Consommateur(s) de l'outil"
 
 msgid "User is not authorized to run this delivery"
-msgstr ""
+msgstr "L'utilisateur n'est pas autorisé à lancer cette passation de test."
 
 msgid "Wrong value of \"secure\" variable."
-msgstr ""
+msgstr "Mauvaise valeur de la variable \"secure\"."
 
 msgid "You have already taken this test."
-msgstr ""
+msgstr "Vous avez déjà passé ce test."
 
 msgid "You have finished the test!"
-msgstr ""
+msgstr "Vous avez terminé le test !"
 
