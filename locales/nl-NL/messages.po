@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint122\n"
-"PO-Revision-Date: 2020-02-28T09:26:17\n"
+"Project-Id-Version: TAO 3.4.0-sprint124\n"
+"PO-Revision-Date: 2020-03-20T11:16:55\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -26,13 +26,13 @@ msgid "Access to this functionality is restricted to students"
 msgstr "De toegang tot deze functionaliteit is beperkt tot studenten"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "Een ongewoon groot aantal mensen is op dit moment aan het testen, uw test zal binnen enkele ogenblikken van start gaan om ervoor te zorgen dat deze soepel verloopt. Bedankt voor uw geduld!"
 
 msgid "Attempts limit has been reached."
-msgstr ""
+msgstr "Maximaal aantal pogingen is berijkt."
 
 msgid "Available Deliveries"
-msgstr "Beschikbare pakketjes"
+msgstr "Beschikbare publicaties"
 
 msgid "Back"
 msgstr "Terug"
@@ -54,7 +54,7 @@ msgid "Deliveries"
 msgstr "Pakketje(s)"
 
 msgid "Delivery does not exist. Please contact your instructor."
-msgstr ""
+msgstr "Levering bestaat niet. Neem contact op met uw instructeur."
 
 msgid "Executions"
 msgstr "Uitvoeringen"
@@ -67,7 +67,7 @@ msgid "LTI"
 msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr ""
+msgstr "max_attempts\" variabele moet numeriek zijn."
 
 msgid "No deliveries available"
 msgstr "Geen pakketje(s) beschikbaar"
@@ -121,10 +121,10 @@ msgid "Tool consumer(s)"
 msgstr "Eindgebruiker(s) tool"
 
 msgid "User is not authorized to run this delivery"
-msgstr ""
+msgstr "De gebruiker is niet bevoegd om deze publicatie uit te voeren"
 
 msgid "Wrong value of \"secure\" variable."
-msgstr ""
+msgstr "Verkeerde waarde van \"secure\" variabele."
 
 msgid "You have already taken this test."
 msgstr "U heeft deze test al gemaakt."
