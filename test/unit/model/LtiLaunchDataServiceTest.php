@@ -25,9 +25,6 @@ use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\taoLti\models\classes\LtiLaunchData;
-use oat\taoLti\models\classes\LtiVariableMissingException;
-use oat\taoProctoring\model\deliveryLog\DeliveryLog;
-use RuntimeException;
 
 class LtiLaunchDataServiceTest extends TestCase
 {
@@ -53,58 +50,6 @@ class LtiLaunchDataServiceTest extends TestCase
         $data = new LtiLaunchData([], []);
 
         $this->assertTrue($service->findDeliveryExecutionFromLaunchData($data));
-    }
-
-    /**
-     * @throws LtiVariableMissingException
-     */
-    public function testFindLaunchDataByDeliveryExecutionId()
-    {
-        $service = $this->getLtiLaunchDataService(
-            [DeliveryLog::SERVICE_ID => $this->getDeliveryLogMock([
-                [
-                    'data' => ['some_field' => 'some_data']
-                ]
-            ])]
-        );
-
-
-        $launchData = $service->findLaunchDataByDeliveryExecutionId('http://some/delivery#id');
-
-        $this->assertInstanceOf(LtiLaunchData::class, $launchData);
-
-        $this->assertEquals('some_data', $launchData->getVariable('some_field'));
-    }
-
-
-    public function testFindLaunchDataByUnexistedDeliveryExecutionId()
-    {
-        $service = $this->getLtiLaunchDataService(
-            [DeliveryLog::SERVICE_ID => $this->getDeliveryLogMock([])]
-        );
-
-        $this->expectException(RuntimeException::class);
-
-        $service->findLaunchDataByDeliveryExecutionId('http://some/delivery#id');
-    }
-
-    public function testFindIncompleteLaunchDataByDeliveryExecutionId()
-    {
-        $service = $this->getLtiLaunchDataService(
-            [DeliveryLog::SERVICE_ID => $this->getDeliveryLogMock([['something']])]
-        );
-
-        $this->expectException(RuntimeException::class);
-
-        $service->findLaunchDataByDeliveryExecutionId('http://some/delivery#id');
-    }
-
-    private function getDeliveryLogMock($returnValue)
-    {
-        $deliveryLogMock = $this->getMockBuilder(DeliveryLog::class)->disableOriginalConstructor()->getMock();
-        $deliveryLogMock->method('get')->willReturn($returnValue);
-
-        return $deliveryLogMock;
     }
 
     private function getLtiDeliveryFactoryMock()
