@@ -26,11 +26,9 @@ use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
 use oat\ltiDeliveryProvider\model\LTIDeliveryToolFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
-use oat\ltiDeliveryProvider\model\LtiResultCustomFieldsService;
 use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\oatbox\event\EventManager;
-use oat\oatbox\service\ServiceNotFoundException;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -44,7 +42,6 @@ use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\tao\model\actionQueue\ActionQueue;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
-use oat\taoOutcomeUi\model\search\ResultCustomFieldsService;
 use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
 use oat\ltiDeliveryProvider\model\AttemptService;
 use oat\taoDelivery\model\AttemptServiceInterface;
@@ -189,17 +186,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('4.0.0');
         }
 
-        $this->skip('4.0.0', '5.2.0');
-
-        if ($this->isVersion('5.2.0')) {
-
-            /** @var ResultCustomFieldsService $resultCustomFieldsService */
-            $resultCustomFieldsService = $this->getServiceManager()->get(ResultCustomFieldsService::SERVICE_ID);
-            $ltiResultCustomFieldsService = new LtiResultCustomFieldsService($resultCustomFieldsService->getOptions());
-            $this->getServiceManager()->register(LtiResultCustomFieldsService::SERVICE_ID, $ltiResultCustomFieldsService);
-            $this->setVersion('5.3.0');
-        }
-        $this->skip('5.3.0', '5.4.0');
+        $this->skip('4.0.0', '5.4.0');
 
         if ($this->isVersion('5.4.0')) {
             $this->getServiceManager()->register(
@@ -324,6 +311,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LTIDeliveryToolFactory::SERVICE_ID, new LTIDeliveryToolFactory());
             $this->setVersion('9.4.0');
         }
-        $this->skip('9.4.0', '10.4.0');
+        $this->skip('9.4.0', '10.5.0');
     }
 }

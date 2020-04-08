@@ -25,7 +25,6 @@ use core_kernel_classes_Container;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
-use oat\taoProctoring\model\deliveryLog\DeliveryLog;
 use RuntimeException;
 
 /**
@@ -53,23 +52,6 @@ class LtiLaunchDataService extends ConfigurableService
     public function findDeliveryExecutionFromLaunchData(LtiLaunchData $launchData)
     {
         return $this->findResource($launchData->getCustomParameter('execution'));
-    }
-
-    public function findLaunchDataByDeliveryExecutionId($deliveryExecutionId)
-    {
-        $ltiVariablesList = $this->getServiceLocator()
-            ->get(DeliveryLog::SERVICE_ID)
-            ->get($deliveryExecutionId, 'LTI_LAUNCH_PARAMETERS');
-
-        if (empty($ltiVariablesList)) {
-            throw new RuntimeException(sprintf('Delivery execution %s not found', $deliveryExecutionId));
-        }
-
-        if (!isset($ltiVariablesList[0]['data'])) {
-            throw new RuntimeException('`data` field is absent in result of DeliveryLog::get');
-        }
-
-        return new LtiLaunchData($ltiVariablesList[0]['data'], []);
     }
 
     /**
