@@ -28,7 +28,7 @@ use oat\taoDelivery\model\AttemptServiceInterface;
 
 /**
  * Class RegisterProctorAttemptService
- * @package oat\taoProctoring\scripts\install
+ * @package oat\ltiDeliveryProvider\scripts\install
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class RegisterLtiAttemptService extends InstallAction
