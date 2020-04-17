@@ -20,14 +20,14 @@
 
 namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
 
-use oat\generis\model\data\Model;
+use core_kernel_classes_Literal;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\session\SessionService;
 use oat\oatbox\user\User;
 use oat\taoDelivery\model\AttemptServiceInterface;
-use oat\taoLti\models\classes\LtiException;
+use oat\taoLti\models\classes\LtiClientException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\TaoLtiSession;
 use Psr\Log\LoggerInterface;
@@ -90,6 +90,7 @@ class LtiAssignmentTest extends TestCase
             ->willReturn($this->deliveryMock);
         $modelMock->expects($this->once())
             ->method('getProperty')
+            ->with('http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec')
             ->willReturn(new \core_kernel_classes_Property('PROP'));
 
         $this->object = new LtiAssignment([]);
@@ -103,7 +104,7 @@ class LtiAssignmentTest extends TestCase
      */
     public function testIsDeliveryExecutionAllowedNotNumericLtiMaxAttemptsLtiParameter()
     {
-        $this->expectException(LtiException::class);
+        $this->expectException(LtiClientException::class);
 
         $this->sessionServiceMock->expects($this->once())
             ->method('getCurrentSession')
@@ -164,11 +165,11 @@ class LtiAssignmentTest extends TestCase
      */
     public function testIsDeliveryExecutionAllowedAttemptsLimitReached()
     {
-        $this->expectException(LtiException::class);
+        $this->expectException(LtiClientException::class);
 
         $this->deliveryMock->expects($this->once())
             ->method('getOnePropertyValue')
-            ->willReturn(new \core_kernel_classes_Literal('2'));
+            ->willReturn(new core_kernel_classes_Literal('2'));
 
         $userTokens = [1, 2, 3, 4]; // Amount must be higher than max allowed executions.
         $this->attemptServiceMock->expects($this->once())
@@ -185,7 +186,7 @@ class LtiAssignmentTest extends TestCase
     {
         $this->deliveryMock->expects($this->once())
             ->method('getOnePropertyValue')
-            ->willReturn(new \core_kernel_classes_Literal('2'));
+            ->willReturn(new core_kernel_classes_Literal('2'));
 
         $userTokens = [1]; // Amount must be higher than max allowed executions.
         $this->attemptServiceMock->expects($this->once())
