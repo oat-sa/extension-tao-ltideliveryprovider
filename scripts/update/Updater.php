@@ -20,36 +20,40 @@
 
 namespace oat\ltiDeliveryProvider\scripts\update;
 
+use common_report_Report as Report;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
+use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
+use oat\ltiDeliveryProvider\model\AttemptService;
+use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
 use oat\ltiDeliveryProvider\model\LTIDeliveryToolFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
+use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
-use oat\oatbox\event\EventManager;
-use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
+use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\ltiDeliveryProvider\model\options\DataAccess\Mapper\OptionCollectionMapper;
+use oat\ltiDeliveryProvider\model\options\DataAccess\Repository\OverriddenLtiToolsRepository;
 use oat\ltiDeliveryProvider\model\ResultAliasService;
+use oat\oatbox\event\EventManager;
+use oat\oatbox\session\SessionService;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\actionQueue\ActionQueue;
 use oat\tao\model\actionQueue\implementation\InstantActionQueue;
 use oat\tao\model\metadata\exception\InconsistencyConfigException;
 use oat\tao\model\metrics\MetricsService;
-use oat\taoLti\models\classes\LtiRoles;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
-use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
-use oat\tao\model\actionQueue\ActionQueue;
-use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
-use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
-use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
-use oat\ltiDeliveryProvider\model\AttemptService;
 use oat\taoDelivery\model\AttemptServiceInterface;
 use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
 use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterService;
-use common_report_Report as Report;
-use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
-use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
+use oat\taoLti\models\classes\LtiRoles;
+use oat\taoQtiTest\models\TestCategoryPresetProvider;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -311,6 +315,27 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(LTIDeliveryToolFactory::SERVICE_ID, new LTIDeliveryToolFactory());
             $this->setVersion('9.4.0');
         }
+
         $this->skip('9.4.0', '10.5.0');
+
+        if ($this->isVersion('10.5.0')) {
+            $serviceManager = $this->getServiceManager();
+
+            $serviceManager->register(
+                OptionCollectionMapper::SERVICE_ID,
+                new OptionCollectionMapper()
+            );
+
+            $serviceManager->register(
+                OverriddenLtiToolsRepository::SERVICE_ID,
+                new OverriddenLtiToolsRepository(
+                    $serviceManager->get(TestCategoryPresetProvider::SERVICE_ID),
+                    $serviceManager->get(SessionService::SERVICE_ID),
+                    $serviceManager->get(OptionCollectionMapper::SERVICE_ID)
+                )
+            );
+
+            $this->setVersion('10.6.0');
+        }
     }
 }
