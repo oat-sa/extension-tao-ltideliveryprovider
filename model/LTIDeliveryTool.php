@@ -22,6 +22,7 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\tao\helpers\UrlHelper;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiTool;
@@ -33,6 +34,7 @@ use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
+use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
 
@@ -73,13 +75,10 @@ class LTIDeliveryTool extends LtiTool
         $session = \common_session_SessionManager::getSession();
         /** @var LtiLaunchData $launchData */
         $launchData = $session->getLaunchData();
-        if (
-            $launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
-            && $launchData->hasReturnUrl()
-        ) {
+        if ($this->requiresLtiRedirect($launchData)) {
             $redirectUrl = $launchData->getReturnUrl();
         } else {
-            $redirectUrl = _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+            $redirectUrl = $this->getServiceLocator()->get(UrlHelper::class)->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
         }
 
         if ($deliveryExecution !== null) {
@@ -174,5 +173,17 @@ class LTIDeliveryTool extends LtiTool
         /** @var LtiResultAliasStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
         $ltiResultIdStorage->storeResultAlias($executionIdentifier, $resultIdentifier);
+    }
+
+    /**
+     * @param LtiLaunchData $launchData
+     * @return bool
+     */
+    private function requiresLtiRedirect(LtiLaunchData $launchData): bool
+    {
+        return $launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(
+                DeliveryTool::PARAM_SKIP_THANKYOU
+            ) == 'true'
+            && $launchData->hasReturnUrl();
     }
 }

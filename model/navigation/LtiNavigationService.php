@@ -22,6 +22,8 @@
 namespace oat\ltiDeliveryProvider\model\navigation;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\helpers\UrlHelper;
+use oat\taoLti\models\classes\LtiInvalidVariableException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
@@ -52,7 +54,7 @@ class LtiNavigationService extends ConfigurableService
      */
     public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
-        return $this->showThankyou($launchData)
+        return $this->showThankYou($launchData)
             ? $this->getThankYouUrl()
             : $this->getConsumerReturnUrl($launchData, $deliveryExecution);
     }
@@ -121,7 +123,7 @@ class LtiNavigationService extends ConfigurableService
      * @param LtiLaunchData $launchData
      * @return boolean
      */
-    protected function showThankyou(LtiLaunchData $launchData)
+    protected function showThankYou(LtiLaunchData $launchData)
     {
         if (!$launchData->hasReturnUrl()) {
             return true;
@@ -146,6 +148,6 @@ class LtiNavigationService extends ConfigurableService
      */
     protected function getThankYouUrl()
     {
-        return _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+        return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 }
