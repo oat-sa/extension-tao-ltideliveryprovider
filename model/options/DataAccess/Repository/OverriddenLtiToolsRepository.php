@@ -27,10 +27,10 @@ use oat\ltiDeliveryProvider\model\options\DataAccess\Mapper\OptionCollectionMapp
 use oat\oatbox\session\SessionService;
 use oat\taoLti\models\classes\TaoLtiSession;
 use oat\taoQtiTest\models\runner\config\Business\Domain\OptionCollection;
-use oat\taoQtiTest\models\runner\toolsStates\DataAccess\Repository\OverriddenToolsRepositoryAbstract;
+use oat\taoQtiTest\models\runner\toolsStates\DataAccess\Repository\AbstractOverriddenToolsRepository;
 use oat\taoQtiTest\models\TestCategoryPresetProvider;
 
-class OverriddenLtiToolsRepository extends OverriddenToolsRepositoryAbstract
+class OverriddenLtiToolsRepository extends AbstractOverriddenToolsRepository
 {
     private const CUSTOM_LTI_TAO_TOOLS = 'custom_x_tao_tools';
 
