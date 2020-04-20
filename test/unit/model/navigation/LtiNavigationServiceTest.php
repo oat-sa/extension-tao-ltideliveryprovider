@@ -114,13 +114,13 @@ class LtiNavigationServiceTest extends TestCase
 
     /**
      * @param bool $thankYouScreenOption
-     * @param string $ltiReturnUrl
      * @param string $expectedUrl
      *
-     * @dataProvider dataProviderTestGetReturnUrl_NoSkipThankYouParameter
+     * @dataProvider dataProviderTestGetReturnUrlNoSkipThankYouParameter
      */
-    public function testGetReturnUrl_NoSkipThankYouParameter(bool $thankYouScreenOption, string $ltiReturnUrl, string $expectedUrl): void
+    public function testGetReturnUrlNoSkipThankYouParameter(bool $thankYouScreenOption, string $expectedUrl): void
     {
+        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
         $this->launchDataMock->method('hasReturnUrl')
             ->willReturn(true);
         $this->launchDataMock->method('getReturnUrl')
@@ -136,32 +136,97 @@ class LtiNavigationServiceTest extends TestCase
         static::assertSame($expectedUrl, $result, 'Method must return correct "return url"');
     }
 
-    public function testGetReturnUrl_SkipThankYouParameter_False(): void
+    /**
+     * @param string $skipThankYou
+     * @param string $expectedUrl
+     *
+     * @dataProvider dataProviderTestGetReturnUrlSkipThankYouParameterValidValue
+     */
+    public function testGetReturnUrlSkipThankYouParameterValidValue(string $skipThankYou, string $expectedUrl): void
     {
-        $this->assertTrue(false);
+        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
+        $this->launchDataMock->method('hasReturnUrl')
+            ->willReturn(true);
+        $this->launchDataMock->method('getReturnUrl')
+            ->willReturn($ltiReturnUrl);
+
+        $this->launchDataMock->method('hasVariable')
+            ->with('custom_skip_thankyou')
+            ->willReturn(true);
+        $this->launchDataMock->method('getVariable')
+            ->with('custom_skip_thankyou')
+            ->willReturn($skipThankYou);
+
+        $result = $this->object->getReturnUrl($this->launchDataMock, $this->deliveryExecutionMock);
+
+        static::assertSame($expectedUrl, $result, 'Method must return correct "return url"');
     }
 
-    public function testGetReturnUrl_SkipThankYouParameter_True(): void
+    /**
+     * @param bool $thankYouScreenOption
+     * @param string $expectedUrl
+     *
+     * @dataProvider dataProviderTestGetReturnUrlSkipThankYouParameterInvalidType
+     */
+    public function testGetReturnUrlSkipThankYouParameterInvalidType(bool $thankYouScreenOption, string $expectedUrl): void
     {
-        $this->assertTrue(false);
+        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
+        $this->launchDataMock->method('hasReturnUrl')
+            ->willReturn(true);
+        $this->launchDataMock->method('getReturnUrl')
+            ->willReturn($ltiReturnUrl);
+
+        $skipThankYouLtiParameter = 'INVALID_VALUE';
+        $this->launchDataMock->method('hasVariable')
+            ->with('custom_skip_thankyou')
+            ->willReturn(false);
+        $this->launchDataMock->method('getVariable')
+            ->with('custom_skip_thankyou')
+            ->willReturn($skipThankYouLtiParameter);
+
+        $this->object->setOption('thankyouScreen', $thankYouScreenOption);
+        $result = $this->object->getReturnUrl($this->launchDataMock, $this->deliveryExecutionMock);
+
+        static::assertSame($expectedUrl, $result, 'Method must return correct "return url"');
     }
 
-    public function testGetReturnUrl_SkipThankYouParameter_InvalidType(): void
-    {
-        $this->assertTrue(false);
-    }
-
-    public function dataProviderTestGetReturnUrl_NoSkipThankYouParameter(): array
+    public function dataProviderTestGetReturnUrlNoSkipThankYouParameter(): array
     {
         return [
             'Option show thank you screen true' => [
                 'thankYouScreenOption' => true,
-                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL',
                 'expectedUrl' => self::THANK_YOU_URL
             ],
             'Option show thank you screen false' => [
                 'thankYouScreenOption' => false,
-                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL',
+                'expectedUrl' => 'http://FAKE_LTI_RETURN.URL?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
+            ]
+        ];
+    }
+
+    public function dataProviderTestGetReturnUrlSkipThankYouParameterValidValue(): array
+    {
+        return [
+            'Option skip thank you screen true' => [
+                'skipThankYou' => 'true',
+                'expectedUrl' => 'http://FAKE_LTI_RETURN.URL?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
+            ],
+            'Option skip thank you screen false' => [
+                'skipThankYou' => 'false',
+                'expectedUrl' => self::THANK_YOU_URL
+            ]
+        ];
+    }
+
+    public function dataProviderTestGetReturnUrlSkipThankYouParameterInvalidType(): array
+    {
+        return [
+            'Option show thank you screen true' => [
+                'thankYouScreenOption' => true,
+                'expectedUrl' => self::THANK_YOU_URL
+            ],
+            'Option show thank you screen false' => [
+                'thankYouScreenOption' => false,
                 'expectedUrl' => 'http://FAKE_LTI_RETURN.URL?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
             ]
         ];
