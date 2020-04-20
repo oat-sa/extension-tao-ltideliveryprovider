@@ -69,6 +69,14 @@ class DeliveryTool extends ToolModule
     public const PARAM_THANKYOU_MESSAGE = 'custom_message';
 
     /**
+     * Setting this parameter to a string with item reference will move tests taker
+     * to a specified item when delivery resumed.
+     *
+     * @var string
+     */
+    const PARAM_RESUME_ON_ITEM = 'custom_resume_on_item';
+
+    /**
      * (non-PHPdoc)
      * @see ToolModule::run()
      *
