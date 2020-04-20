@@ -22,7 +22,8 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\tao\helpers\UrlHelper;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\oatbox\session\SessionService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiTool;
@@ -32,9 +33,7 @@ use oat\oatbox\user\User;
 use oat\oatbox\mutex\LockTrait;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
-use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
 
@@ -70,31 +69,21 @@ class LTIDeliveryTool extends LtiTool
         return !is_null($link);
     }
 
+    /**
+     * @param LtiMessage|null $ltiMessage
+     * @param DeliveryExecution|null $deliveryExecution
+     * @return mixed
+     * @throws \common_exception_Error
+     *
+     * @deprecated Use LtiNavigationService instead.
+     */
     public function getFinishUrl(LtiMessage $ltiMessage = null, DeliveryExecution $deliveryExecution = null)
     {
-        $session = \common_session_SessionManager::getSession();
-        /** @var LtiLaunchData $launchData */
+        $session = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
         $launchData = $session->getLaunchData();
-        if ($this->requiresLtiRedirect($launchData)) {
-            $redirectUrl = $launchData->getReturnUrl();
-        } else {
-            $redirectUrl = $this->getServiceLocator()->get(UrlHelper::class)->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
-        }
+        $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
 
-        if ($deliveryExecution !== null) {
-            $urlParts = parse_url($redirectUrl);
-            if (!isset($urlParts['query'])) {
-                $urlParts['query'] = '';
-            }
-            parse_str($urlParts['query'], $params);
-            if ($ltiMessage) {
-                $params = array_merge($params, $ltiMessage->getUrlParams());
-            }
-            $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
-            $urlParts['query'] = http_build_query($params);
-            $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
-        }
-        return $redirectUrl;
+        return $ltiNavigationService->getReturnUrl($launchData, $deliveryExecution);
     }
 
     /**
@@ -173,17 +162,5 @@ class LTIDeliveryTool extends LtiTool
         /** @var LtiResultAliasStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
         $ltiResultIdStorage->storeResultAlias($executionIdentifier, $resultIdentifier);
-    }
-
-    /**
-     * @param LtiLaunchData $launchData
-     * @return bool
-     */
-    private function requiresLtiRedirect(LtiLaunchData $launchData): bool
-    {
-        return $launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(
-                DeliveryTool::PARAM_SKIP_THANKYOU
-            ) == 'true'
-            && $launchData->hasReturnUrl();
     }
 }
