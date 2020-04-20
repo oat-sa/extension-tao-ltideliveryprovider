@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018  (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  *
- * @author Ilya Yarkavets <ilya.yarkavets@1pt.com>
+ * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
