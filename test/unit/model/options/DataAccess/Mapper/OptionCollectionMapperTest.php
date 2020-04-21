@@ -55,7 +55,7 @@ class OptionCollectionMapperTest extends TestCase
     public function dataProvider(): array
     {
         return [
-            [
+            'Valid statuses' => [
                 [
                     'opt_1' => true,
                     'opt_2' => false,
@@ -63,6 +63,18 @@ class OptionCollectionMapperTest extends TestCase
                 new OptionCollection(
                     new Option('opt_1', true),
                     new Option('opt_2', false)
+                ),
+            ],
+            'Invalid statuses' => [
+                [
+                    'opt_1' => false,
+                    'opt_2' => true,
+                    'opt_3' => 'false',
+                    'opt_4' => 'true',
+                ],
+                new OptionCollection(
+                    new Option('opt_1', false),
+                    new Option('opt_2', true)
                 ),
             ],
         ];

@@ -36,7 +36,9 @@ class OptionCollectionMapper extends ConfigurableService
         $resultingOptions = [];
 
         foreach ($rawData as $tool => $status) {
-            $resultingOptions[] = new Option((string)$tool, (bool)$status);
+            if (is_bool($status)) {
+                $resultingOptions[] = new Option((string)$tool, $status);
+            }
         }
 
         return new OptionCollection(...$resultingOptions);
