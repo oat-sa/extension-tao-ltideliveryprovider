@@ -29,6 +29,7 @@ use oat\oatbox\session\SessionService;
 use oat\taoDelivery\model\AttemptServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\oatbox\user\User;
+use oat\taoLti\models\classes\LtiClientException;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\TaoLtiSession;
@@ -87,7 +88,7 @@ class LtiAssignment extends ConfigurableService
             if ($launchData->hasVariable(self::LTI_MAX_ATTEMPTS_VARIABLE)) {
                 $val = $launchData->getVariable(self::LTI_MAX_ATTEMPTS_VARIABLE);
                 if (!is_numeric($val)) {
-                    throw new LtiException(
+                    throw new LtiClientException(
                         __('"max_attempts" variable must me numeric.'),
                         LtiErrorMessage::ERROR_INVALID_PARAMETER
                     );
@@ -102,7 +103,7 @@ class LtiAssignment extends ConfigurableService
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
             $this->logDebug("Attempt to start the compiled delivery " . $delivery->getUri() . " without tokens");
-            throw new LtiException(
+            throw new LtiClientException(
                 __('Attempts limit has been reached.'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
