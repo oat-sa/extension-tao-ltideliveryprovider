@@ -29,7 +29,7 @@ return [
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '10.5.0',
+    'version' => '10.6.1',
     'author' => 'Open Assessment Technologies',
     'requires' => [
         'generis' => '>=12.15.0',
@@ -38,7 +38,8 @@ return [
         'taoLti' => '>=10.5.0',
         'taoResultServer' => '>=7.0.0',
         'taoDelivery' => '>=11.0.0',
-        'taoOutcomeUi' => '>=7.0.0'
+        'taoOutcomeUi' => '>=7.0.0',
+        'taoQtiTest' => '>=37.1.0',
     ],
     'models' => [
          'http://www.tao.lu/Ontologies/TAOLTI.rdf',
@@ -53,9 +54,10 @@ return [
             \oat\ltiDeliveryProvider\install\InstallDeliveryContainerService::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService::class,
             \oat\ltiDeliveryProvider\scripts\install\RegisterMetrics::class,
+            \oat\ltiDeliveryProvider\scripts\install\RegisterOverriddenLtiToolRepository::class,
         ],
         'rdf' => [
-            dirname(__FILE__) . '/install/ontology/deliverytool.rdf'
+            __DIR__ . '/install/ontology/deliverytool.rdf'
         ]
     ],
     'routes' => [
@@ -74,16 +76,16 @@ return [
     'constants' => [
 
         # views directory
-        "DIR_VIEWS"                => __DIR__ . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
+        'DIR_VIEWS'           => __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR,
 
         # default module name
-        'DEFAULT_MODULE_NAME'    => 'Browser',
+        'DEFAULT_MODULE_NAME' => 'Browser',
 
         #default action name
-        'DEFAULT_ACTION_NAME'    => 'index',
+        'DEFAULT_ACTION_NAME' => 'index',
 
         #BASE PATH: the root path in the file system (usually the document root)
-        'BASE_PATH'                => __DIR__ . DIRECTORY_SEPARATOR ,
+        'BASE_PATH'           => __DIR__ . DIRECTORY_SEPARATOR ,
 
         #BASE URL (usually the domain root)
         'BASE_URL'                => ROOT_URL . 'ltiDeliveryProvider/',
