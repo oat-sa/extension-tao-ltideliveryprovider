@@ -101,7 +101,7 @@ class LtiNavigationServiceTest extends TestCase
     /**
      * Test getReturnUrl without return url in launch data.
      */
-    public function testGetReturnUrlNoReturnUrl()
+    public function testGetReturnUrlNoLtiReturnUrlParameter()
     {
         $this->launchDataMock->expects($this->once())
             ->method('hasReturnUrl')
@@ -120,11 +120,7 @@ class LtiNavigationServiceTest extends TestCase
      */
     public function testGetReturnUrlNoSkipThankYouParameter(bool $thankYouScreenOption, string $expectedUrl): void
     {
-        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
-        $this->launchDataMock->method('hasReturnUrl')
-            ->willReturn(true);
-        $this->launchDataMock->method('getReturnUrl')
-            ->willReturn($ltiReturnUrl);
+        $this->mockLtiReturnUrlParameter();
 
         $this->launchDataMock->method('hasVariable')
             ->with('custom_skip_thankyou')
@@ -144,11 +140,7 @@ class LtiNavigationServiceTest extends TestCase
      */
     public function testGetReturnUrlSkipThankYouParameterValidValue(string $skipThankYou, string $expectedUrl): void
     {
-        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
-        $this->launchDataMock->method('hasReturnUrl')
-            ->willReturn(true);
-        $this->launchDataMock->method('getReturnUrl')
-            ->willReturn($ltiReturnUrl);
+        $this->mockLtiReturnUrlParameter();
 
         $this->launchDataMock->method('hasVariable')
             ->with('custom_skip_thankyou')
@@ -170,11 +162,7 @@ class LtiNavigationServiceTest extends TestCase
      */
     public function testGetReturnUrlSkipThankYouParameterInvalidType(bool $thankYouScreenOption, string $expectedUrl): void
     {
-        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
-        $this->launchDataMock->method('hasReturnUrl')
-            ->willReturn(true);
-        $this->launchDataMock->method('getReturnUrl')
-            ->willReturn($ltiReturnUrl);
+        $this->mockLtiReturnUrlParameter();
 
         $skipThankYouLtiParameter = 'INVALID_VALUE';
         $this->launchDataMock->method('hasVariable')
@@ -263,5 +251,14 @@ class LtiNavigationServiceTest extends TestCase
             ->willReturn($this->ltiMessageMock);
 
         return $messageFactoryMock;
+    }
+
+    private function mockLtiReturnUrlParameter(): void
+    {
+        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
+        $this->launchDataMock->method('hasReturnUrl')
+            ->willReturn(true);
+        $this->launchDataMock->method('getReturnUrl')
+            ->willReturn($ltiReturnUrl);
     }
 }
