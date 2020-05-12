@@ -108,17 +108,6 @@ class LtiNavigationService extends ConfigurableService
     }
 
     /**
-     * @param DeliveryExecutionInterface $deliveryExecution
-     * @return LtiMessage
-     * @throws \common_exception_NotFound
-     */
-    protected function getLtiMessage(DeliveryExecutionInterface $deliveryExecution)
-    {
-        $state = $deliveryExecution->getState()->getLabel();
-        return new LtiMessage($state, null);
-    }
-
-    /**
      * Whenever or not to show the thank you screen
      * @param LtiLaunchData $launchData
      * @return boolean
