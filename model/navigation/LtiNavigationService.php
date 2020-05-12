@@ -22,8 +22,10 @@
 namespace oat\ltiDeliveryProvider\model\navigation;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\exception\InvalidService;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\helpers\UrlHelper;
-use oat\taoLti\models\classes\LtiInvalidVariableException;
+use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
@@ -31,16 +33,15 @@ use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 
 class LtiNavigationService extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiNavigation';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiNavigation';
 
-    const OPTION_DELIVERY_RETURN_STATUS = 'delivery_return_status';
-
-    const OPTION_MESSAGE_FACTORY = 'message';
+    public const OPTION_DELIVERY_RETURN_STATUS = 'delivery_return_status';
+    public const OPTION_MESSAGE_FACTORY = 'message';
 
     /**
      * Whenever or not the thank you screen should be shown by default
      */
-    const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
+    public const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
 
     /**
@@ -48,15 +49,15 @@ class LtiNavigationService extends ConfigurableService
      * @param DeliveryExecutionInterface $deliveryExecution
      * @return string
      * @throws \common_exception_NotFound
-     * @throws \oat\oatbox\service\exception\InvalidService
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
-     * @throws \oat\taoLti\models\classes\LtiException
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
+     * @throws LtiException
      */
     public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         return $this->showThankYou($launchData)
             ? $this->getThankYouUrl()
-            : $this->getConsumerReturnUrl($launchData, $deliveryExecution);
+            : $this->buildConsumerReturnUrl($launchData, $deliveryExecution);
     }
 
     /**
@@ -64,23 +65,15 @@ class LtiNavigationService extends ConfigurableService
      * @param DeliveryExecutionInterface $deliveryExecution
      * @return string
      * @throws \common_exception_NotFound
-     * @throws \oat\oatbox\service\exception\InvalidService
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
-     * @throws \oat\taoLti\models\classes\LtiException
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
+     * @throws LtiException
      */
-    protected function getConsumerReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
+    protected function buildConsumerReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
     {
         $urlParts = parse_url($launchData->getReturnUrl());
-        if (!isset($urlParts['query'])) {
-            $urlParts['query'] = '';
-        }
-        parse_str($urlParts['query'], $params);
-        $urlParts['query'] = http_build_query(array_merge($params, $this->getConsumerReturnParams($launchData, $deliveryExecution)));
-
-        $port = '';
-        if (array_key_exists('port', $urlParts)) {
-            $port = ':' . $urlParts['port'];
-        }
+        $urlParts['query'] = $this->buildConsumerReturnUrlQuery($deliveryExecution, $urlParts);
+        $port = empty($urlParts['port']) ? '' : (':' . $urlParts['port']);
 
         return $urlParts['scheme'] . '://' . $urlParts['host'] . $port . $urlParts['path'] . '?' . $urlParts['query'];
     }
@@ -90,21 +83,15 @@ class LtiNavigationService extends ConfigurableService
      * @param DeliveryExecutionInterface $deliveryExecution
      * @return array
      * @throws \common_exception_NotFound
-     * @throws \oat\oatbox\service\exception\InvalidService
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
      */
-    protected function getConsumerReturnParams(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
+    protected function getConsumerReturnParams(DeliveryExecutionInterface $deliveryExecution)
     {
-        $ltiMessage = $this->getSubService(self::OPTION_MESSAGE_FACTORY)->getLtiMessage($deliveryExecution);
-        $params = $ltiMessage
-            ? $ltiMessage->getUrlParams()
-            : []
-        ;
-        $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
-        if ($this->getOption(self::OPTION_DELIVERY_RETURN_STATUS)) {
-            $params['deliveryExecutionStatus'] = $deliveryExecution->getState()->getLabel();
-        }
-        return $params;
+        $ltiReturnQueryParams = $this->getLtiReturnUrlQueryParams($deliveryExecution);
+        $deliveryReturnQueryParams = $this->getDeliveryReturnQueryParams($deliveryExecution);
+
+        return array_merge($ltiReturnQueryParams, $deliveryReturnQueryParams);
     }
 
     /**
@@ -138,5 +125,51 @@ class LtiNavigationService extends ConfigurableService
     protected function getThankYouUrl()
     {
         return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+    }
+
+    /**
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @param array $urlParts
+     * @return array
+     * @throws \common_exception_NotFound
+     */
+    private function buildConsumerReturnUrlQuery(DeliveryExecutionInterface $deliveryExecution, array $urlParts): string
+    {
+        $urlParts['query'] = $urlParts['query'] ?? '';
+        parse_str($urlParts['query'], $params);
+
+        return http_build_query(array_merge($params, $this->getConsumerReturnParams($deliveryExecution)));
+    }
+
+    /**
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @return array
+     * @throws InvalidService
+     * @throws InvalidServiceManagerException
+     */
+    private function getLtiReturnUrlQueryParams(DeliveryExecutionInterface $deliveryExecution): array
+    {
+        $ltiMessage = $this->getSubService(self::OPTION_MESSAGE_FACTORY)->getLtiMessage($deliveryExecution);
+
+        return ($ltiMessage instanceof LtiMessage) ? $ltiMessage->getUrlParams() : [];
+    }
+
+    /**
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @param $params
+     * @return mixed
+     * @throws \common_exception_NotFound
+     */
+    private function getDeliveryReturnQueryParams(DeliveryExecutionInterface $deliveryExecution): array
+    {
+        $params = [
+            'deliveryExecution' => $deliveryExecution->getIdentifier()
+        ];
+
+        if ($this->getOption(self::OPTION_DELIVERY_RETURN_STATUS)) {
+            $params['deliveryExecutionStatus'] = $deliveryExecution->getState()->getLabel();
+        }
+
+        return $params;
     }
 }
