@@ -118,9 +118,12 @@ class LtiNavigationServiceTest extends TestCase
      *
      * @dataProvider dataProviderTestGetReturnUrlNoSkipThankYouParameter
      */
-    public function testGetReturnUrlNoSkipThankYouParameter(bool $thankYouScreenOption, string $expectedUrl): void
-    {
-        $this->mockLtiReturnUrlParameter();
+    public function testGetReturnUrlNoSkipThankYouParameter(
+        bool $thankYouScreenOption,
+        string $ltiReturnUrl,
+        string $expectedUrl
+    ): void {
+        $this->mockLtiReturnUrlParameter($ltiReturnUrl);
 
         $this->launchDataMock->method('hasVariable')
             ->with('custom_skip_thankyou')
@@ -183,11 +186,23 @@ class LtiNavigationServiceTest extends TestCase
         return [
             'Option show thank you screen true' => [
                 'thankYouScreenOption' => true,
+                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL',
                 'expectedUrl' => self::THANK_YOU_URL
             ],
             'Option show thank you screen false' => [
                 'thankYouScreenOption' => false,
+                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL',
                 'expectedUrl' => 'http://FAKE_LTI_RETURN.URL?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
+            ],
+            'Option show thank you screen false, LTIReturnUrl with port' => [
+                'thankYouScreenOption' => false,
+                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL:1234',
+                'expectedUrl' => 'http://FAKE_LTI_RETURN.URL:1234?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
+            ],
+            'Option show thank you screen false, LTIReturnUrl has query parameter' => [
+                'thankYouScreenOption' => false,
+                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL?lti_param1=lti_value1',
+                'expectedUrl' => 'http://FAKE_LTI_RETURN.URL?lti_param1=lti_value1&deliveryExecution=' . self::DELIVERY_EXECUTION_ID
             ]
         ];
     }
@@ -253,9 +268,8 @@ class LtiNavigationServiceTest extends TestCase
         return $messageFactoryMock;
     }
 
-    private function mockLtiReturnUrlParameter(): void
+    private function mockLtiReturnUrlParameter(string $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL'): void
     {
-        $ltiReturnUrl = 'http://FAKE_LTI_RETURN.URL';
         $this->launchDataMock->method('hasReturnUrl')
             ->willReturn(true);
         $this->launchDataMock->method('getReturnUrl')
