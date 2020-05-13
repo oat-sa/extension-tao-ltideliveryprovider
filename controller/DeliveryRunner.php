@@ -33,7 +33,6 @@ use oat\taoLti\models\classes\theme\LtiHeadless;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
@@ -162,18 +161,7 @@ class DeliveryRunner extends DeliveryServer
                 $stateService->finish($deliveryExecution);
             }
         }
-        $redirectUrl = LTIDeliveryTool::singleton()->getFinishUrl($this->getLtiMessage($deliveryExecution), $deliveryExecution);
+        $redirectUrl = LTIDeliveryTool::singleton()->getFinishUrl($deliveryExecution);
         $this->redirect($redirectUrl);
-    }
-
-    /**
-     * @param DeliveryExecution $deliveryExecution
-     * @return LtiMessage
-     * @throws \common_exception_NotFound
-     */
-    protected function getLtiMessage(DeliveryExecution $deliveryExecution)
-    {
-        $state = $deliveryExecution->getState()->getLabel();
-        return new LtiMessage($state, null);
     }
 }
