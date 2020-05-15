@@ -18,9 +18,12 @@
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA ;
  */
 
+declare(strict_types=1);
+
 namespace oat\ltiDeliveryProvider\test\unit\model\navigation;
 
 use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
+use oat\ltiDeliveryProvider\model\navigation\LtiMessageFactoryInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\generis\test\TestCase;
 use oat\oatbox\log\LoggerService;
@@ -58,7 +61,7 @@ class LtiNavigationServiceTest extends TestCase
     private $deliveryExecutionMock;
 
     /**
-     * @var DefaultMessageFactory|MockObject
+     * @var LtiMessageFactoryInterface|MockObject
      */
     private $messageFactoryMock;
 
@@ -101,7 +104,7 @@ class LtiNavigationServiceTest extends TestCase
     /**
      * Test getReturnUrl without return url in launch data.
      */
-    public function testGetReturnUrlNoLtiReturnUrlParameter()
+    public function testGetReturnUrlNoLtiReturnUrlParameter(): void
     {
         $this->launchDataMock->expects($this->once())
             ->method('hasReturnUrl')
@@ -163,8 +166,10 @@ class LtiNavigationServiceTest extends TestCase
      *
      * @dataProvider dataProviderTestGetReturnUrlSkipThankYouParameterInvalidType
      */
-    public function testGetReturnUrlSkipThankYouParameterInvalidType(bool $thankYouScreenOption, string $expectedUrl): void
-    {
+    public function testGetReturnUrlSkipThankYouParameterInvalidType(
+        bool $thankYouScreenOption,
+        string $expectedUrl
+    ): void {
         $this->mockLtiReturnUrlParameter();
 
         $skipThankYouLtiParameter = 'INVALID_VALUE';
@@ -246,16 +251,15 @@ class LtiNavigationServiceTest extends TestCase
 
         $loggerMock = $this->createMock(LoggerInterface::class);
 
-        $serviceLocatorMock = $this->getServiceLocatorMock(
+        return $this->getServiceLocatorMock(
             [
                 UrlHelper::class => $this->urlHelperMock,
                 LoggerService::SERVICE_ID => $loggerMock
             ]
         );
-        return $serviceLocatorMock;
     }
 
-    private function getMessageFactoryMock(): DefaultMessageFactory
+    private function getMessageFactoryMock(): LtiMessageFactoryInterface
     {
         $this->ltiMessageMock = $this->createMock(LtiMessage::class);
         $this->ltiMessageMock->method('getUrlParams')

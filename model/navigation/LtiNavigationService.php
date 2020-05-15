@@ -19,6 +19,8 @@
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\ltiDeliveryProvider\model\navigation;
 
 use oat\oatbox\service\ConfigurableService;
@@ -53,10 +55,10 @@ class LtiNavigationService extends ConfigurableService
      * @throws InvalidServiceManagerException
      * @throws LtiException
      */
-    public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
+    public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution): string
     {
-        return $this->showThankYou($launchData)
-            ? $this->getThankYouUrl()
+        return $this->shouldShowThankYou($launchData)
+            ? $this->buildThankYouUrl()
             : $this->buildConsumerReturnUrl($launchData, $deliveryExecution);
     }
 
@@ -69,8 +71,10 @@ class LtiNavigationService extends ConfigurableService
      * @throws InvalidServiceManagerException
      * @throws LtiException
      */
-    protected function buildConsumerReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution)
-    {
+    protected function buildConsumerReturnUrl(
+        LtiLaunchData $launchData,
+        DeliveryExecutionInterface $deliveryExecution
+    ): string {
         $urlParts = parse_url($launchData->getReturnUrl());
         $urlParts['query'] = $this->buildConsumerReturnUrlQuery($deliveryExecution, $urlParts);
         $port = empty($urlParts['port']) ? '' : (':' . $urlParts['port']);
@@ -86,7 +90,7 @@ class LtiNavigationService extends ConfigurableService
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      */
-    protected function getConsumerReturnParams(DeliveryExecutionInterface $deliveryExecution)
+    protected function getConsumerReturnParams(DeliveryExecutionInterface $deliveryExecution): array
     {
         $ltiReturnQueryParams = $this->getLtiReturnUrlQueryParams($deliveryExecution);
         $deliveryReturnQueryParams = $this->getDeliveryReturnQueryParams($deliveryExecution);
@@ -97,9 +101,9 @@ class LtiNavigationService extends ConfigurableService
     /**
      * Whenever or not to show the thank you screen
      * @param LtiLaunchData $launchData
-     * @return boolean
+     * @return bool
      */
-    protected function showThankYou(LtiLaunchData $launchData)
+    protected function shouldShowThankYou(LtiLaunchData $launchData): bool
     {
         if (!$launchData->hasReturnUrl()) {
             return true;
@@ -122,7 +126,7 @@ class LtiNavigationService extends ConfigurableService
     /**
      * @return string
      */
-    protected function getThankYouUrl()
+    protected function buildqThankYouUrl(): string
     {
         return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }

@@ -79,7 +79,7 @@ class LTIDeliveryTool extends LtiTool
     {
         $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
 
-        return $ltiNavigationService->getReturnUrl($this->getLaunchData(), $deliveryExecution);
+        return $ltiNavigationService->getReturnUrl($this->getLtiLaunchData(), $deliveryExecution);
     }
 
     /**
@@ -153,7 +153,7 @@ class LTIDeliveryTool extends LtiTool
         // lis_outcome_service_url This value should not change from one launch to the next and in general,
         //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.
         //  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
-        $launchData = $this->getLaunchData();
+        $launchData = $this->getLtiLaunchData();
         $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid') ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
 
         /** @var LtiResultAliasStorage $ltiResultIdStorage */
@@ -165,7 +165,7 @@ class LTIDeliveryTool extends LtiTool
      * @return LtiLaunchData
      * @throws LtiException
      */
-    protected function getLaunchData(): LtiLaunchData
+    protected function getLtiLaunchData(): LtiLaunchData
     {
         $session = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
         if (!$session instanceof TaoLtiSession) {
