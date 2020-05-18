@@ -52,7 +52,9 @@ class DeliveryLinks extends tao_actions_CommonModule
 
         $this->setData(
             'launchUrl',
-            LTIDeliveryTool::singleton()->getLaunchUrl(['delivery' => $selectedDelivery->getUri()])
+            $this->getServiceLocator()->get(LTIDeliveryTool::class)->getLaunchUrl(
+                ['delivery' => $selectedDelivery->getUri()]
+            )
         );
 
         if (!empty($feedBackMessage)) {

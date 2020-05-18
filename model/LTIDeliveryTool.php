@@ -23,12 +23,13 @@
 namespace oat\ltiDeliveryProvider\model;
 
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceManager;
 use oat\oatbox\session\SessionService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
-use oat\taoLti\models\classes\LtiTool;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
 use oat\oatbox\user\User;
@@ -39,7 +40,7 @@ use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
 use oat\taoLti\models\classes\TaoLtiSession;
 
-class LTIDeliveryTool extends LtiTool
+class LTIDeliveryTool extends ConfigurableService
 {
     use LockTrait;
 
@@ -50,6 +51,15 @@ class LTIDeliveryTool extends LtiTool
     const ACTION = 'launch';
     const PROPERTY_LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
 
+    /**
+     * @return static
+     *
+     * @deprecated Added fo backward compatibility. Use service locator instead.
+     */
+    public static function singleton(): self
+    {
+        return ServiceManager::getServiceManager()->get(static::class);
+    }
 
     public function getLaunchUrl($parameters = [])
     {
@@ -77,6 +87,7 @@ class LTIDeliveryTool extends LtiTool
      */
     public function getFinishUrl(DeliveryExecution $deliveryExecution = null)
     {
+        /** @var LtiNavigationService $ltiNavigationService */
         $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
 
         return $ltiNavigationService->getReturnUrl($this->getLtiLaunchData(), $deliveryExecution);

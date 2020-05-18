@@ -29,6 +29,6 @@ class LTIDeliveryToolFactory extends ConfigurableService
 
     public function create()
     {
-        return LTIDeliveryTool::singleton();
+        return $this->getServiceLocator()->get(LTIDeliveryTool::class);
     }
 }

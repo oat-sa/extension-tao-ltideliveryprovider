@@ -215,7 +215,7 @@ class DeliveryTool extends ToolModule
      */
     protected function getTool()
     {
-        return LTIDeliveryTool::singleton();
+        return $this->getServiceLocator()->get(LTIDeliveryTool::class);
     }
 
     /**

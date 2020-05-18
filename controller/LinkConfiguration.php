@@ -23,6 +23,7 @@
 namespace oat\ltiDeliveryProvider\controller;
 
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\tao\helpers\UrlHelper;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
@@ -88,11 +89,18 @@ class LinkConfiguration extends tao_actions_CommonModule
      */
     public function configureDelivery()
     {
-        $compiledDelivery = LTIDeliveryTool::singleton()->getDeliveryFromLink();
+        $compiledDelivery = $this->getServiceLocator()->get(LTIDeliveryTool::class)->getDeliveryFromLink();
         if (is_null($compiledDelivery)) {
             $this->selectDelivery();
         } else {
-            $this->redirect(_url('showDelivery', null, null, ['uri' => $compiledDelivery->getUri()]));
+            $showDeliveryUrl = $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
+                'showDelivery',
+                null,
+                null,
+                ['uri' => $compiledDelivery->getUri()]
+            );
+            
+            $this->redirect($showDeliveryUrl);
         }
     }
 
