@@ -204,6 +204,16 @@ class LtiNavigationServiceTest extends TestCase
                 'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL:1234',
                 'expectedUrl' => 'http://FAKE_LTI_RETURN.URL:1234?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
             ],
+            'Option show thank you screen false, LTIReturnUrl with path' => [
+                'thankYouScreenOption' => false,
+                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL/PATH',
+                'expectedUrl' => 'http://FAKE_LTI_RETURN.URL/PATH?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
+            ],
+            'Option show thank you screen false, LTIReturnUrl with path and port' => [
+                'thankYouScreenOption' => false,
+                'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL:1234/PATH',
+                'expectedUrl' => 'http://FAKE_LTI_RETURN.URL:1234/PATH?deliveryExecution=' . self::DELIVERY_EXECUTION_ID
+            ],
             'Option show thank you screen false, LTIReturnUrl has query parameter' => [
                 'thankYouScreenOption' => false,
                 'ltiReturnUrl' => 'http://FAKE_LTI_RETURN.URL?lti_param1=lti_value1',

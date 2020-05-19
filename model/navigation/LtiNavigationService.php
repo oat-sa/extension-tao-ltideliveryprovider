@@ -76,10 +76,11 @@ class LtiNavigationService extends ConfigurableService
         DeliveryExecutionInterface $deliveryExecution
     ): string {
         $urlParts = parse_url($launchData->getReturnUrl());
-        $urlParts['query'] = $this->buildConsumerReturnUrlQuery($deliveryExecution, $urlParts);
         $port = empty($urlParts['port']) ? '' : (':' . $urlParts['port']);
+        $path = $urlParts['path'] ?? '';
+        $queryString = $this->buildConsumerReturnUrlQuery($deliveryExecution, $urlParts);
 
-        return $urlParts['scheme'] . '://' . $urlParts['host'] . $port . $urlParts['path'] . '?' . $urlParts['query'];
+        return $urlParts['scheme'] . '://' . $urlParts['host'] . $port . $path . '?' . $queryString;
     }
 
     /**
