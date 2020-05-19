@@ -84,7 +84,6 @@ class LtiNavigationService extends ConfigurableService
     }
 
     /**
-     * @param LtiLaunchData $launchData
      * @param DeliveryExecutionInterface $deliveryExecution
      * @return array
      * @throws \common_exception_NotFound
