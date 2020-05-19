@@ -82,10 +82,10 @@ class LTIDeliveryTool extends ConfigurableService
     }
 
     /**
-     * @param DeliveryExecution|null $deliveryExecution
+     * @param DeliveryExecution $deliveryExecution
      * @return mixed
      */
-    public function getFinishUrl(DeliveryExecution $deliveryExecution = null)
+    public function getFinishUrl(DeliveryExecution $deliveryExecution)
     {
         /** @var LtiNavigationService $ltiNavigationService */
         $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
