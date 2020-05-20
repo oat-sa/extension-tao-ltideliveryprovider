@@ -39,21 +39,29 @@ class DeliveryRestService extends \tao_actions_RestController
     {
         try {
             if ($this->getRequestMethod() != \Request::HTTP_GET) {
-                    throw new \common_exception_NotImplemented('Only GET method is accepted to request this service.');
+                throw new \common_exception_NotImplemented('Only GET method is accepted to request this service.');
             }
-            
+
             if (!$this->hasRequestParameter('deliveryId')) {
-                $this->returnFailure(new \common_exception_MissingParameter('At least one mandatory parameter was required but found missing in your request'));
+                $this->returnFailure(
+                    new \common_exception_MissingParameter(
+                        'At least one mandatory parameter was required but found missing in your request'
+                    )
+                );
             }
-            
+
             $selectedDelivery = new \core_kernel_classes_Resource($this->getRequestParameter('deliveryId'));
             if (!$selectedDelivery->isInstanceOf(new \core_kernel_classes_Class(TaoOntology::CLASS_URI_DELIVERY))) {
                 $this->returnFailure(new \common_exception_NotFound('Delivery not found'));
             }
 
-            $this->returnSuccess(LTIDeliveryTool::singleton()->getLaunchUrl(['delivery' => $selectedDelivery->getUri()]));
+            $this->returnSuccess(
+                $this->getServiceLocator()->get(LTIDeliveryTool::class)->getLaunchUrl(
+                    ['delivery' => $selectedDelivery->getUri()]
+                )
+            );
         } catch (\Exception $ex) {
-             $this->returnFailure($ex);
+            $this->returnFailure($ex);
         }
     }
 }

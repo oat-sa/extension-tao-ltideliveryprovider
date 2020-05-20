@@ -124,6 +124,6 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
      */
     protected function getTool()
     {
-        return LTIDeliveryTool::singleton();
+        return $this->getServiceLocator()->get(LTIDeliveryTool::class);
     }
 }

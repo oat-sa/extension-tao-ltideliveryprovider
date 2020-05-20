@@ -22,6 +22,7 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -33,7 +34,6 @@ use oat\taoLti\models\classes\theme\LtiHeadless;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
@@ -107,10 +107,21 @@ class DeliveryRunner extends DeliveryServer
         $user = \common_session_SessionManager::getSession()->getUser();
 
         try {
-            $newExecution = LTIDeliveryTool::singleton()->startDelivery($delivery, $remoteLink, $user);
+            $newExecution = $this->getServiceLocator()->get(LTIDeliveryTool::class)->startDelivery(
+                $delivery,
+                $remoteLink,
+                $user
+            );
             $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
             $deliveryExecutionStateService->pause($newExecution);
-            $this->redirect(_url('runDeliveryExecution', null, null, ['deliveryExecution' => $newExecution->getIdentifier()]));
+
+            $runDeliveryExecutionUrl = $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
+                'runDeliveryExecution',
+                null,
+                null,
+                ['deliveryExecution' => $newExecution->getIdentifier()]
+            );
+            $this->redirect($runDeliveryExecutionUrl);
         } catch (\common_exception_Unauthorized $e) {
             $ltiException = new LtiException(
                 $e->getMessage(),
@@ -158,22 +169,11 @@ class DeliveryRunner extends DeliveryServer
                 $this->getRequestParameter('deliveryExecution')
             );
             if ($deliveryExecution->getState() !== DeliveryExecution::STATE_FINISHIED) {
-                $stateService = $this->getServiceManager()->get(StateServiceInterface::SERVICE_ID);
+                $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
                 $stateService->finish($deliveryExecution);
             }
         }
-        $redirectUrl = LTIDeliveryTool::singleton()->getFinishUrl($this->getLtiMessage($deliveryExecution), $deliveryExecution);
+        $redirectUrl = $this->getServiceLocator()->get(LTIDeliveryTool::class)->getFinishUrl($deliveryExecution);
         $this->redirect($redirectUrl);
-    }
-
-    /**
-     * @param DeliveryExecution $deliveryExecution
-     * @return LtiMessage
-     * @throws \common_exception_NotFound
-     */
-    protected function getLtiMessage(DeliveryExecution $deliveryExecution)
-    {
-        $state = $deliveryExecution->getState()->getLabel();
-        return new LtiMessage($state, null);
     }
 }
