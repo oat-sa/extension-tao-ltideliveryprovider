@@ -22,21 +22,25 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceManager;
+use oat\oatbox\session\SessionService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoLti\models\classes\LtiException;
+use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
-use oat\taoLti\models\classes\LtiTool;
 use \core_kernel_classes_Property;
 use \core_kernel_classes_Resource;
 use oat\oatbox\user\User;
 use oat\oatbox\mutex\LockTrait;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
-use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
+use oat\taoLti\models\classes\TaoLtiSession;
 
-class LTIDeliveryTool extends LtiTool
+class LTIDeliveryTool extends ConfigurableService
 {
     use LockTrait;
 
@@ -47,6 +51,15 @@ class LTIDeliveryTool extends LtiTool
     const ACTION = 'launch';
     const PROPERTY_LINK_DELIVERY = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDelivery';
 
+    /**
+     * @return static
+     *
+     * @deprecated Added fo backward compatibility. Use service locator instead.
+     */
+    public static function singleton(): self
+    {
+        return ServiceManager::getServiceManager()->get(static::class);
+    }
 
     public function getLaunchUrl($parameters = [])
     {
@@ -68,34 +81,16 @@ class LTIDeliveryTool extends LtiTool
         return !is_null($link);
     }
 
-    public function getFinishUrl(LtiMessage $ltiMessage = null, DeliveryExecution $deliveryExecution = null)
+    /**
+     * @param DeliveryExecution $deliveryExecution
+     * @return mixed
+     */
+    public function getFinishUrl(DeliveryExecution $deliveryExecution)
     {
-        $session = \common_session_SessionManager::getSession();
-        /** @var LtiLaunchData $launchData */
-        $launchData = $session->getLaunchData();
-        if (
-            $launchData->hasVariable(DeliveryTool::PARAM_SKIP_THANKYOU) && $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU) == 'true'
-            && $launchData->hasReturnUrl()
-        ) {
-            $redirectUrl = $launchData->getReturnUrl();
-        } else {
-            $redirectUrl = _url('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
-        }
+        /** @var LtiNavigationService $ltiNavigationService */
+        $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
 
-        if ($deliveryExecution !== null) {
-            $urlParts = parse_url($redirectUrl);
-            if (!isset($urlParts['query'])) {
-                $urlParts['query'] = '';
-            }
-            parse_str($urlParts['query'], $params);
-            if ($ltiMessage) {
-                $params = array_merge($params, $ltiMessage->getUrlParams());
-            }
-            $params['deliveryExecution'] = $deliveryExecution->getIdentifier();
-            $urlParts['query'] = http_build_query($params);
-            $redirectUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . $urlParts['query'];
-        }
-        return $redirectUrl;
+        return $ltiNavigationService->getReturnUrl($this->getLtiLaunchData(), $deliveryExecution);
     }
 
     /**
@@ -167,12 +162,27 @@ class LTIDeliveryTool extends LtiTool
     {
         $executionIdentifier = $deliveryExecution->getIdentifier();
         // lis_outcome_service_url This value should not change from one launch to the next and in general,
-        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
-        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+        //  the TP can expect that there is a one-to-one mapping between the lis_outcome_service_url and a particular oauth_consumer_key.
+        //  This value might change if there was a significant re-configuration of the TC system or if the TC moved from one domain to another.
+        $launchData = $this->getLtiLaunchData();
         $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid') ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
 
         /** @var LtiResultAliasStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
         $ltiResultIdStorage->storeResultAlias($executionIdentifier, $resultIdentifier);
+    }
+
+    /**
+     * @return LtiLaunchData
+     * @throws LtiException
+     */
+    protected function getLtiLaunchData(): LtiLaunchData
+    {
+        $session = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
+        if (!$session instanceof TaoLtiSession) {
+            throw new LtiException('Not an LTI session.');
+        }
+
+        return $session->getLaunchData();
     }
 }
