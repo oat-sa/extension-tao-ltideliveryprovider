@@ -32,7 +32,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryToolFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
-use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
+use oat\ltiDeliveryProvider\model\metrics\ActiveLimitRestriction;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
@@ -233,7 +233,7 @@ class Updater extends \common_ext_ExtensionUpdater
             foreach ($actions as $action => $params) {
                 if (array_key_exists('limit', $params)) {
                     $limit = $params['limit'];
-                    $params['restrictions'][activeLimitRestriction::class] = $limit;
+                    $params['restrictions'][ActiveLimitRestriction::class] = $limit;
                     unset($params['limit']);
                     $actions[$action] = $params;
                 }
