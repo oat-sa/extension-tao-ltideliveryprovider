@@ -35,14 +35,13 @@ class ActiveLimitRestriction extends BasicRestriction
     /**
      * @param $value
      * @return bool
-     * @throws InvalidServiceManagerException
      */
     public function doesComply($value)
     {
         if ($value === 0) {
             return true;
         }
-        $metric = $this->getServiceManager()->get(MetricsService::class)->getOneMetric(self::METRIC);
+        $metric = $this->getServiceLocator()->get(MetricsService::class)->getOneMetric(self::METRIC);
         return $value > $metric->collect();
     }
 }
