@@ -339,5 +339,28 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('10.6.0', '11.1.0');
+
+        if ($this->isVersion('11.1.0')) {
+            if ($this->getServiceManager()->has(ActionQueue::SERVICE_ID)) {
+                $actionQueueService = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
+                $options = $actionQueueService->getOptions();
+                if (isset($options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'])) {
+                    $restrictions = $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'];
+
+                    $deprecatedClassname = 'oat\\ltiDeliveryProvider\\model\\metrics\\activeLimitRestriction';
+                    if (isset($restrictions[$deprecatedClassname])) {
+                        $restrictionOptions = $restrictions[$deprecatedClassname];
+                        unset($restrictions[$deprecatedClassname]);
+                        $restrictions[ActiveLimitRestriction::class] = $restrictionOptions;
+                    }
+
+                    $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'] = $restrictions;
+                    $actionQueueService->setOptions($options);
+                    $this->getServiceManager()->register(ActionQueue::SERVICE_ID, $actionQueueService);
+                }
+            }
+
+            $this->setVersion('11.2.0');
+        }
     }
 }
