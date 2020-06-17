@@ -347,10 +347,10 @@ class Updater extends \common_ext_ExtensionUpdater
                 if (isset($options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'])) {
                     $restrictions = $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'];
 
-                    $deprecatedClassname = 'oat\\ltiDeliveryProvider\\model\\metrics\\activeLimitRestriction';
-                    if (isset($restrictions[$deprecatedClassname])) {
-                        $restrictionOptions = $restrictions[$deprecatedClassname];
-                        unset($restrictions[$deprecatedClassname]);
+                    $renamedClassname = 'oat\\ltiDeliveryProvider\\model\\metrics\\activeLimitRestriction';
+                    if (isset($restrictions[$renamedClassname])) {
+                        $restrictionOptions = $restrictions[$renamedClassname];
+                        unset($restrictions[$renamedClassname]);
                         $restrictions[ActiveLimitRestriction::class] = $restrictionOptions;
                     }
 
