@@ -21,7 +21,7 @@
 
 namespace oat\ltiDeliveryProvider\install;
 
-use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
+use oat\ltiDeliveryProvider\model\metrics\ActiveLimitRestriction;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\oatbox\extension\AbstractAction;
 use oat\tao\model\actionQueue\ActionQueue;
@@ -52,7 +52,7 @@ class RegisterLaunchAction extends AbstractAction
         $actions = $actionQueue->getOption(ActionQueue::OPTION_ACTIONS);
         $actions[GetActiveDeliveryExecution::class] = [
                 'restrictions' => [
-                    activeLimitRestriction::class => 0
+                    ActiveLimitRestriction::class => 0
                 ],
                 ActionQueue::ACTION_PARAM_TTL => 3600, //one hour
         ];
