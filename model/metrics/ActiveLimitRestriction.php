@@ -23,26 +23,25 @@
 namespace oat\ltiDeliveryProvider\model\metrics;
 
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
-use oat\tao\model\actionQueue\restriction\basicRestriction;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\model\actionQueue\restriction\BasicRestriction;
 use oat\tao\model\metrics\MetricsService;
 
-class activeLimitRestriction extends basicRestriction
+class ActiveLimitRestriction extends BasicRestriction
 {
 
     const METRIC = activeExecutionsMetrics::class;
 
     /**
      * @param $value
-     * @return boolean
-     * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
-     * @throws \oat\tao\model\metadata\exception\InconsistencyConfigException
+     * @return bool
      */
-    public function doesComplies($value)
+    public function doesComply($value)
     {
         if ($value === 0) {
             return true;
         }
-        $metric = $this->getServiceManager()->get(MetricsService::class)->getOneMetric(self::METRIC);
+        $metric = $this->getServiceLocator()->get(MetricsService::class)->getOneMetric(self::METRIC);
         return $value > $metric->collect();
     }
 }

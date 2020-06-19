@@ -32,7 +32,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryToolFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\LtiOutcomeService;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
-use oat\ltiDeliveryProvider\model\metrics\activeLimitRestriction;
+use oat\ltiDeliveryProvider\model\metrics\ActiveLimitRestriction;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\ltiDeliveryProvider\model\navigation\DefaultMessageFactory;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
@@ -233,7 +233,7 @@ class Updater extends \common_ext_ExtensionUpdater
             foreach ($actions as $action => $params) {
                 if (array_key_exists('limit', $params)) {
                     $limit = $params['limit'];
-                    $params['restrictions'][activeLimitRestriction::class] = $limit;
+                    $params['restrictions'][ActiveLimitRestriction::class] = $limit;
                     unset($params['limit']);
                     $actions[$action] = $params;
                 }
@@ -338,6 +338,31 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('10.6.0');
         }
 
-        $this->skip('10.6.0', '11.0.1');
+        $this->skip('10.6.0', '11.1.0');
+
+        if ($this->isVersion('11.1.0')) {
+            if ($this->getServiceManager()->has(ActionQueue::SERVICE_ID)) {
+                $actionQueueService = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
+                $options = $actionQueueService->getOptions();
+                if (isset($options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'])) {
+                    $restrictions = $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'];
+
+                    $renamedClassname = 'oat\\ltiDeliveryProvider\\model\\metrics\\activeLimitRestriction';
+                    if (isset($restrictions[$renamedClassname])) {
+                        $restrictionOptions = $restrictions[$renamedClassname];
+                        unset($restrictions[$renamedClassname]);
+                        $restrictions[ActiveLimitRestriction::class] = $restrictionOptions;
+                    }
+
+                    $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'] = $restrictions;
+                    $actionQueueService->setOptions($options);
+                    $this->getServiceManager()->register(ActionQueue::SERVICE_ID, $actionQueueService);
+                }
+            }
+
+            $this->setVersion('11.2.0');
+        }
+
+        $this->skip('11.2.0', '11.2.1');
     }
 }
