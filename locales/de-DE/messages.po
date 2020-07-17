@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint126\n"
-"PO-Revision-Date: 2020-04-24T11:27:25\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-17T11:49:30\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de-DE\n"
@@ -78,11 +78,29 @@ msgstr "Keine LTI-Nutzer definiert."
 msgid "no monitoring"
 msgstr "keine Überwachung"
 
+msgid "Please give the key value persistence id"
+msgstr ""
+
 msgid "Please select a delivery"
 msgstr "Bitte Bereitstellung auswählen"
 
 msgid "Please select a delivery for \"%s"
 msgstr "Bitte Bereitstellung für \"%s auswählen"
+
+msgid "Registered activeExecutions metric"
+msgstr ""
+
+msgid "Registered and created LtiResultIdStorage Rds Storage"
+msgstr ""
+
+msgid "Registered and created ResultAliasService / LtiOutcomeService services"
+msgstr ""
+
+msgid "Registered Lti delivery execution service in Key value"
+msgstr ""
+
+msgid "Registered Lti delivery execution service in Ontology"
+msgstr ""
 
 msgid "Repeat"
 msgstr "Wiederholen"
