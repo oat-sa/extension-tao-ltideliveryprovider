@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint120\n"
-"PO-Revision-Date: 2020-01-31T12:46:05\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-07-30T16:41:16\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es-ES\n"
@@ -14,121 +14,121 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Tool Provider"
-msgstr ""
+msgstr "%s Herramienta proveedora"
 
 msgid "%s\" has been configured:"
-msgstr ""
+msgstr "%s\" han sido configurados"
 
 msgid "Access to this functionality is restricted"
-msgstr ""
+msgstr "El acceso a esta funcionalidad está restringido"
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "El acceso a esta funcionalidad está restringido a los estudiantes"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "Un número inusualmente alto de personas están probando en este momento, su prueba se lanzará en unos momentos para asegurarse de que funciona sin problemas. ¡Gracias por tu paciencia!"
 
 msgid "Attempts limit has been reached."
-msgstr ""
+msgstr "Se ha alcanzado el límite de intentos."
 
 msgid "Available Deliveries"
-msgstr ""
+msgstr "Entregas disponibles"
 
 msgid "Back"
-msgstr ""
+msgstr "Regresar"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "Haga clic en el botón Atrás para volver a %s."
 
 msgid "Click on the back button to return."
-msgstr ""
+msgstr "Haga clic en el botón Atrás para regresar."
 
 msgid "Configured LTI Link"
-msgstr ""
+msgstr "Hipervínculo LTI configurado"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
+msgstr "Copia y pega el siguiente vínculo en tu cliente compatible con LTI"
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Entrega"
 
 msgid "Delivery does not exist. Please contact your instructor."
-msgstr ""
+msgstr "Esta entrega no existe. Por favor contacta a tu instructor."
 
 msgid "Executions"
-msgstr ""
+msgstr "Ejecución"
 
 msgid "Launch URL"
-msgstr ""
+msgstr "Lanzar URL"
 
 #, tao-public
 msgid "LTI"
-msgstr ""
+msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr ""
+msgstr "La variable max_attempts\" debe ser numérica."
 
 msgid "No deliveries available"
-msgstr ""
+msgstr "No hay entregas disponibles"
 
 msgid "No LTI consumers defined"
-msgstr ""
+msgstr "No se a definido ningún cliente LTI"
 
 msgid "no monitoring"
-msgstr ""
+msgstr "Sin monitoreo"
 
 msgid "Please select a delivery"
-msgstr ""
+msgstr "Por favor selecciona una entrega"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "Por favor selecciona un entregable para \"%s"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Repetir"
 
 msgid "Repeat the test"
-msgstr ""
+msgstr "Repite la prueba"
 
 msgid "Retake the test"
-msgstr ""
+msgstr "Vuelve a tomar la prueba"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "Regresar a %s."
 
 msgid "Select"
-msgstr ""
+msgstr "Seleccionar"
 
 msgid "Select Delivery"
-msgstr ""
+msgstr "Seleccionar entregable"
 
 msgid "Selected Delivery"
-msgstr ""
+msgstr "Entregable seleccionado"
 
 msgid "Test Launch Queue"
-msgstr ""
+msgstr "Cola de lanzamiento de pruebas"
 
 msgid "Thank you"
 msgstr "Gracias"
 
 msgid "This tool has been configured:"
-msgstr ""
+msgstr "Esta herramienta ha sido configurada:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Esta herramienta no ha sido configurada todavía, por favor contacta a tu instructor"
 
 msgid "Tool consumer(s)"
-msgstr ""
+msgstr "Cliente(s) de la herramienta"
 
 msgid "User is not authorized to run this delivery"
-msgstr ""
+msgstr "Usuario no autorizado para hacer este entregable"
 
 msgid "Wrong value of \"secure\" variable."
-msgstr ""
+msgstr "Valor inválido de la variable \"secure\""
 
 msgid "You have already taken this test."
-msgstr ""
+msgstr "Ya has tomado esta prueba."
 
 msgid "You have finished the test!"
-msgstr ""
+msgstr "Has terminado la prueba!"
 
