@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint120\n"
-"PO-Revision-Date: 2020-01-31T12:46:05\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-07-30T16:41:15\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: da-DK\n"
@@ -14,121 +14,121 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Tool Provider"
-msgstr ""
+msgstr "%s-værktøjsleverandør"
 
 msgid "%s\" has been configured:"
-msgstr ""
+msgstr "%s\" er blevet konfigureret"
 
 msgid "Access to this functionality is restricted"
-msgstr ""
+msgstr "Adgang til denne funktionalitet er begrænset"
 
 msgid "Access to this functionality is restricted to students"
-msgstr ""
+msgstr "Adgang til denne funktionalitet er begrænset til elever"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "Et usædvanligt stort antal personer tilgår testen lige nu. Din test starter om et øjeblik for at sikre at den kører problemfrit. Tak for tålmodigheden."
 
 msgid "Attempts limit has been reached."
-msgstr ""
+msgstr "Grænsen for forsøg er nået."
 
 msgid "Available Deliveries"
-msgstr ""
+msgstr "Tilgængelige leverancer"
 
 msgid "Back"
-msgstr ""
+msgstr "Tilbage"
 
 msgid "Click on the back button to return to %s."
-msgstr ""
+msgstr "Klik på tilbageknappen for at komme tilbage til %s."
 
 msgid "Click on the back button to return."
-msgstr ""
+msgstr "Klik på tilbageknappen for at vende tilbage."
 
 msgid "Configured LTI Link"
-msgstr ""
+msgstr "Konfigureret LTI-link"
 
 msgid "Copy and paste the following URL into your LTI compatible tool consumer."
-msgstr ""
+msgstr "Kopier og indsæt denne URL i din LTI-kompatible værktøjskonsument."
 
 #, tao-public
 msgid "Deliveries"
-msgstr ""
+msgstr "Leverancer"
 
 msgid "Delivery does not exist. Please contact your instructor."
-msgstr ""
+msgstr "Leverancen eksisterer ikke. Kontakt venligst din lærer."
 
 msgid "Executions"
-msgstr ""
+msgstr "Afviklinger"
 
 msgid "Launch URL"
-msgstr ""
+msgstr "Gå til URL"
 
 #, tao-public
 msgid "LTI"
-msgstr ""
+msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr ""
+msgstr "max_attempts\"-variabel skal være numerisk."
 
 msgid "No deliveries available"
-msgstr ""
+msgstr "Ingen tilgængelige leverancer"
 
 msgid "No LTI consumers defined"
-msgstr ""
+msgstr "Ingen LTI-konsumenter defineret"
 
 msgid "no monitoring"
-msgstr ""
+msgstr "ingen monitorering"
 
 msgid "Please select a delivery"
-msgstr ""
+msgstr "Vælg venligst en leverance"
 
 msgid "Please select a delivery for \"%s"
-msgstr ""
+msgstr "Vælg venligst en leverance for \"%s"
 
 msgid "Repeat"
-msgstr ""
+msgstr "Gentag"
 
 msgid "Repeat the test"
-msgstr ""
+msgstr "Gentag testen"
 
 msgid "Retake the test"
-msgstr ""
+msgstr "Tag testen igen"
 
 msgid "Return to %s."
-msgstr ""
+msgstr "Vend tilbage til %s."
 
 msgid "Select"
-msgstr ""
+msgstr "Vælg"
 
 msgid "Select Delivery"
-msgstr ""
+msgstr "Vælg leverance"
 
 msgid "Selected Delivery"
-msgstr ""
+msgstr "Valgt leverance"
 
 msgid "Test Launch Queue"
-msgstr ""
+msgstr "Testigangsættelseskø"
 
 msgid "Thank you"
-msgstr ""
+msgstr "Tak"
 
 msgid "This tool has been configured:"
-msgstr ""
+msgstr "Dette værktøj er blevet konfigureret:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr ""
+msgstr "Dette værktøj er endnu ikke blevet konfigureret. Kontakt venligst din lærer"
 
 msgid "Tool consumer(s)"
-msgstr ""
+msgstr "Værktøjskonsument(er)"
 
 msgid "User is not authorized to run this delivery"
-msgstr ""
+msgstr "Brugeren har ikke tilladelse til at køre denne leverance"
 
 msgid "Wrong value of \"secure\" variable."
-msgstr ""
+msgstr "Forkert værdi af \"secure\"-variablen."
 
 msgid "You have already taken this test."
-msgstr ""
+msgstr "Du har allerede taget denne test."
 
 msgid "You have finished the test!"
-msgstr ""
+msgstr "Du har afsluttet testen!"
 
