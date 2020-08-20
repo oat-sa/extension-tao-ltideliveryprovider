@@ -29,6 +29,7 @@ use oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage;
 use oat\ltiDeliveryProvider\scripts\install\RegisterMetrics;
 use oat\ltiDeliveryProvider\scripts\install\RegisterOverriddenLtiToolRepository;
 use oat\ltiDeliveryProvider\scripts\install\RegisterServices;
+use oat\ltiDeliveryProvider\scripts\install\RegisterSessionCookieAttributesFactory;
 use oat\ltiDeliveryProvider\scripts\update\Updater;
 use oat\tao\model\user\TaoRoles;
 use oat\taoLti\models\classes\LtiRoles;
@@ -64,6 +65,7 @@ return [
             RegisterLtiAttemptService::class,
             RegisterMetrics::class,
             RegisterOverriddenLtiToolRepository::class,
+            RegisterSessionCookieAttributesFactory::class
         ],
         'rdf' => [
             __DIR__ . '/install/ontology/deliverytool.rdf'
