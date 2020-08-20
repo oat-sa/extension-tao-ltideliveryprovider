@@ -15,12 +15,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
+use oat\ltiDeliveryProvider\install\InstallAssignmentService;
+use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
+use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
+use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
+use oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage;
+use oat\ltiDeliveryProvider\scripts\install\RegisterMetrics;
+use oat\ltiDeliveryProvider\scripts\install\RegisterOverriddenLtiToolRepository;
+use oat\ltiDeliveryProvider\scripts\install\RegisterServices;
+use oat\ltiDeliveryProvider\scripts\update\Updater;
 use oat\tao\model\user\TaoRoles;
 use oat\taoLti\models\classes\LtiRoles;
 
@@ -29,11 +38,11 @@ return [
     'label' => 'LTI Delivery Tool Provider',
     'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
     'license' => 'GPL-2.0',
-    'version' => '11.3.1',
+    'version' => '11.4.0',
     'author' => 'Open Assessment Technologies',
     'requires' => [
         'generis' => '>=12.15.0',
-        'tao' => '>=44.0.0',
+        'tao' => '>=45.7.0',
         'taoDeliveryRdf' => '>=6.0.0',
         'taoLti' => '>=10.5.0',
         'taoResultServer' => '>=7.0.0',
@@ -47,14 +56,14 @@ return [
      ],
     'install' => [
         'php' => [
-            \oat\ltiDeliveryProvider\install\InstallAssignmentService::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterServices::class,
-            \oat\ltiDeliveryProvider\install\RegisterLaunchAction::class,
-            \oat\ltiDeliveryProvider\install\InstallDeliveryContainerService::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterMetrics::class,
-            \oat\ltiDeliveryProvider\scripts\install\RegisterOverriddenLtiToolRepository::class,
+            InstallAssignmentService::class,
+            RegisterLtiResultAliasStorage::class,
+            RegisterServices::class,
+            RegisterLaunchAction::class,
+            InstallDeliveryContainerService::class,
+            RegisterLtiAttemptService::class,
+            RegisterMetrics::class,
+            RegisterOverriddenLtiToolRepository::class,
         ],
         'rdf' => [
             __DIR__ . '/install/ontology/deliverytool.rdf'
@@ -63,7 +72,7 @@ return [
     'routes' => [
         '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
     ],
-    'update' => 'oat\\ltiDeliveryProvider\\scripts\\update\\Updater',
+    'update' => Updater::class,
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole',
     'acl' => [
         ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', ['ext' => 'ltiDeliveryProvider']],
