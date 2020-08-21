@@ -55,9 +55,7 @@ class SessionCookieAttributesFactory extends InjectionAwareService implements Se
     {
         $attributes = $this->sessionCookieAttributesFactory->create();
 
-        $ltiLaunchData = LtiLaunchData::fromRequest(Request::currentRequest());
-
-        if (!$ltiLaunchData->hasVariable(LtiLaunchData::LTI_VERSION)) {
+        if (!$this->createLtiLaunchData()->hasVariable(LtiLaunchData::LTI_VERSION)) {
             return $attributes;
         }
 
@@ -69,5 +67,10 @@ class SessionCookieAttributesFactory extends InjectionAwareService implements Se
 
         return $attributes
             ->add(new SessionCookieAttribute('samesite', 'none'));
+    }
+
+    protected function createLtiLaunchData(): LtiLaunchData
+    {
+        return LtiLaunchData::fromRequest(Request::currentRequest());
     }
 }
