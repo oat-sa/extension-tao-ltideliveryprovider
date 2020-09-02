@@ -15,10 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2017 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  *
  */
+
+declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\tasks;
 
@@ -118,12 +119,12 @@ class SendLtiOutcomeTask extends AbstractAction
         return true;
     }
 
-    private function buildXMLMessage($sourcedId, $grade)
+    private function buildXMLMessage($sourcedId, $grade): string
     {
         $language = 'en-us';
         $operation = 'replaceResultRequest';
         $body = '<?xml version = "1.0" encoding = "UTF-8"?>
-                <imsx_POXEnvelopeRequest xmlns = "http://www.imsglobal.org/lis/oms1p0/pox">
+                <imsx_POXEnvelopeRequest xmlns = "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
                     <imsx_POXHeader>
                         <imsx_POXRequestHeaderInfo>
                             <imsx_version>V1.0</imsx_version>
