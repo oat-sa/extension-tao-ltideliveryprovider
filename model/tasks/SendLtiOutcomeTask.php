@@ -26,6 +26,7 @@ namespace oat\ltiDeliveryProvider\model\tasks;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoLti\models\classes\LtiOutcome\LtiOutcomeXmlFactory;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoOutcomeUi\model\ResultsService;
 use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
@@ -90,7 +91,7 @@ class SendLtiOutcomeTask extends AbstractAction
         $deliveryResultAlias = $resultAliasService->getResultAlias($deliveryResultIdentifier);
         $deliveryResultIdentifier = empty($deliveryResultAlias) ? $deliveryResultIdentifier : current($deliveryResultAlias);
 
-        $message = $this->buildXMLMessage($deliveryResultIdentifier, $grade);
+        $message = $this->getLtiOutcomeXmlFactory()->build($deliveryResultIdentifier, $grade);
 
         $credentialResource = LtiService::singleton()->getCredential($consumerKey);
         $credentials = new \tao_models_classes_oauth_Credentials($credentialResource);
@@ -119,35 +120,8 @@ class SendLtiOutcomeTask extends AbstractAction
         return true;
     }
 
-    private function buildXMLMessage($sourcedId, $grade): string
+    private function getLtiOutcomeXmlFactory(): LtiOutcomeXmlFactory
     {
-        $language = 'en-us';
-        $operation = 'replaceResultRequest';
-        $body = '<?xml version = "1.0" encoding = "UTF-8"?>
-                <imsx_POXEnvelopeRequest xmlns = "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
-                    <imsx_POXHeader>
-                        <imsx_POXRequestHeaderInfo>
-                            <imsx_version>V1.0</imsx_version>
-                            <imsx_messageIdentifier>' . uniqid() . '</imsx_messageIdentifier>
-                        </imsx_POXRequestHeaderInfo>
-                    </imsx_POXHeader>
-                    <imsx_POXBody>
-                        <' . $operation . '>
-                            <resultRecord>
-                                <sourcedGUID>
-                                    <sourcedId>' . $sourcedId . '</sourcedId>
-                                </sourcedGUID>
-                                <result>
-                                    <resultScore>
-                                        <language>' . $language . '</language>
-                                        <textString>' . $grade . '</textString>
-                                    </resultScore>
-                                </result>
-                            </resultRecord>
-                        </' . $operation . '>
-                    </imsx_POXBody>
-                </imsx_POXEnvelopeRequest>';
-
-        return $body;
+        return $this->getServiceLocator()->get(LtiOutcomeXmlFactory::class);
     }
 }
