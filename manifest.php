@@ -45,7 +45,7 @@ return [
         'generis' => '>=12.15.0',
         'tao' => '>=45.7.0',
         'taoDeliveryRdf' => '>=6.0.0',
-        'taoLti' => '>=10.5.0',
+        'taoLti' => '>=11.12.0',
         'taoResultServer' => '>=7.0.0',
         'taoDelivery' => '>=11.0.0',
         'taoOutcomeUi' => '>=7.0.0',
