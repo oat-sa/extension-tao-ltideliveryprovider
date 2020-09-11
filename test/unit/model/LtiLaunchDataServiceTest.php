@@ -15,20 +15,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2019 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2019-2020 (original work) Open Assessment Technologies SA;
  *
  */
 
-namespace oat\ltiDeliveryProvider\tests\model;
+declare(strict_types=1);
+
+namespace oat\ltiDeliveryProvider\test\model;
 
 use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiDeliveryFactory;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\taoLti\models\classes\LtiLaunchData;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class LtiLaunchDataServiceTest extends TestCase
 {
-    public function testFindDeliveryFromLaunchData()
+    public function testFindDeliveryFromLaunchData(): void
     {
         $service = $this->getLtiLaunchDataService([
             LtiDeliveryFactory::SERVICE_ID => $this->getLtiDeliveryFactoryMock()
@@ -41,7 +44,7 @@ class LtiLaunchDataServiceTest extends TestCase
         $this->assertTrue($delivery);
     }
 
-    public function testFindDeliveryExecutionFromLaunchData()
+    public function testFindDeliveryExecutionFromLaunchData(): void
     {
         $service = $this->getLtiLaunchDataService([
             LtiDeliveryFactory::SERVICE_ID => $this->getLtiDeliveryFactoryMock()
@@ -52,7 +55,7 @@ class LtiLaunchDataServiceTest extends TestCase
         $this->assertTrue($service->findDeliveryExecutionFromLaunchData($data));
     }
 
-    private function getLtiDeliveryFactoryMock()
+    private function getLtiDeliveryFactoryMock(): MockObject
     {
         $factory = $this->getMockBuilder(LtiDeliveryFactory::class)->getMock();
         $factory->method('create')->willReturn(true);
@@ -65,7 +68,7 @@ class LtiLaunchDataServiceTest extends TestCase
      *
      * @return LtiLaunchDataService
      */
-    private function getLtiLaunchDataService(array $services)
+    private function getLtiLaunchDataService(array $services): LtiLaunchDataService
     {
         $serviceLocatorMock = $this->getServiceLocatorMock($services);
 
