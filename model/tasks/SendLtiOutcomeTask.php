@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\tasks;
 
+use common_report_Report;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -40,7 +41,7 @@ class SendLtiOutcomeTask extends AbstractAction
 
     public function __invoke($params)
     {
-        $report = new \common_report_Report(\common_report_Report::TYPE_ERROR);
+        $report = new common_report_Report(common_report_Report::TYPE_ERROR);
         $deliveryResultIdentifier = $params['deliveryResultIdentifier'];
         $consumerKey = $params['consumerKey'];
         $serviceUrl = $params['serviceUrl'];
@@ -69,7 +70,7 @@ class SendLtiOutcomeTask extends AbstractAction
             $report->setMessage($exception->getMessage());
         }
 
-        $report->setType(\common_report_Report::TYPE_SUCCESS);
+        $report->setType(common_report_Report::TYPE_SUCCESS);
         return $report;
     }
 
@@ -91,7 +92,7 @@ class SendLtiOutcomeTask extends AbstractAction
         $deliveryResultAlias = $resultAliasService->getResultAlias($deliveryResultIdentifier);
         $deliveryResultIdentifier = empty($deliveryResultAlias) ? $deliveryResultIdentifier : current($deliveryResultAlias);
 
-        $message = $this->getLtiOutcomeXmlFactory()->build($deliveryResultIdentifier, $grade, uniqid('', true));
+        $message = $this->getLtiOutcomeXmlFactory()->buildReplaceResultRequest($deliveryResultIdentifier, $grade, uniqid('', true));
 
         $credentialResource = LtiService::singleton()->getCredential($consumerKey);
         $credentials = new \tao_models_classes_oauth_Credentials($credentialResource);
