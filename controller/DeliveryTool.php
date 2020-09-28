@@ -20,10 +20,13 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
+use tao_helpers_I18n;
+use tao_models_classes_LanguageService;
 use function GuzzleHttp\Psr7\stream_for;
 
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -132,6 +135,8 @@ class DeliveryTool extends ToolModule
      */
     public function launchQueue()
     {
+        $this->configureI18n();
+
         $delivery = $this->getDelivery();
         if (!$delivery->exists()) {
             throw new LtiException(
@@ -241,5 +246,14 @@ class DeliveryTool extends ToolModule
             $returnValue = $launchDataService->findDeliveryFromLaunchData($launchData);
         }
         return $returnValue;
+    }
+
+    private function configureI18n(): void
+    {
+        $extension = $this->getServiceLocator()
+            ->get(common_ext_ExtensionsManager::SERVICE_ID)
+            ->getExtensionById('ltiDeliveryProvider');
+
+        tao_helpers_I18n::init($extension, DEFAULT_LANG);
     }
 }
