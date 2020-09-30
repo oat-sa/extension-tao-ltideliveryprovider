@@ -150,3 +150,9 @@ msgstr "Hai già preso questo test"
 msgid "You have finished the test!"
 msgstr "Hai finito il test!"
 
+msgid "Test Launch Queue"
+msgstr "Attendi per iniziare il tuo test"
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr "Il tuo test comincerà a breve. Potrebbero essere necessari alcuni minuti per garantire un svolgimento regolare. Ti preghiamo di aspettare."
+
