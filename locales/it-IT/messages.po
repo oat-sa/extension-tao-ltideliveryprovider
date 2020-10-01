@@ -109,7 +109,7 @@ msgid "Repeat the test"
 msgstr "Ripeti il test"
 
 msgid "Retake the test"
-msgstr "Riprendi il test"
+msgstr "Ripeti il test"
 
 msgid "Return to %s."
 msgstr "Torna a %s"
@@ -145,7 +145,7 @@ msgid "Wrong value of \"secure\" variable."
 msgstr ""
 
 msgid "You have already taken this test."
-msgstr "Hai già preso questo test"
+msgstr "Hai già svolto questo test"
 
 msgid "You have finished the test!"
 msgstr "Hai finito il test!"
