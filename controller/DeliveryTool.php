@@ -254,6 +254,6 @@ class DeliveryTool extends ToolModule
             ->get(common_ext_ExtensionsManager::SERVICE_ID)
             ->getExtensionById('ltiDeliveryProvider');
 
-        tao_helpers_I18n::init($extension, DEFAULT_LANG);
+        tao_helpers_I18n::init($extension, DEFAULT_ANONYMOUS_INTERFACE_LANG);
     }
 }
