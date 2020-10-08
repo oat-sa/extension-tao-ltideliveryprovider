@@ -25,6 +25,7 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
+use oat\taoLti\models\classes\LtiLaunchData;
 use tao_helpers_I18n;
 use tao_models_classes_LanguageService;
 use function GuzzleHttp\Psr7\stream_for;
@@ -203,10 +204,8 @@ class DeliveryTool extends ToolModule
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
 
-            $launchDataService = $this->getServiceLocator()->get(LtiLaunchDataService::SERVICE_ID);
-
-            if ($launchDataService->hasVariable(self::FORCE_REDIRECT_TO_RETURNURL)) {
-                    return $user->getLaunchData()->getVariable('launch_presentation_return_url');
+            if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURNURL)) {
+                    return $user->getLaunchData()->getVariable(LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
             }
 
             return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
