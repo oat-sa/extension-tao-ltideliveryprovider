@@ -68,7 +68,7 @@ class DeliveryTool extends ToolModule
      * screen to be shown skip directly to the return url
      * @var string
      */
-    const FORCE_REDIRECT_TO_RETURNURL = 'custom_force_redirect_to_return_url';
+    const FORCE_REDIRECT_TO_RETURN_URL = 'custom_force_redirect_to_return_url';
 
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
@@ -204,7 +204,7 @@ class DeliveryTool extends ToolModule
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
 
-            if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURNURL)) {
+            if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURN_URL)) {
                 return $user->getLaunchData()->getVariable(LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
             }
 
