@@ -205,7 +205,7 @@ class DeliveryTool extends ToolModule
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
 
             if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURNURL)) {
-                    return $user->getLaunchData()->getVariable(LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
+                return $user->getLaunchData()->getVariable(LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
             }
 
             return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
