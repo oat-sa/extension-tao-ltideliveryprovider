@@ -61,6 +61,14 @@ class DeliveryTool extends ToolModule
      * @var string
      */
     const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+
+    /**
+     * Setting this parameter to 'true' will prevent the 'You have already taken this test'
+     * screen to be shown skip directly to the return url
+     * @var string
+     */
+    const FORCE_REDIRECT_TO_RETURNURL = 'custom_force_redirect_to_return_url';
+
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
      * page. (no effect if PARAM_SKIP_THANKYOU is set to 'true')
@@ -195,8 +203,10 @@ class DeliveryTool extends ToolModule
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
         if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
 
-            if (defined(FORCE_REDIRECT_TO_RETURNURL) &&  FORCE_REDIRECT_TO_RETURNURL === true) {
-                return $user->getLaunchData()->getVariable('launch_presentation_return_url');
+            $launchDataService = $this->getServiceLocator()->get(LtiLaunchDataService::SERVICE_ID);
+
+            if ($launchDataService->hasVariable(self::FORCE_REDIRECT_TO_RETURNURL)) {
+                    return $user->getLaunchData()->getVariable('launch_presentation_return_url');
             }
 
             return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
