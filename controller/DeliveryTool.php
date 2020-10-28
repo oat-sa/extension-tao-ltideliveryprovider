@@ -26,6 +26,7 @@ use core_kernel_classes_Resource;
 
 use function GuzzleHttp\Psr7\stream_for;
 
+use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -58,6 +59,14 @@ class DeliveryTool extends ToolModule
      * @var string
      */
     const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+
+    /**
+     * Setting this parameter to 'true' will prevent the 'You have already taken this test'
+     * screen to be shown skip directly to the return url
+     * @var string
+     */
+    const FORCE_REDIRECT_TO_RETURN_URL = 'custom_force_redirect_to_return_url';
+
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
      * page. (no effect if PARAM_SKIP_THANKYOU is set to 'true')
@@ -177,7 +186,8 @@ class DeliveryTool extends ToolModule
      */
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery, DeliveryExecution $activeExecution = null)
     {
-        $user = \common_session_SessionManager::getSession()->getUser();
+        $currentSession = \common_session_SessionManager::getSession();
+        $user = $currentSession->getUser();
         if ($activeExecution === null) {
             $activeExecution = $this->getActiveDeliveryExecution($delivery);
         }
@@ -188,14 +198,33 @@ class DeliveryTool extends ToolModule
 
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
-        if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
-            return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
-        } else {
+
+        if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             throw new LtiException(
                 __('User is not authorized to run this delivery'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
         }
+
+        if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURN_URL)) {
+            $executionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
+            $lastDE = end($executions);
+            $url = _url(
+                'ltiReturn',
+                'DeliveryRunner',
+                'ltiDeliveryProvider',
+                ['deliveryExecution' => $lastDE->getIdentifier()]
+            );
+        } else {
+            $url = _url(
+                'ltiOverview',
+                'DeliveryRunner',
+                null,
+                ['delivery' => $delivery->getUri()]
+            );
+        }
+        return $url;
     }
 
     /**
