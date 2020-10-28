@@ -191,7 +191,8 @@ class DeliveryTool extends ToolModule
      */
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery, DeliveryExecution $activeExecution = null)
     {
-        $user = \common_session_SessionManager::getSession()->getUser();
+        $currentSession = \common_session_SessionManager::getSession();
+        $user = $currentSession->getUser();
         if ($activeExecution === null) {
             $activeExecution = $this->getActiveDeliveryExecution($delivery);
         }
@@ -202,19 +203,33 @@ class DeliveryTool extends ToolModule
 
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
-        if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
 
-            if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURN_URL)) {
-                return $user->getLaunchData()->getVariable(LtiLaunchData::LAUNCH_PRESENTATION_RETURN_URL);
-            }
-
-            return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
-        } else {
+        if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             throw new LtiException(
                 __('User is not authorized to run this delivery'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
         }
+
+        if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURN_URL)) {
+            $executionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
+            $lastDE = end($executions);
+            $url = _url(
+                'ltiReturn',
+                'DeliveryRunner',
+                'ltiDeliveryProvider',
+                ['deliveryExecution' => $lastDE->getIdentifier()]
+            );
+        } else {
+            $url = _url(
+                'ltiOverview',
+                'DeliveryRunner',
+                null,
+                ['delivery' => $delivery->getUri()]
+            );
+        }
+        return $url;
     }
 
     /**
