@@ -69,7 +69,7 @@ class DeliveryTool extends ToolModule
      * screen to be shown skip directly to the return url
      * @var string
      */
-    const PARAM_FORCE_REDIRECT_TO_RETURN_URL = 'custom_force_redirect_to_return_url';
+    const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
 
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
@@ -212,14 +212,13 @@ class DeliveryTool extends ToolModule
             );
         }
 
-        if ($user->getLaunchData()->hasVariable(self::PARAM_FORCE_REDIRECT_TO_RETURN_URL)) {
+        if ($user->getLaunchData()->hasVariable(self::PARAM_SKIP_OVERVIEW)) {
             $executionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
             $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
             $lastDE = end($executions);
-            $dataLaunch = LtiService::singleton()->getLtiSession()->getLaunchData();
-            /** @var LtiNavigationService $s */
+            /** @var LtiNavigationService $ltiNavigationService */
             $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
-            $url = $ltiNavigationService->getReturnUrl($dataLaunch, $lastDE);
+            $url = $ltiNavigationService->getReturnUrl($user->getLaunchData(), $lastDE);
         } else {
             $url = _url(
                 'ltiOverview',
