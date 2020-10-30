@@ -26,7 +26,7 @@ use core_kernel_classes_Resource;
 
 use function GuzzleHttp\Psr7\stream_for;
 
-use oat\taoLti\models\classes\LtiLaunchData;
+use \oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -65,7 +65,7 @@ class DeliveryTool extends ToolModule
      * screen to be shown skip directly to the return url
      * @var string
      */
-    const FORCE_REDIRECT_TO_RETURN_URL = 'custom_force_redirect_to_return_url';
+    const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
 
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
@@ -206,16 +206,13 @@ class DeliveryTool extends ToolModule
             );
         }
 
-        if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURN_URL)) {
+        if ($user->getLaunchData()->hasVariable(self::PARAM_SKIP_OVERVIEW)) {
             $executionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
             $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
             $lastDE = end($executions);
-            $url = _url(
-                'ltiReturn',
-                'DeliveryRunner',
-                'ltiDeliveryProvider',
-                ['deliveryExecution' => $lastDE->getIdentifier()]
-            );
+            /** @var LtiNavigationService $ltiNavigationService */
+            $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
+            $url = $ltiNavigationService->getReturnUrl($user->getLaunchData(), $lastDE);
         } else {
             $url = _url(
                 'ltiOverview',
