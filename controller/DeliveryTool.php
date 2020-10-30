@@ -45,6 +45,7 @@ use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use tao_helpers_Uri;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
 class DeliveryTool extends ToolModule
 {
@@ -68,7 +69,7 @@ class DeliveryTool extends ToolModule
      * screen to be shown skip directly to the return url
      * @var string
      */
-    const FORCE_REDIRECT_TO_RETURN_URL = 'custom_force_redirect_to_return_url';
+    const PARAM_FORCE_REDIRECT_TO_RETURN_URL = 'custom_force_redirect_to_return_url';
 
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
@@ -211,16 +212,14 @@ class DeliveryTool extends ToolModule
             );
         }
 
-        if ($user->getLaunchData()->hasVariable(self::FORCE_REDIRECT_TO_RETURN_URL)) {
+        if ($user->getLaunchData()->hasVariable(self::PARAM_FORCE_REDIRECT_TO_RETURN_URL)) {
             $executionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
             $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
             $lastDE = end($executions);
-            $url = _url(
-                'ltiReturn',
-                'DeliveryRunner',
-                'ltiDeliveryProvider',
-                ['deliveryExecution' => $lastDE->getIdentifier()]
-            );
+            $dataLaunch = LtiService::singleton()->getLtiSession()->getLaunchData();
+            /** @var LtiNavigationService $s */
+            $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
+            $url = $ltiNavigationService->getReturnUrl($dataLaunch, $lastDE);
         } else {
             $url = _url(
                 'ltiOverview',
