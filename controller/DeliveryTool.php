@@ -25,6 +25,7 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
+use oat\taoLti\models\classes\LtiLaunchData;
 use tao_helpers_I18n;
 use tao_models_classes_LanguageService;
 use function GuzzleHttp\Psr7\stream_for;
@@ -44,6 +45,7 @@ use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use tao_helpers_Uri;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 
 class DeliveryTool extends ToolModule
 {
@@ -61,6 +63,14 @@ class DeliveryTool extends ToolModule
      * @var string
      */
     const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+
+    /**
+     * Setting this parameter to 'true' will prevent the 'You have already taken this test'
+     * screen to be shown skip directly to the return url
+     * @var string
+     */
+    const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
+
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
      * page. (no effect if PARAM_SKIP_THANKYOU is set to 'true')
@@ -182,7 +192,8 @@ class DeliveryTool extends ToolModule
      */
     protected function getLearnerUrl(\core_kernel_classes_Resource $delivery, DeliveryExecution $activeExecution = null)
     {
-        $user = \common_session_SessionManager::getSession()->getUser();
+        $currentSession = \common_session_SessionManager::getSession();
+        $user = $currentSession->getUser();
         if ($activeExecution === null) {
             $activeExecution = $this->getActiveDeliveryExecution($delivery);
         }
@@ -193,14 +204,30 @@ class DeliveryTool extends ToolModule
 
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
-        if ($assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
-            return _url('ltiOverview', 'DeliveryRunner', null, ['delivery' => $delivery->getUri()]);
-        } else {
+
+        if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             throw new LtiException(
                 __('User is not authorized to run this delivery'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
         }
+
+        if ($user->getLaunchData()->hasVariable(self::PARAM_SKIP_OVERVIEW)) {
+            $executionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+            $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
+            $lastDE = end($executions);
+            /** @var LtiNavigationService $ltiNavigationService */
+            $ltiNavigationService = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
+            $url = $ltiNavigationService->getReturnUrl($user->getLaunchData(), $lastDE);
+        } else {
+            $url = _url(
+                'ltiOverview',
+                'DeliveryRunner',
+                null,
+                ['delivery' => $delivery->getUri()]
+            );
+        }
+        return $url;
     }
 
     /**
