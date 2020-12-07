@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint132\n"
-"PO-Revision-Date: 2020-07-17T11:49:30\n"
+"Project-Id-Version: TAO 3.4.0-sprint117\n"
+"PO-Revision-Date: 2020-09-22T16:02:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -26,13 +26,13 @@ msgid "Access to this functionality is restricted to students"
 msgstr "この機能へのアクセスは学生には制限されています"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "現在，非常に多くの人がテストを実施しています、少々お待ちください。テストはスムーズに実行できる準備をしています。"
 
 msgid "Attempts limit has been reached."
-msgstr ""
+msgstr "実行回数の上限に達しました。"
 
 msgid "Available Deliveries"
-msgstr "利用できるデリバリ"
+msgstr "利用できるデリバリー"
 
 msgid "Back"
 msgstr "戻る"
@@ -51,10 +51,10 @@ msgstr "下記のURLをコピーして、LTIのコンシューマ側にペース
 
 #, tao-public
 msgid "Deliveries"
-msgstr "デリバリ"
+msgstr "デリバリー"
 
 msgid "Delivery does not exist. Please contact your instructor."
-msgstr ""
+msgstr "実施可能なテストはありません。インストラクタに確認してください。"
 
 msgid "Executions"
 msgstr "実行"
@@ -67,10 +67,10 @@ msgid "LTI"
 msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr ""
+msgstr "max_attempts\" 変数は数値でなければなりません。"
 
 msgid "No deliveries available"
-msgstr "デリバリ可能なものがありません"
+msgstr "デリバリー可能なものがありません。"
 
 msgid "No LTI consumers defined"
 msgstr "LTIコンシューマが定義されていません"
@@ -82,10 +82,10 @@ msgid "Please give the key value persistence id"
 msgstr ""
 
 msgid "Please select a delivery"
-msgstr "デリバリを選んでください"
+msgstr "デリバリーを選んでください。"
 
 msgid "Please select a delivery for \"%s"
-msgstr "\"%s でデリバリするものを選んでください"
+msgstr "\"%s でデリバリーするものを選んでください。"
 
 msgid "Registered activeExecutions metric"
 msgstr ""
@@ -100,6 +100,9 @@ msgid "Registered Lti delivery execution service in Key value"
 msgstr ""
 
 msgid "Registered Lti delivery execution service in Ontology"
+msgstr ""
+
+msgid "Registered Lti delivery launch data service"
 msgstr ""
 
 msgid "Repeat"
@@ -118,10 +121,10 @@ msgid "Select"
 msgstr "選択"
 
 msgid "Select Delivery"
-msgstr "デリバリを選択"
+msgstr "デリバリーを選択"
 
 msgid "Selected Delivery"
-msgstr "デリバリを選択しました"
+msgstr "デリバリーを選択しました。"
 
 msgid "Test Launch Queue"
 msgstr ""
@@ -130,7 +133,7 @@ msgid "Thank you"
 msgstr "ありがとうございました"
 
 msgid "This tool has been configured:"
-msgstr "このツールは、設定されています"
+msgstr "このツールは設定されています:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
 msgstr "このツールはまだ設定されていません。指導者に問い合わせてください。"
@@ -139,10 +142,10 @@ msgid "Tool consumer(s)"
 msgstr "ツールコンシューマ"
 
 msgid "User is not authorized to run this delivery"
-msgstr ""
+msgstr "ユーザーはこのデリバリを実行する権限がありません。"
 
 msgid "Wrong value of \"secure\" variable."
-msgstr ""
+msgstr "変数 \"secure\" の値が違っています。"
 
 msgid "You have already taken this test."
 msgstr "このテストは既に受験しています"
