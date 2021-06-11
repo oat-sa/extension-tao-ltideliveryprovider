@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint132\n"
-"PO-Revision-Date: 2020-07-17T11:49:30\n"
+"Project-Id-Version: TAO 3.4.0-sprint117\n"
+"PO-Revision-Date: 2020-09-22T16:02:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -23,13 +23,13 @@ msgid "Access to this functionality is restricted"
 msgstr "この機能へのアクセスが制限されています"
 
 msgid "Access to this functionality is restricted to students"
-msgstr "この機能へのアクセスは学生には制限されています"
+msgstr "学生のこの機能へのアクセスは制限されています"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "現在、非常に多くの方がテストを行っています。テストがスムーズに行われるよう、しばらくしてからテストが開始されます。ご迷惑をおかけしますが、ご了承ください。"
 
 msgid "Attempts limit has been reached."
-msgstr ""
+msgstr "受検回数の上限に達しました"
 
 msgid "Available Deliveries"
 msgstr "利用できるデリバリ"
@@ -54,7 +54,7 @@ msgid "Deliveries"
 msgstr "デリバリ"
 
 msgid "Delivery does not exist. Please contact your instructor."
-msgstr ""
+msgstr "実施可能なテストはありません。インストラクタに確認してください。"
 
 msgid "Executions"
 msgstr "実行"
@@ -67,10 +67,10 @@ msgid "LTI"
 msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr ""
+msgstr "max_attempts\" 変数は数値でなければなりません。"
 
 msgid "No deliveries available"
-msgstr "デリバリ可能なものがありません"
+msgstr "デリバリ可能なものがありません。"
 
 msgid "No LTI consumers defined"
 msgstr "LTIコンシューマが定義されていません"
@@ -79,7 +79,7 @@ msgid "no monitoring"
 msgstr "モニタリングがありません"
 
 msgid "Please give the key value persistence id"
-msgstr ""
+msgstr "キーとなる値（パーシステンスID）を設定してください"
 
 msgid "Please select a delivery"
 msgstr "デリバリを選んでください"
@@ -88,28 +88,31 @@ msgid "Please select a delivery for \"%s"
 msgstr "\"%s でデリバリするものを選んでください"
 
 msgid "Registered activeExecutions metric"
-msgstr ""
+msgstr "登録された activeExecutions metric"
 
 msgid "Registered and created LtiResultIdStorage Rds Storage"
-msgstr ""
+msgstr "登録・作成された LtiResultIdStorage Rds Storage"
 
 msgid "Registered and created ResultAliasService / LtiOutcomeService services"
-msgstr ""
+msgstr "ResultAliasService / LtiOutcomeService　の登録と作成"
 
 msgid "Registered Lti delivery execution service in Key value"
-msgstr ""
+msgstr "キーとなる値に　Lti delivery execution service　を登録"
 
 msgid "Registered Lti delivery execution service in Ontology"
-msgstr ""
+msgstr "オントロジーの　Lti delivery execution service　の登録"
+
+msgid "Registered Lti delivery launch data service"
+msgstr "Lti delivery launch data service　の登録"
 
 msgid "Repeat"
 msgstr "リピート"
 
 msgid "Repeat the test"
-msgstr "テストをリピートする"
+msgstr "テストを繰り返し行う"
 
 msgid "Retake the test"
-msgstr "テストを再受験する"
+msgstr "テストを再受検する"
 
 msgid "Return to %s."
 msgstr "%s に戻る"
@@ -118,35 +121,35 @@ msgid "Select"
 msgstr "選択"
 
 msgid "Select Delivery"
-msgstr "デリバリを選択"
+msgstr "デリバリ選択"
 
 msgid "Selected Delivery"
-msgstr "デリバリを選択しました"
+msgstr "デリバリを選択しました。"
 
 msgid "Test Launch Queue"
-msgstr ""
+msgstr "テスト開始待機中"
 
 msgid "Thank you"
 msgstr "ありがとうございました"
 
 msgid "This tool has been configured:"
-msgstr "このツールは、設定されています"
+msgstr "このツールは設定されています:"
 
 msgid "This tool has not yet been configured, please contact your instructor"
-msgstr "このツールはまだ設定されていません。指導者に問い合わせてください。"
+msgstr "このツールはまだ設定されていません。インストラクタに問い合わせてください。"
 
 msgid "Tool consumer(s)"
 msgstr "ツールコンシューマ"
 
 msgid "User is not authorized to run this delivery"
-msgstr ""
+msgstr "ユーザはこのデリバリを実行する権限がありません"
 
 msgid "Wrong value of \"secure\" variable."
-msgstr ""
+msgstr "変数 \"secure\" の値が違っています"
 
 msgid "You have already taken this test."
-msgstr "このテストは既に受験しています"
+msgstr "あなたはこのテストを既に受検しています"
 
 msgid "You have finished the test!"
-msgstr "テストが完了しました！"
+msgstr "テストを完了しました！"
 
