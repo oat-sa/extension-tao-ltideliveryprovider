@@ -25,6 +25,8 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
+use OAT\Library\Lti1p3Core\Role\Type\ContextRole;
+use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
 use oat\taoLti\models\classes\LtiLaunchData;
 use tao_helpers_I18n;
 use tao_models_classes_LanguageService;
@@ -94,7 +96,7 @@ class DeliveryTool extends ToolModule
     public function run()
     {
         $compiledDelivery = $this->getDelivery();
-        if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
+        if ((is_null($compiledDelivery) || !$compiledDelivery->exists())) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // user authorised to select the Delivery
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
@@ -107,7 +109,9 @@ class DeliveryTool extends ToolModule
             }
         } else {
             $user = common_session_SessionManager::getSession()->getUser();
-            $isLearner = !is_null($user) && in_array(LtiRoles::CONTEXT_LEARNER, $user->getRoles());
+            $isLearner = !is_null($user)
+                && count(array_intersect([LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER], $user->getRoles())) > 0;
+
             if ($isLearner) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
@@ -180,6 +184,15 @@ class DeliveryTool extends ToolModule
 
         return $this->getPsrResponse()->withBody(stream_for(json_encode($payload)))
             ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function launch1p3()
+    {
+        $message = $this->getValidatedLtiMessagePayload();
+
+        LtiService::singleton()->startLti1p3Session($message);
+        $this->forward('run', null, null, $_GET);
+        return;
     }
 
     /**
@@ -262,6 +275,7 @@ class DeliveryTool extends ToolModule
     protected function getDelivery()
     {
         $returnValue = null;
+
         //passed as aprameter
         if ($this->hasRequestParameter('delivery')) {
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
@@ -272,6 +286,7 @@ class DeliveryTool extends ToolModule
             $launchDataService = $this->getServiceLocator()->get(LtiLaunchDataService::SERVICE_ID);
             $returnValue = $launchDataService->findDeliveryFromLaunchData($launchData);
         }
+
         return $returnValue;
     }
 
