@@ -61,7 +61,39 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
         $active = null;
 
         if ($this->delivery !== null) {
-            $active = $this->getDeliveryExecution();
+            $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+            $user = \common_session_SessionManager::getSession()->getUser();
+
+            $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+            /** @var LtiDeliveryExecutionService $deliveryExecutionService */
+            $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+
+            if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
+                // ignore existing executions to force restart
+                $executions = [];
+            } else {
+                $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($this->delivery, $remoteLink, $user->getIdentifier());
+            }
+
+            /** @var AttemptServiceInterface $attemptService */
+            $attemptService = $this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID);
+            $satesToExclude = $attemptService->getStatesToExclude();
+            //filter sates which should not be treated as an attempt
+            $executions = array_filter($executions, function ($execution) use ($satesToExclude) {
+                return !in_array($execution->getState()->getUri(), $satesToExclude);
+            });
+
+            if (empty($executions)) {
+                $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
+            } else {
+                $resumable = $this->getServiceLocator()->get(DeliveryServerService::SERVICE_ID)->getResumableStates();
+                foreach ($executions as $deliveryExecution) {
+                    if (in_array($deliveryExecution->getState()->getUri(), $resumable)) {
+                        $active = $deliveryExecution;
+                        break;
+                    }
+                }
+            }
         } else {
             $this->logNotice('Attempt to invoke action `' . $this->getId() . '` without delivery');
         }
@@ -94,46 +126,5 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
     protected function getTool()
     {
         return $this->getServiceLocator()->get(LTIDeliveryTool::class);
-    }
-
-    protected function getDeliveryExecution(): DeliveryExecution
-    {
-        $active = null;
-
-        $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-        $user = \common_session_SessionManager::getSession()->getUser();
-
-        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        /** @var LtiDeliveryExecutionService $deliveryExecutionService */
-        $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-
-        if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
-            // ignore existing executions to force restart
-            $executions = [];
-        } else {
-            $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($this->delivery, $remoteLink, $user->getIdentifier());
-        }
-
-        /** @var AttemptServiceInterface $attemptService */
-        $attemptService = $this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID);
-        $satesToExclude = $attemptService->getStatesToExclude();
-        //filter sates which should not be treated as an attempt
-        $executions = array_filter($executions, function ($execution) use ($satesToExclude) {
-            return !in_array($execution->getState()->getUri(), $satesToExclude);
-        });
-
-        if (empty($executions)) {
-            $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
-        } else {
-            $resumable = $this->getServiceLocator()->get(DeliveryServerService::SERVICE_ID)->getResumableStates();
-            foreach ($executions as $deliveryExecution) {
-                if (in_array($deliveryExecution->getState()->getUri(), $resumable)) {
-                    $active = $deliveryExecution;
-                    break;
-                }
-            }
-        }
-
-        return $active;
     }
 }
