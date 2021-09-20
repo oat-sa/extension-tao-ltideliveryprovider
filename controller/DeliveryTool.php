@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013-2019 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 namespace oat\ltiDeliveryProvider\controller;
@@ -25,11 +25,8 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
-use OAT\Library\Lti1p3Core\Role\Type\ContextRole;
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
-use oat\taoLti\models\classes\LtiLaunchData;
 use tao_helpers_I18n;
-use tao_models_classes_LanguageService;
 use function GuzzleHttp\Psr7\stream_for;
 
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -186,13 +183,12 @@ class DeliveryTool extends ToolModule
             ->withHeader('Content-Type', 'application/json');
     }
 
-    public function launch1p3()
+    public function launch1p3(): void
     {
         $message = $this->getValidatedLtiMessagePayload();
 
         LtiService::singleton()->startLti1p3Session($message);
         $this->forward('run', null, null, $_GET);
-        return;
     }
 
     /**
@@ -274,9 +270,7 @@ class DeliveryTool extends ToolModule
      */
     protected function getDelivery()
     {
-        $returnValue = null;
-
-        //passed as aprameter
+        //passed as a parameter
         if ($this->hasRequestParameter('delivery')) {
             $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
