@@ -96,7 +96,7 @@ class DeliveryTool extends ToolModule
     public function run()
     {
         $compiledDelivery = $this->getDelivery();
-        if ((is_null($compiledDelivery) || !$compiledDelivery->exists())) {
+        if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // user authorised to select the Delivery
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
