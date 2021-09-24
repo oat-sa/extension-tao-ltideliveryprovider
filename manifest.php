@@ -18,6 +18,7 @@
  * Copyright (c) 2013-2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
+use OAT\Library\Lti1p3Core\Role\Type\ContextRole;
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
@@ -68,8 +69,10 @@ return [
     'acl' => [
         ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', ['ext' => 'ltiDeliveryProvider']],
         ['grant', TaoRoles::ANONYMOUS, ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch']],
+        ['grant', TaoRoles::ANONYMOUS, ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch1p3']],
         ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run']],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class],
+        ['grant', LtiRoles::CONTEXT_LTI1P3_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'],
         ['grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class]
     ],
