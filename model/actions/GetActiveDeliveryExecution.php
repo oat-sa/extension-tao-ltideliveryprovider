@@ -67,6 +67,7 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
             /** @var LtiDeliveryExecutionService $deliveryExecutionService */
             $deliveryExecutionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
+
             if ($launchData->hasVariable(DeliveryTool::PARAM_FORCE_RESTART) && $launchData->getVariable(DeliveryTool::PARAM_FORCE_RESTART) == 'true') {
                 // ignore existing executions to force restart
                 $executions = [];
