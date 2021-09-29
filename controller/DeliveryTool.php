@@ -25,7 +25,12 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
+use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
+use oat\taoLti\models\classes\LtiAgsScoreService;
+use oat\taoLti\models\classes\LtiLaunchData;
+use oat\taoLti\models\classes\TaoLti1p3Session;
+use oat\taoLti\models\classes\user\Lti1p3User;
 use tao_helpers_I18n;
 use function GuzzleHttp\Psr7\stream_for;
 
@@ -105,7 +110,8 @@ class DeliveryTool extends ToolModule
                 );
             }
         } else {
-            $user = common_session_SessionManager::getSession()->getUser();
+            $session = common_session_SessionManager::getSession();
+            $user = $session->getUser();
             $isLearner = !is_null($user)
                 && count(array_intersect([LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER], $user->getRoles())) > 0;
 
@@ -117,6 +123,25 @@ class DeliveryTool extends ToolModule
                             $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
                             $deliveryExecutionStateService->pause($activeExecution);
                         }
+
+                        // try to send AGS
+                        if ($session instanceof TaoLti1p3Session
+                            && $user instanceof Lti1p3User
+                            && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)
+                        ) {
+                            /** @var LtiAgsScoreService $agsScoreService */
+                            $agsScoreService = $this->getServiceLocator()->get(LtiAgsScoreService::SERVICE_ID);
+                            $agsScoreService->send(
+                                $session->getRegistration(),
+                                $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS),
+                                [
+                                    'userId' => $user->getIdentifier(),
+                                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED
+                                ]
+                            );
+                        }
+
+
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
