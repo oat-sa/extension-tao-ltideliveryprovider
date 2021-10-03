@@ -62,7 +62,8 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
 
         if ($this->delivery !== null) {
             $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-            $user = \common_session_SessionManager::getSession()->getUser();
+            $session = \common_session_SessionManager::getSession();
+            $user = $session->getUser();
 
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
             /** @var LtiDeliveryExecutionService $deliveryExecutionService */
@@ -77,14 +78,14 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
 
             /** @var AttemptServiceInterface $attemptService */
             $attemptService = $this->getServiceLocator()->get(AttemptServiceInterface::SERVICE_ID);
-            $satesToExclude = $attemptService->getStatesToExclude();
+            $statesToExclude = $attemptService->getStatesToExclude();
             //filter sates which should not be treated as an attempt
-            $executions = array_filter($executions, function ($execution) use ($satesToExclude) {
-                return !in_array($execution->getState()->getUri(), $satesToExclude);
+            $executions = array_filter($executions, function ($execution) use ($statesToExclude) {
+                return !in_array($execution->getState()->getUri(), $statesToExclude);
             });
 
             if (empty($executions)) {
-                $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
+                $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $session);
             } else {
                 $resumable = $this->getServiceLocator()->get(DeliveryServerService::SERVICE_ID)->getResumableStates();
                 foreach ($executions as $deliveryExecution) {

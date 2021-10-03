@@ -124,24 +124,6 @@ class DeliveryTool extends ToolModule
                             $deliveryExecutionStateService->pause($activeExecution);
                         }
 
-                        // try to send AGS
-                        if ($session instanceof TaoLti1p3Session
-                            && $user instanceof Lti1p3User
-                            && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)
-                        ) {
-                            /** @var LtiAgsScoreService $agsScoreService */
-                            $agsScoreService = $this->getServiceLocator()->get(LtiAgsScoreService::SERVICE_ID);
-                            $agsScoreService->send(
-                                $session->getRegistration(),
-                                $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS),
-                                [
-                                    'userId' => $user->getIdentifier(),
-                                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED
-                                ]
-                            );
-                        }
-
-
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());

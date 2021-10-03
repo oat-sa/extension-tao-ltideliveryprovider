@@ -22,11 +22,17 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_session_Session;
+use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
+use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\ltiDeliveryProvider\model\tasks\SendAgsScoreTask;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\session\SessionService;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoLti\models\classes\LtiAgsScoreService;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
@@ -38,7 +44,9 @@ use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\authorization\AuthorizationProvider;
+use oat\taoLti\models\classes\TaoLti1p3Session;
 use oat\taoLti\models\classes\TaoLtiSession;
+use oat\taoLti\models\classes\user\Lti1p3User;
 
 class LTIDeliveryTool extends ConfigurableService
 {
@@ -102,8 +110,10 @@ class LTIDeliveryTool extends ConfigurableService
      * @return DeliveryExecution
      * @throws \common_exception_Unauthorized
      */
-    public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, User $user)
+    public function startDelivery(core_kernel_classes_Resource $delivery, core_kernel_classes_Resource $link, common_session_Session $session)
     {
+        $user = $session->getUser();
+
         $lock = $this->createLock(__METHOD__ . $delivery->getUri() . $user->getIdentifier(), 30);
         $lock->acquire(true);
 
@@ -119,8 +129,37 @@ class LTIDeliveryTool extends ConfigurableService
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
         $this->linkLtiResultId($deliveryExecution);
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
+
+        $this->sendAgsScore($session);
+
         $lock->release();
         return $deliveryExecution;
+    }
+
+    protected function sendAgsScore(common_session_Session $session): bool
+    {
+        $user = $session->getUser();
+
+        if ($session instanceof TaoLti1p3Session
+            && $user instanceof Lti1p3User
+            && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)
+        ) {
+            /** @var AgsClaim $agsClaim */
+            $agsClaim = $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS);
+
+            /** @var QueueDispatcherInterface $taskQueue */
+            $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+            $taskQueue->createTask(new SendAgsScoreTask(), [
+                'registrationId' => $session->getRegistration()->getIdentifier(),
+                'agsClaim' => $agsClaim->normalize(),
+                'data' => [
+                    'userId' => $user->getIdentifier(),
+                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED
+                ]
+            ], 'AGS score send on test launch');
+        }
+
+        return false;
     }
 
     /**
