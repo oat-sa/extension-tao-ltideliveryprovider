@@ -34,6 +34,18 @@ class SendAgsScoreTask extends AbstractAction
 {
     public function __invoke($params): Report
     {
+        if (!is_string($params['registrationId'] ?? null)) {
+            return Report::createError('Parameter "registrationId" must be a string');
+        }
+
+        if (!is_array($params['agsClaim'] ?? null) || !is_array($params['agsClaim']['scope'] ?? null)) {
+            return Report::createError('Parameter "agsClaim" must be an array and include "scope" as an array');
+        }
+
+        if (!is_array($params['data'] ?? null)) {
+            return Report::createError('Parameter "data" must be an array');
+        }
+
         $registrationId = $params['registrationId'];
         $agsClaim = AgsClaim::denormalize($params['agsClaim']);
         $data = $params['data'];
@@ -44,10 +56,6 @@ class SendAgsScoreTask extends AbstractAction
 
         if (null === $registration) {
             return Report::createError(sprintf('Registration with identifier "%s" not found', $registrationId));
-        }
-
-        if (!is_array($data)) {
-            return Report::createError('Data parameter must be an array');
         }
 
         /** @var LtiAgsScoreService $agsScoreService */
