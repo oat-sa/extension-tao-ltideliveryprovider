@@ -35,7 +35,7 @@ class SendAgsScoreTask extends AbstractAction
     public function __invoke($params): Report
     {
         $registrationId = $params['registrationId'];
-        $agsClaim = AgsClaim::denormalize($params['ags']);
+        $agsClaim = AgsClaim::denormalize($params['agsClaim']);
         $data = $params['data'];
 
         /** @var Lti1p3RegistrationRepository $repository */
