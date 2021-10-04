@@ -61,7 +61,7 @@ class LTIDeliveryToolTest extends TestCase
         $this->subject->getFinishUrl($deliveryExecutionMock);
     }
 
-    public function testGetFnishUrlReturnsCorrectUrl(): void
+    public function testGetFinishUrlReturnsCorrectUrl(): void
     {
         $expectedUrl = 'http://www.FAKE_RETURN_URL.com/';
 
