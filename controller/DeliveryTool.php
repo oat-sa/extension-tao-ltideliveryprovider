@@ -25,15 +25,8 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
-use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
 use oat\taoLti\models\classes\LtiAgsScoreService;
-use oat\taoLti\models\classes\LtiLaunchData;
-use oat\taoLti\models\classes\TaoLti1p3Session;
-use oat\taoLti\models\classes\user\Lti1p3User;
-use tao_helpers_I18n;
-use function GuzzleHttp\Psr7\stream_for;
-
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -48,8 +41,11 @@ use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
-use tao_helpers_Uri;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use tao_helpers_Uri;
+use tao_helpers_I18n;
+
+use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
 {

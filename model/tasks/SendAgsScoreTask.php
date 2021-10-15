@@ -32,7 +32,7 @@ use oat\taoLti\models\classes\Platform\Repository\Lti1p3RegistrationRepository;
 
 class SendAgsScoreTask extends AbstractAction
 {
-    public function __invoke($params): Report
+    public function __invoke(array $params): Report
     {
         if (!is_string($params['registrationId'] ?? null)) {
             return Report::createError('Parameter "registrationId" must be a string');
@@ -61,15 +61,11 @@ class SendAgsScoreTask extends AbstractAction
         /** @var LtiAgsScoreService $agsScoreService */
         $agsScoreService = $this->getServiceLocator()->get(LtiAgsScoreService::SERVICE_ID);
         try {
-            $result = $agsScoreService->send($registration, $agsClaim, $data);
+            $agsScoreService->send($registration, $agsClaim, $data);
         } catch (LtiAgsException $e) {
             return Report::createError($e->getMessage());
         }
 
-        if ($result) {
-            return Report::createSuccess('AGS score has been sent successfully');
-        }
-
-        return Report::createError('AGS score has not been sent, unsuccessful response code is received');
+        return Report::createSuccess('AGS score has been sent successfully');
     }
 }

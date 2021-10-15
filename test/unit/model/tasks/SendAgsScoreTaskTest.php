@@ -108,7 +108,7 @@ class SendAgsScoreTaskTest extends TestCase
     /**
      * @dataProvider getInvalidParameters
      */
-    public function testItReturnsErrorReportIfParametersAreInvalid(array $data, string $errorMessage): void
+    public function testReturnsErrorReportWhenInvalidParametersAreProvided(array $data, string $errorMessage): void
     {
         $report = $this->subject->__invoke($data);
 
