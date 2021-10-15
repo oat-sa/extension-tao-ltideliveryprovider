@@ -32,7 +32,7 @@ use oat\taoLti\models\classes\Platform\Repository\Lti1p3RegistrationRepository;
 
 class SendAgsScoreTask extends AbstractAction
 {
-    public function __invoke(array $params): Report
+    public function __invoke($params): Report
     {
         if (!is_string($params['registrationId'] ?? null)) {
             return Report::createError('Parameter "registrationId" must be a string');

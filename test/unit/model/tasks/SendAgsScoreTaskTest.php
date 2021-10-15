@@ -47,7 +47,7 @@ class SendAgsScoreTaskTest extends TestCase
     {
         $parameters = $this->getValidParameters();
 
-        $this->setupServiceLocator($parameters, false, true);
+        $this->setupServiceLocator($parameters, false);
 
         $report = $this->subject->__invoke($parameters);
 
@@ -59,12 +59,12 @@ class SendAgsScoreTaskTest extends TestCase
     {
         $parameters = $this->getValidParameters();
 
-        $this->setupServiceLocator($parameters, false);
+        $this->setupServiceLocator($parameters, true);
 
         $report = $this->subject->__invoke($parameters);
 
         $this->assertEquals(ReportInterface::TYPE_ERROR, $report->getType());
-        $this->assertEquals('AGS score has not been sent, unsuccessful response code is received', $report->getMessage());
+        $this->assertEquals('exception error message', $report->getMessage());
     }
 
     public function testItReturnsErrorReportIfExceptionWasThrownOnSend(): void
@@ -177,7 +177,7 @@ class SendAgsScoreTaskTest extends TestCase
         ];
     }
 
-    private function setupServiceLocator(array $parameters, bool $throwException, bool $sendResult = false): void
+    private function setupServiceLocator(array $parameters, bool $throwException): void
     {
         $registration = $this->createMock(RegistrationInterface::class);
 
@@ -197,8 +197,7 @@ class SendAgsScoreTaskTest extends TestCase
         } else {
             $ltiAgsScoreService
                 ->method('send')
-                ->with($registration, AgsClaim::denormalize($parameters['agsClaim']), $parameters['data'])
-                ->willReturn($sendResult);
+                ->with($registration, AgsClaim::denormalize($parameters['agsClaim']), $parameters['data']);
         }
 
         $serviceLocatorMock = $this->getServiceLocatorMock(
