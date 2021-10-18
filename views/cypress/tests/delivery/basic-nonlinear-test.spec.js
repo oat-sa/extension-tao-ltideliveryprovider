@@ -19,32 +19,38 @@
 /**
  * Note: this test requires the following:
  * - the extension `oat-sa/extension-tao-ltideliveryprovider` is installed
- * - the test `taoQtiTest/views/cypress/fixtures/testPackages/basic-linear-test.zip` is imported
+ * - the test `taoQtiTest/views/cypress/fixtures/testPackages/basic-nonlinear-test.zip` (extension `oat-sa/extension-tao-ltideliveryprovider`)
  * - the test is published
  * - a LTI provider is created
  * - the LTI credentials are supplied through the cypress env file from the properties ltiKey and ltiSecret
- * - the LTI launch key is supplied through the cypress env file from the property ltiDeliveryIds.basicLinearTest
+ * - the LTI launch key is supplied through the cypress env file from the property ltiDeliveryIds.basicNonLinearTest
  */
 
 import { launchLtiDelivery1p0, checkLtiReturnPage } from '../utils/lti.js'
-import { basicLinearTestSpecs } from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-linear-test.js';
+import { basicNonLinearFirstLaunchSpecs, basicNonLinearSecondLaunchSpecs } from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-nonlinear-test.js';
 
-describe('LTI launch of the basic linear test with 4 items', () => {
-    const deliveryKey = 'basicLinearTest';
+describe('Basic non-linear test navigation (LTI launch)', () => {
+    const deliveryKey = 'basicNonLinearTest';
 
-    describe('LTI launch', () => {
-        it('successfully launches', () => {
+    describe('Next/Previous/End navigation', () => {
+        before(() => {
             launchLtiDelivery1p0(deliveryKey);
         });
-    });
-
-    describe('Basic linear test with 4 items', () => {
-        basicLinearTestSpecs();
-    });
-
-    describe('LTI end', () => {
-        it('redirects the page', () => {
+        after(() => {
             checkLtiReturnPage();
         });
+
+        basicNonLinearFirstLaunchSpecs();
+    });
+
+    describe('Skip/Skip-and-end navigation', () => {
+        before(() => {
+            launchLtiDelivery1p0(deliveryKey);
+        });
+        after(() => {
+            checkLtiReturnPage();
+        });
+
+        basicNonLinearSecondLaunchSpecs();
     });
 });
