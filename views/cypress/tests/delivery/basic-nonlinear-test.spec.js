@@ -26,8 +26,11 @@
  * - the LTI launch key is supplied through the cypress env file from the property ltiDeliveryIds.basicNonLinearTest
  */
 
-import { launchLtiDelivery1p0, checkLtiReturnPage } from '../utils/lti.js'
-import { basicNonLinearFirstLaunchSpecs, basicNonLinearSecondLaunchSpecs } from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-nonlinear-test.js';
+import { launchLtiDelivery1p0, checkLtiReturnPage } from '../utils/lti.js';
+import {
+    basicNonLinearFirstLaunchSpecs,
+    basicNonLinearSecondLaunchSpecs
+} from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-nonlinear-test.js';
 
 describe('Basic non-linear test navigation (LTI launch)', () => {
     const deliveryKey = 'basicNonLinearTest';
