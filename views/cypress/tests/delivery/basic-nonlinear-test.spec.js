@@ -30,7 +30,7 @@ import { launchLtiDelivery1p0, checkLtiReturnPage } from '../utils/lti.js';
 import {
     basicNonLinearFirstLaunchSpecs,
     basicNonLinearSecondLaunchSpecs
-} from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-nonlinear-test.js';
+} from '../../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-nonlinear-test.js';
 
 describe('Basic non-linear test navigation (LTI launch)', () => {
     const deliveryKey = 'basicNonLinearTest';

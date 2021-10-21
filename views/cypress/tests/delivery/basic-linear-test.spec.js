@@ -27,7 +27,7 @@
  */
 
 import { launchLtiDelivery1p0, checkLtiReturnPage } from '../utils/lti.js'
-import { basicLinearTestSpecs } from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-linear-test.js';
+import { basicLinearTestSpecs } from '../../../../../taoQtiTest/views/cypress/tests/delivery/shared/basic-linear-test.js';
 
 describe('LTI launch of the basic linear test with 4 items', () => {
     const deliveryKey = 'basicLinearTest';
