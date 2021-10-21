@@ -19,7 +19,7 @@
 /**
  * Note: this test requires the following:
  * - the extension `oat-sa/extension-tao-ltideliveryprovider` is installed
- * - the test `taoQtiTest/views/cypress/fixtures/testPackages/basic-nonlinear-test.zip` (extension `oat-sa/extension-tao-ltideliveryprovider`)
+ * - the test `taoQtiTest/views/cypress/fixtures/testPackages/basic-nonlinear-test.zip` (extension `oat-sa/extension-tao-testqti`)
  * - the test is published
  * - a LTI provider is created
  * - the LTI credentials are supplied through the cypress env file from the properties ltiKey and ltiSecret
