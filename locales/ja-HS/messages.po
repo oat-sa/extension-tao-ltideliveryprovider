@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-21T11:37:16\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja-HS\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ja-HS\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s Tool Provider"
+msgstr "%s ツールプロバイダ"
+
+msgid "%s\" has been configured:"
+msgstr "%s\" は設定されました:"
+
+msgid "Access to this functionality is restricted"
+msgstr "この機能へのアクセスが制限されています"
+
+msgid "Access to this functionality is restricted to students"
+msgstr "学生のこの機能へのアクセスは制限されています"
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr "現在、非常に多くの方がテストを行っています。テストがスムーズに行われるよう、しばらくしてからテストが開始されます。ご迷惑をおかけしますが、ご了承ください。"
+
+msgid "Attempts limit has been reached."
+msgstr "受検回数の上限に達しました"
+
+msgid "Available Deliveries"
+msgstr "利用できるデリバリ"
+
+msgid "Back"
+msgstr "戻る"
+
+msgid "Click on the back button to return to %s."
+msgstr "%s　に戻るには戻るボタンをクリック"
+
+msgid "Click on the back button to return."
+msgstr "戻るには戻るボタンをクリック"
+
+msgid "Configured LTI Link"
+msgstr "LTIリンクを設定しました"
+
+msgid "Copy and paste the following URL into your LTI compatible tool consumer."
+msgstr "下記のURLをコピーして、LTIのコンシューマ側にペーストしてください"
+
+#, tao-public
+msgid "Deliveries"
+msgstr "デリバリ"
+
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr "実施可能なテストはありません。インストラクタに確認してください。"
+
+msgid "Executions"
+msgstr "実行"
+
+msgid "Launch URL"
+msgstr "URLを起動"
+
+#, tao-public
+msgid "LTI"
+msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr "max_attempts\" 変数は数値でなければなりません。"
+
+msgid "No deliveries available"
+msgstr "デリバリ可能なものがありません。"
+
+msgid "No LTI consumers defined"
+msgstr "LTIコンシューマが定義されていません"
+
+msgid "no monitoring"
+msgstr "モニタリングがありません"
+
+msgid "Please give the key value persistence id"
+msgstr "キーとなる値（パーシステンスID）を設定してください"
+
+msgid "Please select a delivery"
+msgstr "デリバリを選んでください"
+
+msgid "Please select a delivery for \"%s"
+msgstr "\"%s でデリバリするものを選んでください"
+
+msgid "Registered activeExecutions metric"
+msgstr "登録された activeExecutions metric"
+
+msgid "Registered and created LtiResultIdStorage Rds Storage"
+msgstr "登録・作成された LtiResultIdStorage Rds Storage"
+
+msgid "Registered and created ResultAliasService / LtiOutcomeService services"
+msgstr "ResultAliasService / LtiOutcomeService　の登録と作成"
+
+msgid "Registered Lti delivery execution service in Key value"
+msgstr "キーとなる値に　Lti delivery execution service　を登録"
+
+msgid "Registered Lti delivery execution service in Ontology"
+msgstr "オントロジーの　Lti delivery execution service　の登録"
+
+msgid "Repeat"
+msgstr "リピート"
+
+msgid "Repeat the test"
+msgstr "テストを繰り返し行う"
+
+msgid "Retake the test"
+msgstr "テストを再受検する"
+
+msgid "Return to %s."
+msgstr "%s に戻る"
+
+msgid "Select"
+msgstr "選択"
+
+msgid "Select Delivery"
+msgstr "デリバリ選択"
+
+msgid "Selected Delivery"
+msgstr "デリバリを選択しました。"
+
+msgid "Test Launch Queue"
+msgstr "テスト開始待機中"
+
+msgid "Thank you"
+msgstr "ありがとうございました"
+
+msgid "This tool has been configured:"
+msgstr "このツールは設定されています:"
+
+msgid "This tool has not yet been configured, please contact your instructor"
+msgstr "このツールはまだ設定されていません。インストラクタに問い合わせてください。"
+
+msgid "Tool consumer(s)"
+msgstr "ツールコンシューマ"
+
+msgid "User is not authorized to run this delivery"
+msgstr "ユーザはこのデリバリを実行する権限がありません"
+
+msgid "Wrong value of \"secure\" variable."
+msgstr "変数 \"secure\" の値が違っています"
+
+msgid "You have already taken this test."
+msgstr "あなたはこのテストを既に受検しています"
+
+msgid "You have finished the test!"
+msgstr "テストを完了しました！"
+

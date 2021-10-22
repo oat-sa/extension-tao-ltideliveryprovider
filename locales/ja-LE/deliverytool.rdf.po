@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-21T11:37:13\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja-LE\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ja-LE\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "LTI Delivery Execution Tool"
+msgstr "LTIデリバリ実行ツール"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Tool to allow test takers to take a delivery from within an tool consumer."
+msgstr "受検者がツールコンシューマからデリバリを受けるためのツール"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Linked delivery"
+msgstr "リンクされたデリバリ"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "LTI Delivery Link Execution"
+msgstr "LTIデリバリリンクの実行"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Link between delivery Tool and Consumer"
+msgstr "デリバリツールとコンシューマのリンク"
+
