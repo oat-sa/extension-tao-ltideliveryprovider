@@ -16,7 +16,7 @@
  * Copyright (c) 2021 Open Assessment Technologies SA ;
  */
 
-import {studentToolTest} from '../../../../taoQtiTest/views/cypress/tests/delivery/shared/studen-tool-test.js';
+import {studentToolTest} from '../../../../../taoQtiTest/views/cypress/tests/delivery/shared/student-tool-test.js';
 import { launchLtiDelivery1p0 } from '../utils/lti.js';
 
 describe('Basic behavior of student tools', () => {
