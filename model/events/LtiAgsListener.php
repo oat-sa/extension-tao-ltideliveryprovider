@@ -92,8 +92,6 @@ class LtiAgsListener extends ConfigurableService
             $scoreTotal = null;
             $scoreTotalMax = null;
 
-            $isManualScored = $this->isManualScored($session);
-
             foreach ($session->getAllVariables()->getArrayCopy() as $variable) {
                 if ($variable instanceof OutcomeVariable) {
                     $value = $variable->getValue();
@@ -123,10 +121,8 @@ class LtiAgsListener extends ConfigurableService
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
                     'userId' => $user->getIdentifier(),
-                    'activityProgress' => $isManualScored
-                        ? ScoreInterface::ACTIVITY_PROGRESS_STATUS_SUBMITTED
-                        : ScoreInterface::ACTIVITY_PROGRESS_STATUS_COMPLETED,
-                    'gradingProgress' => $isManualScored
+                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_COMPLETED,
+                    'gradingProgress' => $this->isManualScored($session)
                         ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
                         : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED,
                     'scoreGiven' => $scoreTotal,
