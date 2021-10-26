@@ -94,26 +94,24 @@ class LtiAgsListener extends ConfigurableService
 
             $isManualScored = $this->isManualScored($session);
 
-            if (false === $isManualScored) {
-                foreach ($session->getAllVariables()->getArrayCopy() as $variable) {
-                    if ($variable instanceof OutcomeVariable) {
-                        $value = $variable->getValue();
+            foreach ($session->getAllVariables()->getArrayCopy() as $variable) {
+                if ($variable instanceof OutcomeVariable) {
+                    $value = $variable->getValue();
 
-                        if (!$value instanceof QtiScalar) {
-                            continue;
-                        }
+                    if (!$value instanceof QtiScalar) {
+                        continue;
+                    }
 
-                        if ($variable->getIdentifier() === 'SCORE_TOTAL') {
-                            $scoreTotal = $value->getValue();
-                        }
+                    if ($variable->getIdentifier() === 'SCORE_TOTAL') {
+                        $scoreTotal = $value->getValue();
+                    }
 
-                        if ($variable->getIdentifier() === 'SCORE_TOTAL_MAX') {
-                            $scoreTotalMax = $value->getValue();
-                        }
+                    if ($variable->getIdentifier() === 'SCORE_TOTAL_MAX') {
+                        $scoreTotalMax = $value->getValue();
+                    }
 
-                        if ($scoreTotal !== null && $scoreTotalMax !== null) {
-                            break;
-                        }
+                    if ($scoreTotal !== null && $scoreTotalMax !== null) {
+                        break;
                     }
                 }
             }
