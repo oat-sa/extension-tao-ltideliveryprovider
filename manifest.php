@@ -18,7 +18,6 @@
  * Copyright (c) 2013-2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
-use OAT\Library\Lti1p3Core\Role\Type\ContextRole;
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\controller\LinkConfiguration;
@@ -26,6 +25,7 @@ use oat\ltiDeliveryProvider\install\InstallAssignmentService;
 use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
 use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
+use oat\ltiDeliveryProvider\scripts\install\RegisterLtiEvents;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage;
 use oat\ltiDeliveryProvider\scripts\install\RegisterMetrics;
 use oat\ltiDeliveryProvider\scripts\install\RegisterOverriddenLtiToolRepository;
@@ -55,7 +55,8 @@ return [
             RegisterLtiAttemptService::class,
             RegisterMetrics::class,
             RegisterOverriddenLtiToolRepository::class,
-            RegisterSessionCookieAttributesFactory::class
+            RegisterSessionCookieAttributesFactory::class,
+            RegisterLtiEvents::class
         ],
         'rdf' => [
             __DIR__ . '/install/ontology/deliverytool.rdf'

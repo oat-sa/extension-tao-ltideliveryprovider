@@ -64,9 +64,9 @@
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
 		"oat-sa/generis" : ">=14.0.0",
 		"oat-sa/tao-core" : ">=47.0.0",
-		"oat-sa/extension-tao-delivery" : ">=15.0.0",
+		"oat-sa/extension-tao-delivery" : ">=15.6.0",
 		"oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
-		"oat-sa/extension-tao-lti" : ">=13.2.0",
+		"oat-sa/extension-tao-lti" : ">=15.2.0",
 		"oat-sa/extension-tao-outcomeui" : ">=10.0.0",
 		"oat-sa/extension-tao-testqti" : ">=41.17.0",
 		"oat-sa/extension-tao-outcome" : ">=13.0.0"
