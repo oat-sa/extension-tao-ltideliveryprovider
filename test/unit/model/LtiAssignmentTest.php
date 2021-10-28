@@ -29,9 +29,11 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\session\SessionService;
 use oat\oatbox\user\User;
 use oat\taoDelivery\model\AttemptServiceInterface;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoLti\models\classes\LtiClientException;
 use oat\taoLti\models\classes\LtiLaunchData;
+use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\TaoLtiSession;
 use Psr\Log\LoggerInterface;
 use oat\generis\test\MockObject;
@@ -42,6 +44,8 @@ use oat\generis\test\MockObject;
  */
 class LtiAssignmentTest extends TestCase
 {
+    private const TIME_ERROR_MARGIN = 10;
+
     /** @var LtiAssignment */
     private $object;
 
@@ -103,7 +107,7 @@ class LtiAssignmentTest extends TestCase
         $this->deliveryMock
             ->method('getOnePropertyValue')
             ->willReturnCallback(function (KernelProperty $property): ?KernelLiteralProperty {
-                return current($this->getDeliveryProperties([$property]));
+                return current($this->getDeliveryProperties([$property])[$property->getUri()] ?? [null]);
             });
         $this->deliveryMock
             ->method('getPropertiesValues')
@@ -181,7 +185,7 @@ class LtiAssignmentTest extends TestCase
      */
     public function testIsDeliveryExecutionAllowedAttemptsLimitReached()
     {
-        $this->expectException(LtiClientException::class);
+        $this->expectAttemptLimitException();
 
         $this->deliveryProperties = [
             DeliveryContainerService::PROPERTY_MAX_EXEC => 2
@@ -195,13 +199,85 @@ class LtiAssignmentTest extends TestCase
         $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
     }
 
+    public function testIsDeliveryExecutionAllowedTimeFrameViolatedByStartDate()
+    {
+        $this->expectTimeFrameViolationException();
+
+        $this->deliveryProperties = [
+            DeliveryAssemblyService::PROPERTY_START => time() + self::TIME_ERROR_MARGIN,
+        ];
+
+        $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
+    }
+
+    public function testIsDeliveryExecutionAllowedTimeFrameViolatedByEndDate()
+    {
+        $this->expectTimeFrameViolationException();
+
+        $this->deliveryProperties = [
+            DeliveryAssemblyService::PROPERTY_END => time() - self::TIME_ERROR_MARGIN,
+        ];
+
+        $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
+    }
+
+    public function testIsDeliveryExecutionTooEarly()
+    {
+        $this->expectTimeFrameViolationException();
+
+        $scheduledStartTime = time() + self::TIME_ERROR_MARGIN;
+
+        $this->deliveryProperties = [
+            DeliveryAssemblyService::PROPERTY_START => $scheduledStartTime,
+            DeliveryAssemblyService::PROPERTY_END => $scheduledStartTime + self::TIME_ERROR_MARGIN,
+        ];
+
+        $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
+    }
+
+    public function testIsDeliveryExecutionTooLate()
+    {
+        $this->expectTimeFrameViolationException();
+
+        $scheduledEndTime = time() - self::TIME_ERROR_MARGIN;
+
+        $this->deliveryProperties = [
+            DeliveryAssemblyService::PROPERTY_START => $scheduledEndTime - self::TIME_ERROR_MARGIN,
+            DeliveryAssemblyService::PROPERTY_END => $scheduledEndTime,
+        ];
+
+        $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
+    }
+
+    /**
+     * @param KernelProperty[] $properties
+     *
+     * @return KernelLiteralProperty[][]
+     */
+    public function getDeliveryProperties(array $properties): array
+    {
+        $result = [];
+
+        foreach ($properties as $property) {
+            $result[$property->getUri()] = [
+                isset($this->deliveryProperties[$property->getUri()])
+                    ? new KernelLiteralProperty($this->deliveryProperties[$property->getUri()])
+                    : null
+            ];
+        }
+
+        return $result;
+    }
+
     /**
      * Test isDeliveryExecutionAllowed with less execution attempts than allowed.
      */
     public function testIsDeliveryExecutionAllowedReturnsTrue()
     {
         $this->deliveryProperties = [
-            DeliveryContainerService::PROPERTY_MAX_EXEC => 2
+            DeliveryContainerService::PROPERTY_MAX_EXEC => 2,
+            DeliveryAssemblyService::PROPERTY_START => time() - self::TIME_ERROR_MARGIN,
+            DeliveryAssemblyService::PROPERTY_END => time() + self::TIME_ERROR_MARGIN,
         ];
 
         $userTokens = [1]; // Amount must be higher than max allowed executions.
@@ -214,17 +290,23 @@ class LtiAssignmentTest extends TestCase
         $this->assertTrue($result, 'Delivery execution must be allowed when user did less attempts than allowed');
     }
 
-    /**
-     * @param KernelProperty[] $properties
-     *
-     * @return KernelLiteralProperty[]
-     */
-    public function getDeliveryProperties(array $properties): array
+    private function expectAttemptLimitException(): void
     {
-        return array_map(function (KernelProperty $property): ?KernelLiteralProperty {
-            return isset($this->deliveryProperties[$property->getUri()])
-                ? new KernelLiteralProperty($this->deliveryProperties[$property->getUri()])
-                : null;
-        }, $properties);
+        $this->expectExceptionObject(
+            new LtiClientException(
+                'Attempts limit has been reached.',
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            )
+        );
+    }
+
+    private function expectTimeFrameViolationException(): void
+    {
+        $this->expectExceptionObject(
+            new LtiClientException(
+                'The delivery is currently unavailable.',
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            )
+        );
     }
 }
