@@ -20,13 +20,16 @@
 
 namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
 
-use core_kernel_classes_Literal;
+use core_kernel_classes_Literal as KernelLiteralProperty;
+use core_kernel_classes_Property as KernelProperty;
+use core_kernel_classes_Resource as KernelResource;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\session\SessionService;
 use oat\oatbox\user\User;
 use oat\taoDelivery\model\AttemptServiceInterface;
+use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\taoLti\models\classes\LtiClientException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\TaoLtiSession;
@@ -51,7 +54,7 @@ class LtiAssignmentTest extends TestCase
     /** @var User|MockObject */
     private $userMock;
 
-    /** @var \core_kernel_classes_Resource|MockObject */
+    /** @var KernelResource|MockObject */
     private $deliveryMock;
 
     /** @var \common_session_Session|MockObject */
@@ -63,6 +66,9 @@ class LtiAssignmentTest extends TestCase
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
 
+    /** @var string[] */
+    private $deliveryProperties;
+
     /**
      * @inheritdoc
      */
@@ -73,7 +79,7 @@ class LtiAssignmentTest extends TestCase
         $this->sessionServiceMock = $this->createMock(SessionService::class);
         $this->attemptServiceMock = $this->createMock(AttemptServiceInterface::class);
         $this->userMock = $this->createMock(User::class);
-        $this->deliveryMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $this->deliveryMock = $this->createMock(KernelResource::class);
 
         $this->sessionMock = $this->createMock(TaoLtiSession::class);
         $this->launchDataMock = $this->createMock(LtiLaunchData::class);
@@ -88,10 +94,20 @@ class LtiAssignmentTest extends TestCase
         $modelMock->expects($this->once())
             ->method('getResource')
             ->willReturn($this->deliveryMock);
-        $modelMock->expects($this->once())
+        $modelMock
             ->method('getProperty')
-            ->with('http://www.tao.lu/Ontologies/TAODelivery.rdf#Maxexec')
-            ->willReturn(new \core_kernel_classes_Property('PROP'));
+            ->willReturnCallback(static function (string $uri): KernelProperty {
+                return new KernelProperty($uri);
+            });
+
+        $this->deliveryMock
+            ->method('getOnePropertyValue')
+            ->willReturnCallback(function (KernelProperty $property): ?KernelLiteralProperty {
+                return current($this->getDeliveryProperties([$property]));
+            });
+        $this->deliveryMock
+            ->method('getPropertiesValues')
+            ->willReturnCallback([$this, 'getDeliveryProperties']);
 
         $this->object = new LtiAssignment([]);
         $this->object->setServiceLocator($servileLocatorMock);
@@ -167,9 +183,9 @@ class LtiAssignmentTest extends TestCase
     {
         $this->expectException(LtiClientException::class);
 
-        $this->deliveryMock->expects($this->once())
-            ->method('getOnePropertyValue')
-            ->willReturn(new core_kernel_classes_Literal('2'));
+        $this->deliveryProperties = [
+            DeliveryContainerService::PROPERTY_MAX_EXEC => 2
+        ];
 
         $userTokens = [1, 2, 3, 4]; // Amount must be higher than max allowed executions.
         $this->attemptServiceMock->expects($this->once())
@@ -184,9 +200,9 @@ class LtiAssignmentTest extends TestCase
      */
     public function testIsDeliveryExecutionAllowedReturnsTrue()
     {
-        $this->deliveryMock->expects($this->once())
-            ->method('getOnePropertyValue')
-            ->willReturn(new core_kernel_classes_Literal('2'));
+        $this->deliveryProperties = [
+            DeliveryContainerService::PROPERTY_MAX_EXEC => 2
+        ];
 
         $userTokens = [1]; // Amount must be higher than max allowed executions.
         $this->attemptServiceMock->expects($this->once())
@@ -196,5 +212,19 @@ class LtiAssignmentTest extends TestCase
         $result = $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
 
         $this->assertTrue($result, 'Delivery execution must be allowed when user did less attempts than allowed');
+    }
+
+    /**
+     * @param KernelProperty[] $properties
+     *
+     * @return KernelLiteralProperty[]
+     */
+    public function getDeliveryProperties(array $properties): array
+    {
+        return array_map(function (KernelProperty $property): ?KernelLiteralProperty {
+            return isset($this->deliveryProperties[$property->getUri()])
+                ? new KernelLiteralProperty($this->deliveryProperties[$property->getUri()])
+                : null;
+        }, $properties);
     }
 }
