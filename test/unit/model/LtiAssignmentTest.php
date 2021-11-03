@@ -122,7 +122,7 @@ class LtiAssignmentTest extends TestCase
     /**
      * Test isDeliveryExecutionAllowed with LTI session with invalid (not numeric) max attempts value.
      */
-    public function testIsDeliveryExecutionAllowedNotNumericLtiMaxAttemptsLtiParameter()
+    public function testIsDeliveryExecutionAllowedThrowsExceptionWithNotNumericLtiMaxAttemptsLtiParameter()
     {
         $this->expectException(LtiClientException::class);
 
@@ -150,7 +150,7 @@ class LtiAssignmentTest extends TestCase
     /**
      * Test isDeliveryExecutionAllowed with LTI session with correct max attempts value, execution allowed.
      */
-    public function testIsDeliveryExecutionAllowedCorrectMaxAttemptsLtiParameter()
+    public function testIsDeliveryExecutionAllowedWithCorrectMaxAttemptsLtiParameter()
     {
         $this->sessionServiceMock->expects($this->once())
             ->method('getCurrentSession')
@@ -183,7 +183,7 @@ class LtiAssignmentTest extends TestCase
     /**
      * Test isDeliveryExecutionAllowed with more execution attempts than allowed.
      */
-    public function testIsDeliveryExecutionAllowedAttemptsLimitReached()
+    public function testIsDeliveryExecutionAllowedThrowsExceptionWhenAttemptsLimitReached()
     {
         $this->expectAttemptLimitException();
 
@@ -199,7 +199,7 @@ class LtiAssignmentTest extends TestCase
         $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
     }
 
-    public function testIsDeliveryExecutionAllowedTimeFrameViolatedByStartDate()
+    public function testIsDeliveryExecutionAllowedThrowsExceptionWhenTimeFrameViolatedByStartDate()
     {
         $this->expectTimeFrameViolationException();
 
@@ -210,7 +210,7 @@ class LtiAssignmentTest extends TestCase
         $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
     }
 
-    public function testIsDeliveryExecutionAllowedTimeFrameViolatedByEndDate()
+    public function testIsDeliveryExecutionAllowedThrowsExceptionWhenTimeFrameViolatedByEndDate()
     {
         $this->expectTimeFrameViolationException();
 
@@ -221,7 +221,7 @@ class LtiAssignmentTest extends TestCase
         $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
     }
 
-    public function testIsDeliveryExecutionTooEarly()
+    public function testIsDeliveryExecutionAllowedThrowsExceptionWhenItIsTooEarly()
     {
         $this->expectTimeFrameViolationException();
 
@@ -235,7 +235,7 @@ class LtiAssignmentTest extends TestCase
         $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
     }
 
-    public function testIsDeliveryExecutionTooLate()
+    public function testIsDeliveryExecutionAllowedThrowsExceptionWhenItIsTooLate()
     {
         $this->expectTimeFrameViolationException();
 
