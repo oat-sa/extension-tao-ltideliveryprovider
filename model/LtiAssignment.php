@@ -22,16 +22,21 @@
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_exception_Error;
+use core_kernel_classes_Resource as KernelResource;
+use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\session\SessionService;
 use oat\taoDelivery\model\AttemptServiceInterface;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
 use oat\oatbox\user\User;
 use oat\taoLti\models\classes\LtiClientException;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
+use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoLti\models\classes\TaoLtiSession;
 
 /**
@@ -62,21 +67,22 @@ class LtiAssignment extends ConfigurableService
     {
         $delivery = $this->getResource($deliveryIdentifier);
 
+        $this->verifyAvailabilityFrame($delivery);
         return $this->verifyToken($delivery, $user);
     }
 
     /**
      * Check Max. number of executions
      *
-     * @param \core_kernel_classes_Resource $delivery
+     * @param KernelResource $delivery
      * @param User $user
      * @return bool
      * @throws LtiException
-     * @throws \common_exception_Error
-     * @throws \core_kernel_persistence_Exception
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     * @throws common_exception_Error
+     * @throws core_kernel_persistence_Exception
+     * @throws LtiVariableMissingException
      */
-    protected function verifyToken(\core_kernel_classes_Resource $delivery, User $user)
+    protected function verifyToken(KernelResource $delivery, User $user)
     {
         $propMaxExec = $delivery->getOnePropertyValue($this->getProperty(DeliveryContainerService::PROPERTY_MAX_EXEC));
         $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
@@ -109,5 +115,29 @@ class LtiAssignment extends ConfigurableService
             );
         }
         return true;
+    }
+
+    private function verifyAvailabilityFrame(KernelResource $delivery): void
+    {
+        [[$scheduledStartTimeProperty], [$scheduledEndTimeProperty]] = array_values($delivery->getPropertiesValues(
+            [
+                $this->getProperty(DeliveryAssemblyService::PROPERTY_START),
+                $this->getProperty(DeliveryAssemblyService::PROPERTY_END),
+            ]
+        ));
+
+        $scheduledStartTime = (int)(string)$scheduledStartTimeProperty ?: 0;
+        $scheduledEndTime = (int)(string)$scheduledEndTimeProperty ?: PHP_INT_MAX;
+
+        $currentTime = time();
+
+        if ($scheduledStartTime > $currentTime || $scheduledEndTime <= $currentTime) {
+            $this->logDebug("Attempt to start the compiled delivery {$delivery->getUri()} at unscheduled time");
+
+            throw new LtiClientException(
+                __('The delivery is currently unavailable.'),
+                LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
+            );
+        }
     }
 }
