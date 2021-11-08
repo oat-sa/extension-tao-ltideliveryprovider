@@ -98,7 +98,7 @@ return [
     'extra' => [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     ],
-    'e2ePrerequisiteActions'=>[
+    'e2ePrerequisiteActions' => [
         BuildE2eConfiguration::class
     ],
 
