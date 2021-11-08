@@ -24,6 +24,7 @@ use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\ltiDeliveryProvider\install\InstallAssignmentService;
 use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
 use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
+use oat\ltiDeliveryProvider\scripts\e2e\BuildE2eConfiguration;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiEvents;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage;
@@ -96,5 +97,9 @@ return [
     ],
     'extra' => [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
-    ]
+    ],
+    'e2ePrerequisiteActions'=>[
+        BuildE2eConfiguration::class
+    ],
+
 ];
