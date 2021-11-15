@@ -26,6 +26,8 @@ use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
+use oat\taoLti\models\classes\TaoLtiSession;
+use oat\taoLti\models\classes\user\Lti1p3User;
 use tao_helpers_I18n;
 use function GuzzleHttp\Psr7\stream_for;
 
@@ -105,14 +107,24 @@ class DeliveryTool extends ToolModule
                 );
             }
         } else {
-            $user = common_session_SessionManager::getSession()->getUser();
+            $session = common_session_SessionManager::getSession();
+
+            if (is_null($session)) {
+                throw new LtiException(__('Test Session not found'));
+            }
+
+            $user = $session->getUser();
+
             $isLearner = !is_null($user)
                 && count(array_intersect([LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER], $user->getRoles())) > 0;
 
-            if ($isLearner) {
+            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles());
+
+            if ($isLearner || $isDryRun) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
                         $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+
                         if ($activeExecution && $activeExecution->getState()->getUri() != DeliveryExecution::STATE_PAUSED) {
                             $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
                             $deliveryExecutionStateService->pause($activeExecution);

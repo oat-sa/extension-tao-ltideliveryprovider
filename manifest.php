@@ -76,7 +76,8 @@ return [
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LTI1P3_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'],
-        ['grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class]
+        ['grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class],
+        ['grant', LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, DeliveryRunner::class]
     ],
     'constants' => [
 
