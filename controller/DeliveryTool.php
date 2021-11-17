@@ -25,9 +25,6 @@ use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 
-use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
-use oat\taoLti\models\classes\TaoLtiSession;
-use oat\taoLti\models\classes\user\Lti1p3User;
 use tao_helpers_I18n;
 use function GuzzleHttp\Psr7\stream_for;
 
