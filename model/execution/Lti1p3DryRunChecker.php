@@ -27,7 +27,7 @@ use common_session_SessionManager;
 use oat\taoDelivery\model\execution\DryRunCheckerInterface;
 use oat\taoLti\models\classes\LtiRoles;
 
-class DryRunChecker implements DryRunCheckerInterface
+class Lti1p3DryRunChecker implements DryRunCheckerInterface
 {
     public function isDryRun(): bool
     {

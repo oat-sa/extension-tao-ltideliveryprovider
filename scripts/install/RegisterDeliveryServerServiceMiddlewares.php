@@ -23,17 +23,17 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
-use oat\ltiDeliveryProvider\model\execution\DryRunChecker;
+use oat\ltiDeliveryProvider\model\execution\Lti1p3DryRunChecker;
 use oat\oatbox\extension\InstallAction;
 use oat\taoDelivery\model\execution\DeliveryServerService;
 
-class RegisterDeliveryServerServiceProviders extends InstallAction
+class RegisterDeliveryServerServiceMiddlewares extends InstallAction
 {
     public function __invoke($params)
     {
         $deliveryServerService = $this->getServiceManager()->get(DeliveryServerService::SERVICE_ID);
 
-        $deliveryServerService->addProvider(new DryRunChecker());
+        $deliveryServerService->registerMiddleware(new Lti1p3DryRunChecker());
 
         $this->registerService(DeliveryServerService::SERVICE_ID, $deliveryServerService);
     }
