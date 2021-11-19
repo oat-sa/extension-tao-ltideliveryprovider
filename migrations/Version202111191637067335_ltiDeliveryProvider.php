@@ -5,32 +5,34 @@ declare(strict_types=1);
 namespace oat\ltiDeliveryProvider\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
-use oat\ltiDeliveryProvider\model\execution\Lti1p3DryRunChecker;
+use Doctrine\Migrations\Exception\IrreversibleMigration;
+use oat\ltiDeliveryProvider\model\execution\Lti1p3ResultServerServiceFactory;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\taoDelivery\model\execution\DeliveryServerService;
 
-final class Version202111161637067334_ltiDeliveryProvider extends AbstractMigration
+final class Version202111191637067335_ltiDeliveryProvider extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Register LTI 1.3 DryRun checker';
+        return 'Register ResultServerServiceFactory for Delivery extension';
     }
 
     public function up(Schema $schema): void
     {
         $deliveryServerService = $this->getServiceManager()->get(DeliveryServerService::SERVICE_ID);
 
-        $deliveryServerService->registerMiddleware(new Lti1p3DryRunChecker());
+        $deliveryServerService->setOption(
+            DeliveryServerService::OPTION_RESULT_SERVER_SERVICE_FACTORY,
+            new Lti1p3ResultServerServiceFactory()
+        );
 
         $this->registerService(DeliveryServerService::SERVICE_ID, $deliveryServerService);
     }
 
     public function down(Schema $schema): void
     {
-        $deliveryServerService = $this->getServiceManager()->get(DeliveryServerService::SERVICE_ID);
-
-        $deliveryServerService->unregisterMiddleware(Lti1p3DryRunChecker::class);
-
-        $this->registerService(DeliveryServerService::SERVICE_ID, $deliveryServerService);
+        throw new IrreversibleMigration(
+            'Configuration file has been modified'
+        );
     }
 }

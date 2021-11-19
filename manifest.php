@@ -25,7 +25,7 @@ use oat\ltiDeliveryProvider\install\InstallAssignmentService;
 use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
 use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
 use oat\ltiDeliveryProvider\scripts\e2e\BuildE2eConfiguration;
-use oat\ltiDeliveryProvider\scripts\install\RegisterDeliveryServerServiceMiddlewares;
+use oat\ltiDeliveryProvider\scripts\install\RegisterLti1p3ResultServerServiceFactory;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiEvents;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage;
@@ -59,7 +59,7 @@ return [
             RegisterOverriddenLtiToolRepository::class,
             RegisterSessionCookieAttributesFactory::class,
             RegisterLtiEvents::class,
-            RegisterDeliveryServerServiceMiddlewares::class
+            RegisterLti1p3ResultServerServiceFactory::class
         ],
         'rdf' => [
             __DIR__ . '/install/ontology/deliverytool.rdf'
