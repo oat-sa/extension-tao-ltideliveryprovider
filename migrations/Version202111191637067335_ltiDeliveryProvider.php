@@ -24,8 +24,11 @@ final class Version202111191637067335_ltiDeliveryProvider extends AbstractMigrat
 
     public function down(Schema $schema): void
     {
-        throw new IrreversibleMigration(
-            'Configuration file has been modified'
-        );
+        $deliveryServerService = $this->getServiceManager()->get(DeliveryServerService::SERVICE_ID);
+
+        $deliveryServerServiceOptions = $deliveryServerService->getOptions();
+        unset($deliveryServerServiceOptions[DeliveryServerService::OPTION_RESULT_SERVER_SERVICE_FACTORY]);
+
+        $this->registerService(DeliveryServerService::SERVICE_ID, $deliveryServerService);
     }
 }
