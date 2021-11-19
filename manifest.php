@@ -25,6 +25,7 @@ use oat\ltiDeliveryProvider\install\InstallAssignmentService;
 use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
 use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
 use oat\ltiDeliveryProvider\scripts\e2e\BuildE2eConfiguration;
+use oat\ltiDeliveryProvider\scripts\install\RegisterLti1p3ResultServerServiceFactory;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiEvents;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage;
@@ -57,7 +58,8 @@ return [
             RegisterMetrics::class,
             RegisterOverriddenLtiToolRepository::class,
             RegisterSessionCookieAttributesFactory::class,
-            RegisterLtiEvents::class
+            RegisterLtiEvents::class,
+            RegisterLti1p3ResultServerServiceFactory::class
         ],
         'rdf' => [
             __DIR__ . '/install/ontology/deliverytool.rdf'
@@ -76,7 +78,8 @@ return [
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LTI1P3_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'],
-        ['grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class]
+        ['grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class],
+        ['grant', LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, DeliveryRunner::class]
     ],
     'constants' => [
 
