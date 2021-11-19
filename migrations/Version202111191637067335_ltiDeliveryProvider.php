@@ -19,14 +19,7 @@ final class Version202111191637067335_ltiDeliveryProvider extends AbstractMigrat
 
     public function up(Schema $schema): void
     {
-        $deliveryServerService = $this->getServiceManager()->get(DeliveryServerService::SERVICE_ID);
-
-        $deliveryServerService->setOption(
-            DeliveryServerService::OPTION_RESULT_SERVER_SERVICE_FACTORY,
-            new Lti1p3ResultServerServiceFactory()
-        );
-
-        $this->registerService(DeliveryServerService::SERVICE_ID, $deliveryServerService);
+        $this->propagate(new oat\ltiDeliveryProvider\scripts\install\RegisterLti1p3ResultServerServiceFactory())([]);
     }
 
     public function down(Schema $schema): void
