@@ -68,7 +68,7 @@
 		"oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
 		"oat-sa/extension-tao-lti" : ">=15.2.0",
 		"oat-sa/extension-tao-outcomeui" : ">=10.0.0",
-		"oat-sa/extension-tao-testqti" : ">=41.17.0",
+		"oat-sa/extension-tao-testqti" : ">=42.2.0",
 		"oat-sa/extension-tao-outcome" : ">=13.0.0"
 	}
 }
