@@ -24,14 +24,11 @@ use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
-
-use tao_helpers_I18n;
-use function GuzzleHttp\Psr7\stream_for;
-
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\tao\model\actionQueue\ActionFullException;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
@@ -42,8 +39,10 @@ use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
+use tao_helpers_I18n;
 use tao_helpers_Uri;
-use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+
+use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
 {
