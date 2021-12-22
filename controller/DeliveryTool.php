@@ -114,14 +114,14 @@ class DeliveryTool extends ToolModule
             $isLearner = !is_null($user)
                 && count(array_intersect([LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER], $user->getRoles())) > 0;
 
-            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles());
+            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
 
             if ($isLearner || $isDryRun) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
                         $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
 
-                        if ($activeExecution && $activeExecution->getState()->getUri() != DeliveryExecution::STATE_PAUSED) {
+                        if ($activeExecution && $activeExecution->getState()->getUri() !== DeliveryExecution::STATE_PAUSED) {
                             $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
                             $deliveryExecutionStateService->pause($activeExecution);
                         }
