@@ -30,6 +30,7 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\tao\model\actionQueue\ActionFullException;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
@@ -46,6 +47,13 @@ use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
 {
+    /**
+     * @var string Controls whether a delivery execution state should be kept as is or reset each time it starts.
+     *             `false` – the state will be reset on each restart.
+     *             `true` – the state will be maintained upon a restart.
+     */
+    public const FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE = 'FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE';
+
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
      * and will start a new testsession whenever the lti tool is launched
@@ -300,15 +308,31 @@ class DeliveryTool extends ToolModule
 
     private function resetDeliveryExecutionState(DeliveryExecution $activeExecution = null): void
     {
-        if (null === $activeExecution || $activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED) {
+        if (
+            null === $activeExecution
+            || !$this->isDeliveryExecutionStateResetEnabled()
+            || $activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED
+        ) {
             return;
         }
 
         $this->getStateService()->pause($activeExecution);
     }
 
+    private function isDeliveryExecutionStateResetEnabled(): bool
+    {
+        return !$this->getFeatureFlagChecker()->isEnabled(
+            static::FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE
+        );
+    }
+
     private function getStateService(): StateServiceInterface
     {
         return $this->getPsrContainer()->get(StateServiceInterface::SERVICE_ID);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagChecker
+    {
+        return $this->getPsrContainer()->get(FeatureFlagChecker::class);
     }
 }
