@@ -121,9 +121,7 @@ class DeliveryTool extends ToolModule
                     try {
                         $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
 
-                        if ($activeExecution && $activeExecution->getState()->getUri() !== DeliveryExecution::STATE_PAUSED) {
-                            $this->getStateService()->pause($activeExecution);
-                        }
+                        $this->resetDeliveryExecutionState($activeExecution);
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
@@ -298,6 +296,15 @@ class DeliveryTool extends ToolModule
             ->getExtensionById('ltiDeliveryProvider');
 
         tao_helpers_I18n::init($extension, DEFAULT_ANONYMOUS_INTERFACE_LANG);
+    }
+
+    private function resetDeliveryExecutionState(DeliveryExecution $activeExecution = null): void
+    {
+        if (null === $activeExecution || $activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED) {
+            return;
+        }
+
+        $this->getStateService()->pause($activeExecution);
     }
 
     private function getStateService(): StateServiceInterface
