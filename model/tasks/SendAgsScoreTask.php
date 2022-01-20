@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
@@ -27,6 +27,9 @@ use InvalidArgumentException;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoLti\models\classes\LtiAgs\LtiAgsException;
 use oat\taoLti\models\classes\LtiAgs\LtiAgsScoreService;
 use oat\taoLti\models\classes\LtiAgs\LtiAgsScoreServiceInterface;
@@ -34,8 +37,17 @@ use oat\taoLti\models\classes\Platform\Repository\Lti1p3RegistrationRepository;
 
 class SendAgsScoreTask extends AbstractAction
 {
+    public const FEATURE_FLAG_AGS_SCORE_SENDING_RETRY = 'FEATURE_FLAG_AGS_SCORE_SENDING_RETRY';
+
+    public const RETRY_COUNT = 'retryCount';
+    public const RETRY_MAX = 'retryMax';
+
+    /** @var array */
+    private $params;
+
     public function __invoke($params): Report
     {
+        $this->params = $params;
         $this->getLogger()->info('Start AGS score sending task', $params);
 
         try {
@@ -61,6 +73,10 @@ class SendAgsScoreTask extends AbstractAction
         try {
             $agsScoreService->send($registration, $agsClaim, $data);
         } catch (LtiAgsException $e) {
+            if ($this->isRetryEnabled()) {
+                $this->retryTask();
+                return Report::createWarning(sprintf('AGS score sending task failed with message "%s". Retrying...', $e->getMessage()));
+            }
             return $this->reportError($e->getMessage());
         }
 
@@ -89,5 +105,39 @@ class SendAgsScoreTask extends AbstractAction
         $this->getLogger()->error($message);
 
         return Report::createError($message);
+    }
+
+    private function retryTask(): void
+    {
+        if (!$this->isMaxRetryCountReached()) {
+            $this->increaseRetryCount();
+            $this->getQueueDispatcher()->createTask(new self, $this->params);
+            $this->logWarning('AGS score sending task has been retried');
+        }
+    }
+
+    public function increaseRetryCount(): void
+    {
+        $this->params[self::RETRY_COUNT]++;
+    }
+
+    public function isMaxRetryCountReached(): bool
+    {
+        return $this->params[self::RETRY_COUNT] >= $this->params[self::RETRY_MAX];
+    }
+
+    private function getQueueDispatcher(): QueueDispatcherInterface
+    {
+        return $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceLocator()->get(FeatureFlagChecker::class);
+    }
+
+    private function isRetryEnabled(): bool
+    {
+        return $this->getFeatureFlagChecker()->isEnabled(self::FEATURE_FLAG_AGS_SCORE_SENDING_RETRY);
     }
 }

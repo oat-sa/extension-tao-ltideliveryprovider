@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
@@ -44,6 +44,8 @@ use qtism\runtime\tests\AssessmentTestSession;
 
 class LtiAgsListener extends ConfigurableService
 {
+    public const OPTION_AGS_MAX_RETRY = 5;
+
     public function onDeliveryExecutionStart(DeliveryExecutionCreated $event): void
     {
         $user = $event->getUser();
@@ -117,6 +119,8 @@ class LtiAgsListener extends ConfigurableService
             /** @var QueueDispatcherInterface $taskQueue */
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $taskQueue->createTask(new SendAgsScoreTask(), [
+                SendAgsScoreTask::RETRY_MAX => $this->getAgsMaxRetries(),
+                SendAgsScoreTask::RETRY_COUNT => 0,
                 'registrationId' => $user->getRegistrationId(),
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
@@ -146,5 +150,10 @@ class LtiAgsListener extends ConfigurableService
         }
 
         return false;
+    }
+
+    private function getAgsMaxRetries(): int
+    {
+        return $this->getOption(self::OPTION_AGS_MAX_RETRY, 5);
     }
 }

@@ -86,6 +86,8 @@ As a system administrator you also install it through the TAO Extension Manager:
 A `bool`-typed environment variable, controlling whether a delivery execution state should be kept as is or reset each time it starts.
 - `"false"` – the state will be reset on each restart. Default behavior.
 - `"true"` – the state will be maintained upon a restart.
+#### FEATURE_FLAG_AGS_SCORE_SENDING_RETRY
+A `bool`-typed environment variable, controlling whether AGS score should be resent if it fails to be sent.
 
 ### LaunchQueue.conf.php
 
