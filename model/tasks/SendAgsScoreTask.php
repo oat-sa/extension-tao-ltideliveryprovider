@@ -43,11 +43,12 @@ class SendAgsScoreTask extends AbstractAction
     public const RETRY_MAX = 'retryMax';
 
     /** @var array */
-    private $params;
+    private $params = [self::RETRY_COUNT => 0];
 
     public function __invoke($params): Report
     {
-        $this->params = $params;
+        $this->params = array_merge($this->params, $params);
+
         $this->getLogger()->info('Start AGS score sending task', $params);
 
         try {
@@ -70,17 +71,16 @@ class SendAgsScoreTask extends AbstractAction
 
         /** @var LtiAgsScoreService $agsScoreService */
         $agsScoreService = $this->getServiceLocator()->getContainer()->get(LtiAgsScoreServiceInterface::class);
+
         try {
             $agsScoreService->send($registration, $agsClaim, $data);
         } catch (LtiAgsException $e) {
-            if ($this->isRetryEnabled()) {
-                $this->retryTask();
-                return Report::createWarning(sprintf('AGS score sending task failed with message "%s". Retrying...', $e->getMessage()));
-            }
+            $this->retryTask($e);
+
             return $this->reportError($e->getMessage());
         }
 
-        $this->getLogger()->info('Finish AGS score sending task successfully');
+        $this->logInfo('Finish AGS score sending task successfully');
 
         return Report::createSuccess('AGS score has been sent successfully');
     }
@@ -100,30 +100,53 @@ class SendAgsScoreTask extends AbstractAction
         }
     }
 
-    private function reportError(string $message): Report
+    private function retryTask(LtiAgsException $exception): void
     {
-        $this->getLogger()->error($message);
+        if (!$this->isRetryEnabled()) {
+            $this->logNotice('Retry is disabled');
 
-        return Report::createError($message);
-    }
-
-    private function retryTask(): void
-    {
-        if (!$this->isMaxRetryCountReached()) {
-            $this->increaseRetryCount();
-            $this->getQueueDispatcher()->createTask(new self, $this->params);
-            $this->logWarning('AGS score sending task has been retried');
+            return;
         }
+
+        if ($this->isMaxRetryCountReached()) {
+            $this->logCritical(
+                'Failed to send AGS Score message: the max number of retries has been reached',
+                [
+                    'agsClaim' => $exception->getAgsClaim()->normalize(),
+                    'score' => json_encode($exception->getScore()),
+                    'registration' => $exception->getRegistration()->getIdentifier(),
+                ]
+            );
+
+            return;
+        }
+
+        $this->increaseRetryCount();
+        $this->getQueueDispatcher()->createTask(new self, $this->params);
+        $this->logInfo('AGS Score message has been rescheduled for another try');
     }
 
-    public function increaseRetryCount(): void
+    private function isRetryEnabled(): bool
+    {
+        return !empty($this->params[self::RETRY_MAX])
+            && $this->getFeatureFlagChecker()->isEnabled(self::FEATURE_FLAG_AGS_SCORE_SENDING_RETRY);
+    }
+
+    private function increaseRetryCount(): void
     {
         $this->params[self::RETRY_COUNT]++;
     }
 
-    public function isMaxRetryCountReached(): bool
+    private function isMaxRetryCountReached(): bool
     {
         return $this->params[self::RETRY_COUNT] >= $this->params[self::RETRY_MAX];
+    }
+
+    private function reportError(string $message): Report
+    {
+        $this->logError($message);
+
+        return Report::createError($message);
     }
 
     private function getQueueDispatcher(): QueueDispatcherInterface
@@ -134,10 +157,5 @@ class SendAgsScoreTask extends AbstractAction
     private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
     {
         return $this->getServiceLocator()->get(FeatureFlagChecker::class);
-    }
-
-    private function isRetryEnabled(): bool
-    {
-        return $this->getFeatureFlagChecker()->isEnabled(self::FEATURE_FLAG_AGS_SCORE_SENDING_RETRY);
     }
 }

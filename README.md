@@ -88,6 +88,8 @@ A `bool`-typed environment variable, controlling whether a delivery execution st
 - `"true"` – the state will be maintained upon a restart.
 #### FEATURE_FLAG_AGS_SCORE_SENDING_RETRY
 A `bool`-typed environment variable, controlling whether AGS score should be resent if it fails to be sent.
+- `"false"` – the application won't try to resend another request when it fails. Default behavior.
+- `"true"` – the application will try to resend requests until the number of max retries is reached.
 
 ### LaunchQueue.conf.php
 

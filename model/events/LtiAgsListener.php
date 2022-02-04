@@ -44,13 +44,14 @@ use qtism\runtime\tests\AssessmentTestSession;
 
 class LtiAgsListener extends ConfigurableService
 {
-    public const OPTION_AGS_MAX_RETRY = 5;
+    public const OPTION_AGS_MAX_RETRY = 'ags_max_retries';
 
     public function onDeliveryExecutionStart(DeliveryExecutionCreated $event): void
     {
         $user = $event->getUser();
 
         if ($user instanceof Lti1p3User && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
+
             /** @var AgsClaim $agsClaim */
             $agsClaim = $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS);
 
@@ -119,8 +120,7 @@ class LtiAgsListener extends ConfigurableService
             /** @var QueueDispatcherInterface $taskQueue */
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $taskQueue->createTask(new SendAgsScoreTask(), [
-                SendAgsScoreTask::RETRY_MAX => $this->getAgsMaxRetries(),
-                SendAgsScoreTask::RETRY_COUNT => 0,
+                'retryMax' => $this->getAgsMaxRetries(),
                 'registrationId' => $user->getRegistrationId(),
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
