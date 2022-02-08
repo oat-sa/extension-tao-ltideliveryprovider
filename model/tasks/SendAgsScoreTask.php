@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
@@ -27,6 +27,9 @@ use InvalidArgumentException;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\reporting\Report;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoLti\models\classes\LtiAgs\LtiAgsException;
 use oat\taoLti\models\classes\LtiAgs\LtiAgsScoreService;
 use oat\taoLti\models\classes\LtiAgs\LtiAgsScoreServiceInterface;
@@ -34,8 +37,18 @@ use oat\taoLti\models\classes\Platform\Repository\Lti1p3RegistrationRepository;
 
 class SendAgsScoreTask extends AbstractAction
 {
+    public const FEATURE_FLAG_AGS_SCORE_SENDING_RETRY = 'FEATURE_FLAG_AGS_SCORE_SENDING_RETRY';
+
+    public const RETRY_COUNT = 'retryCount';
+    public const RETRY_MAX = 'retryMax';
+
+    /** @var array */
+    private $params = [self::RETRY_COUNT => 0];
+
     public function __invoke($params): Report
     {
+        $this->params = array_merge($this->params, $params);
+
         $this->getLogger()->info('Start AGS score sending task', $params);
 
         try {
@@ -58,13 +71,16 @@ class SendAgsScoreTask extends AbstractAction
 
         /** @var LtiAgsScoreService $agsScoreService */
         $agsScoreService = $this->getServiceLocator()->getContainer()->get(LtiAgsScoreServiceInterface::class);
+
         try {
             $agsScoreService->send($registration, $agsClaim, $data);
         } catch (LtiAgsException $e) {
+            $this->retryTask($e);
+
             return $this->reportError($e->getMessage());
         }
 
-        $this->getLogger()->info('Finish AGS score sending task successfully');
+        $this->logInfo('Finish AGS score sending task successfully');
 
         return Report::createSuccess('AGS score has been sent successfully');
     }
@@ -84,10 +100,62 @@ class SendAgsScoreTask extends AbstractAction
         }
     }
 
+    private function retryTask(LtiAgsException $exception): void
+    {
+        if (!$this->isRetryEnabled()) {
+            $this->logNotice('Retry is disabled');
+
+            return;
+        }
+
+        if ($this->isMaxRetryCountReached()) {
+            $this->logCritical(
+                'Failed to send AGS Score message: the max number of retries has been reached',
+                [
+                    'agsClaim' => $exception->getAgsClaim()->normalize(),
+                    'score' => json_encode($exception->getScore()),
+                    'registration' => $exception->getRegistration()->getIdentifier(),
+                ]
+            );
+
+            return;
+        }
+
+        $this->increaseRetryCount();
+        $this->getQueueDispatcher()->createTask(new self, $this->params);
+        $this->logInfo('AGS Score message has been rescheduled for another try');
+    }
+
+    private function isRetryEnabled(): bool
+    {
+        return !empty($this->params[self::RETRY_MAX])
+            && $this->getFeatureFlagChecker()->isEnabled(self::FEATURE_FLAG_AGS_SCORE_SENDING_RETRY);
+    }
+
+    private function increaseRetryCount(): void
+    {
+        $this->params[self::RETRY_COUNT]++;
+    }
+
+    private function isMaxRetryCountReached(): bool
+    {
+        return $this->params[self::RETRY_COUNT] >= $this->params[self::RETRY_MAX];
+    }
+
     private function reportError(string $message): Report
     {
-        $this->getLogger()->error($message);
+        $this->logError($message);
 
         return Report::createError($message);
+    }
+
+    private function getQueueDispatcher(): QueueDispatcherInterface
+    {
+        return $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceLocator()->get(FeatureFlagChecker::class);
     }
 }
