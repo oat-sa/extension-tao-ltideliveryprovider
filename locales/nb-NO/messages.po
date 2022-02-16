@@ -67,7 +67,7 @@ msgid "LTI"
 msgstr "LTI"
 
 msgid "max_attempts\" variable must me numeric."
-msgstr "max_attempts \"-variabelen må være numerisk."
+msgstr "maks antall forøk\"-variabelen må være numerisk."
 
 msgid "No deliveries available"
 msgstr "Ingen besvarelse er tilgjengelig"
