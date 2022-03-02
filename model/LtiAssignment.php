@@ -119,7 +119,7 @@ class LtiAssignment extends ConfigurableService
 
     private function verifyAvailabilityFrame(KernelResource $delivery): void
     {
-        [[$scheduledStartTimeProperty], [$scheduledEndTimeProperty]] = array_values($delivery->getPropertiesValues(
+        @[[$scheduledStartTimeProperty], [$scheduledEndTimeProperty]] = array_values($delivery->getPropertiesValues(
             [
                 $this->getProperty(DeliveryAssemblyService::PROPERTY_START),
                 $this->getProperty(DeliveryAssemblyService::PROPERTY_END),
