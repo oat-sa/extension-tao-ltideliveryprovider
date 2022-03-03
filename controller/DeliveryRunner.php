@@ -25,6 +25,7 @@ namespace oat\ltiDeliveryProvider\controller;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
+use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\controller\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiException;
@@ -47,7 +48,7 @@ use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 class DeliveryRunner extends DeliveryServer
 {
     use LtiModuleTrait;
-    
+
     /**
      * Defines if the top and bottom action menu should be displayed or not
      *
@@ -75,9 +76,41 @@ class DeliveryRunner extends DeliveryServer
 
     public function ltiReturn()
     {
+        /** @var LtiNavigationService $navigation */
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+
+        //FIXME
+        //FIXME This is a PoC fix and will be changed as soon as we can confirm its approach
+        //FIXME I will probably migrate this if to a request handler os middleware...
+        //FIXME
+        //FIXME
+        $isProctored = $launchData->hasVariable('custom_proctor')
+            && filter_var($launchData->getVariable('custom_proctor'), FILTER_VALIDATE_BOOLEAN);
+
+        if ($isProctored) {
+            $state = $deliveryExecution->getState()->getUri();
+
+            if (in_array($state, [DeliveryExecutionInterface::STATE_PAUSED], true)) {
+                $errorPage = _url(
+                    'awaitingAuthorization',
+                    'DeliveryServer',
+                    'ltiProctoring',
+                    [
+                        'deliveryExecution' => $deliveryExecution->getIdentifier()
+                    ]
+                );
+
+                $this->redirect($errorPage);
+
+                return;
+            }
+        }
+        //FIXME
+        //FIXME
+        //FIXME
+
         $this->redirect($navigation->getReturnUrl($launchData, $deliveryExecution));
     }
 
@@ -139,21 +172,21 @@ class DeliveryRunner extends DeliveryServer
     public function thankYou()
     {
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        
+
         if ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
         } elseif ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION));
         }
-        
+
         if ($launchData->hasReturnUrl()) {
             $this->setData('returnUrl', $launchData->getReturnUrl());
         }
-        
+
         if ($launchData->hasVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE)) {
             $this->setData('message', $launchData->getVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE));
         }
-        
+
         $this->setData('allowRepeat', false);
         $this->setView('learner/thankYou.tpl');
     }
