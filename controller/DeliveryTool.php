@@ -24,16 +24,13 @@ use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
-
-use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3DeliveryExecutionService;
-use tao_helpers_I18n;
-use function GuzzleHttp\Psr7\stream_for;
-
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
+use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\tao\model\actionQueue\ActionFullException;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
@@ -43,11 +40,20 @@ use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
+use tao_helpers_I18n;
 use tao_helpers_Uri;
-use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+
+use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
 {
+    /**
+     * @var string Controls whether a delivery execution state should be kept as is or reset each time it starts.
+     *             `false` – the state will be reset on each restart.
+     *             `true` – the state will be maintained upon a restart.
+     */
+    public const FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE = 'FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE';
+
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
      * and will start a new testsession whenever the lti tool is launched
@@ -105,18 +111,25 @@ class DeliveryTool extends ToolModule
                 );
             }
         } else {
-            $user = common_session_SessionManager::getSession()->getUser();
+            $session = common_session_SessionManager::getSession();
+
+            if (is_null($session)) {
+                throw new LtiException(__('Test Session not found'));
+            }
+
+            $user = $session->getUser();
+
             $isLearner = !is_null($user)
                 && count(array_intersect([LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER], $user->getRoles())) > 0;
 
-            if ($isLearner) {
+            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
+
+            if ($isLearner || $isDryRun) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
                         $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
-                        if ($activeExecution && $activeExecution->getState()->getUri() != DeliveryExecution::STATE_PAUSED) {
-                            $deliveryExecutionStateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
-                            $deliveryExecutionStateService->pause($activeExecution);
-                        }
+
+                        $this->resetDeliveryExecutionState($activeExecution);
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
@@ -291,5 +304,35 @@ class DeliveryTool extends ToolModule
             ->getExtensionById('ltiDeliveryProvider');
 
         tao_helpers_I18n::init($extension, DEFAULT_ANONYMOUS_INTERFACE_LANG);
+    }
+
+    private function resetDeliveryExecutionState(DeliveryExecution $activeExecution = null): void
+    {
+        if (
+            null === $activeExecution
+            || !$this->isDeliveryExecutionStateResetEnabled()
+            || $activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED
+        ) {
+            return;
+        }
+
+        $this->getStateService()->pause($activeExecution);
+    }
+
+    private function isDeliveryExecutionStateResetEnabled(): bool
+    {
+        return !$this->getFeatureFlagChecker()->isEnabled(
+            static::FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE
+        );
+    }
+
+    private function getStateService(): StateServiceInterface
+    {
+        return $this->getPsrContainer()->get(StateServiceInterface::SERVICE_ID);
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagChecker
+    {
+        return $this->getPsrContainer()->get(FeatureFlagChecker::class);
     }
 }

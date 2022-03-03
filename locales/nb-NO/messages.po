@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-27T12:16:25\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nb-NO\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nb-NO\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s Tool Provider"
+msgstr ""
+
+msgid "%s\" has been configured:"
+msgstr "%s \"er konfigurert:"
+
+msgid "Access to this functionality is restricted"
+msgstr "Tilgang til denne funksjonaliteten er begrenset"
+
+msgid "Access to this functionality is restricted to students"
+msgstr "Tilgang til denne funksjonaliteten er begrenset til kandidater"
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr "Et høyt antall brukere er pålogget akkurat nå, prøven din vil starte i løpet av kort tid.Takk for tålmodigheten!"
+
+msgid "Attempts limit has been reached."
+msgstr "Du har ingen flere forsøk igjen."
+
+msgid "Available Deliveries"
+msgstr "Tilgjengelige innleveringer"
+
+msgid "Back"
+msgstr "Tilbake"
+
+msgid "Click on the back button to return to %s."
+msgstr "Klikk på tilbakeknappen for å gå tilbake til %s."
+
+msgid "Click on the back button to return."
+msgstr "Klikk på tilbakeknappen for å gå tilbake."
+
+msgid "Configured LTI Link"
+msgstr "Konfigurert LTI Link"
+
+msgid "Copy and paste the following URL into your LTI compatible tool consumer."
+msgstr "Kopier og lim inn følgende URL i din LTI -kompatible ."
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Besvarelser"
+
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr "Besvarelsendin finnes ikke. Ta kontakt med læreren din."
+
+msgid "Executions"
+msgstr "Iverksettelse"
+
+msgid "Launch URL"
+msgstr "Aktiver URL"
+
+#, tao-public
+msgid "LTI"
+msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr "max_attempts \"-variabelen må være numerisk."
+
+msgid "No deliveries available"
+msgstr "Ingen besvarelse er tilgjengelig"
+
+msgid "No LTI consumers defined"
+msgstr "Ingen LTI -brukere er definert"
+
+msgid "no monitoring"
+msgstr "ingen monitorering"
+
+msgid "Please give the key value persistence id"
+msgstr "Vennligst gi hovedverdien varig id"
+
+msgid "Please select a delivery"
+msgstr "Velg en besvarelse"
+
+msgid "Please select a delivery for \"%s"
+msgstr "Velg en besvarelse for \"%s"
+
+msgid "Registered activeExecutions metric"
+msgstr "Registrert activeExecutions metric"
+
+msgid "Registered and created LtiResultIdStorage Rds Storage"
+msgstr "Registrert og opprettet LtiResultIdStorage Rds Storage"
+
+msgid "Registered and created ResultAliasService / LtiOutcomeService services"
+msgstr "Registrert og opprettet ResultAliasService / LtiOutcomeService -tjenester"
+
+msgid "Registered Lti delivery execution service in Key value"
+msgstr "Registrert"
+
+msgid "Registered Lti delivery execution service in Ontology"
+msgstr "Registrert"
+
+msgid "Repeat"
+msgstr "Gjenta"
+
+msgid "Repeat the test"
+msgstr "Gjenta prøven"
+
+msgid "Retake the test"
+msgstr "Ta prøven på nytt"
+
+msgid "Return to %s."
+msgstr "Gå tilbake til %s."
+
+msgid "Select"
+msgstr "Velg"
+
+msgid "Select Delivery"
+msgstr "Velg besvarelse"
+
+msgid "Selected Delivery"
+msgstr "Valgt besvarelse"
+
+msgid "Test Launch Queue"
+msgstr "Test kø"
+
+msgid "Thank you"
+msgstr "Tusen takk"
+
+msgid "This tool has been configured:"
+msgstr "Dette verktøyet er tilgjengelig:"
+
+msgid "This tool has not yet been configured, please contact your instructor"
+msgstr "Dette verktøyet er ennå ikke tilgjengelig. Ta kontakt med læreren din"
+
+msgid "Tool consumer(s)"
+msgstr "Verktøy"
+
+msgid "User is not authorized to run this delivery"
+msgstr "Brukeren er ikke autorisert til å åpne denne besvarelsen"
+
+msgid "Wrong value of \"secure\" variable."
+msgstr "Feil verdi av \"sikker\" variabel."
+
+msgid "You have already taken this test."
+msgstr "Du har allerede gjennomført prøven."
+
+msgid "You have finished the test!"
+msgstr "Du har levert prøven!"
+

@@ -81,6 +81,16 @@ As a system administrator you also install it through the TAO Extension Manager:
 
 ## Configuration options
 
+### Feature flags
+#### FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE
+A `bool`-typed environment variable, controlling whether a delivery execution state should be kept as is or reset each time it starts.
+- `"false"` – the state will be reset on each restart. Default behavior.
+- `"true"` – the state will be maintained upon a restart.
+#### FEATURE_FLAG_AGS_SCORE_SENDING_RETRY
+A `bool`-typed environment variable, controlling whether AGS score should be resent if it fails to be sent.
+- `"false"` – the application won't try to resend another request when it fails. Default behavior.
+- `"true"` – the application will try to resend requests until the number of max retries is reached.
+
 ### LaunchQueue.conf.php
 
 #### Configuration option `relaunchInterval`
