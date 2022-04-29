@@ -90,7 +90,11 @@ A `bool`-typed environment variable, controlling whether a delivery execution st
 A `bool`-typed environment variable, controlling whether AGS score should be resent if it fails to be sent.
 - `"false"` – the application won't try to resend another request when it fails. Default behavior.
 - `"true"` – the application will try to resend requests until the number of max retries is reached.
-
+#### FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS
+A `bool`- typed environment variable, controlling whether gradingProgress property state on delivery execution finish.
+- `"false"` – the application send an AGS score publish request with a gradingStatus of fullyGraded.
+- `"true"` – send an AGS score to publish request with a gradingStatus of notReady.
+ 
 ### LaunchQueue.conf.php
 
 #### Configuration option `relaunchInterval`

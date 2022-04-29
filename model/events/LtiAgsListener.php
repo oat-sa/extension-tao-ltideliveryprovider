@@ -23,11 +23,13 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\events;
 
+use oat\generis\model\DependencyInjection\ServiceOptions;
 use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\ltiDeliveryProvider\model\tasks\SendAgsScoreTask;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
@@ -44,7 +46,9 @@ use qtism\runtime\tests\AssessmentTestSession;
 
 class LtiAgsListener extends ConfigurableService
 {
+    public const SERVICE_ID ='ltiDeliveryProvider/LtiAgsListener';
     public const OPTION_AGS_MAX_RETRY = 'ags_max_retries';
+    public const OPTION_SCORING_OWNS_GRADING_PROGRESS = 'scoring_owns_grading_progress';
 
     public function onDeliveryExecutionStart(DeliveryExecutionCreated $event): void
     {
@@ -128,7 +132,11 @@ class LtiAgsListener extends ConfigurableService
                     'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_COMPLETED,
                     'gradingProgress' => $this->isManualScored($session)
                         ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
-                        : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED,
+                        : (
+                        $this->isScoringOwnsGradingProgressEnabled()
+                            ? ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY
+                            : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED
+                        ),
                     'scoreGiven' => $scoreTotal,
                     'scoreMaximum' => $scoreTotalMax,
                 ]
@@ -156,4 +164,18 @@ class LtiAgsListener extends ConfigurableService
     {
         return $this->getOption(self::OPTION_AGS_MAX_RETRY, 5);
     }
+
+    private function isScoringOwnsGradingProgressEnabled(): int
+    {
+        /** @var FeatureFlagCheckerInterface $featureFlagChecker */
+        $featureFlagChecker = $this->getServiceLocator()->get(FeatureFlagCheckerInterface::class);
+        return $this->getServiceLocator()
+            ->get(ServiceOptions::SERVICE_ID)
+            ->get(
+                self::SERVICE_ID
+                , self::OPTION_SCORING_OWNS_GRADING_PROGRESS
+                , $featureFlagChecker->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS)
+            );
+    }
+
 }
