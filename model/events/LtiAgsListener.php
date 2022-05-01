@@ -83,6 +83,19 @@ class LtiAgsListener extends ConfigurableService
         }
     }
 
+    public function isScoringOwnsGradingProgressEnabled(): bool
+    {
+        /** @var FeatureFlagCheckerInterface $featureFlagChecker */
+        $featureFlagChecker = $this->getServiceLocator()->get(FeatureFlagCheckerInterface::class);
+        return $this->getServiceLocator()
+            ->get(ServiceOptions::SERVICE_ID)
+            ->get(
+                self::SERVICE_ID
+                , self::OPTION_SCORING_OWNS_GRADING_PROGRESS
+                , $featureFlagChecker->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS)
+            );
+    }
+
     private function onDeliveryExecutionFinish(DeliveryExecutionState $event): void
     {
         /** @var User $user */
@@ -165,17 +178,6 @@ class LtiAgsListener extends ConfigurableService
         return $this->getOption(self::OPTION_AGS_MAX_RETRY, 5);
     }
 
-    private function isScoringOwnsGradingProgressEnabled(): int
-    {
-        /** @var FeatureFlagCheckerInterface $featureFlagChecker */
-        $featureFlagChecker = $this->getServiceLocator()->get(FeatureFlagCheckerInterface::class);
-        return $this->getServiceLocator()
-            ->get(ServiceOptions::SERVICE_ID)
-            ->get(
-                self::SERVICE_ID
-                , self::OPTION_SCORING_OWNS_GRADING_PROGRESS
-                , $featureFlagChecker->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS)
-            );
-    }
+
 
 }
