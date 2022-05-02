@@ -61,35 +61,54 @@ class LtiAgsListenerTest extends TestCase
 
     public function testSendNotReadyStatusIfScoringOwnsGradingProgressEnabled()
     {
-        $subject = $this->createMock(LtiAgsListener::class);
-        $subject->method('isScoringOwnsGradingProgressEnabled')
-            ->willReturn(true);
-
         $gradingProgress = ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED;
-        $this->createMock(
+        $queue = $this->createMock(
             QueueDispatcherInterface::class
         )
             ->method('createTask')
             ->with(
                 $this->callback(
                     function ($class, $params) use(&$gradingProgress) {
+                        print_r($params);
                         $gradingProgress = $params['data']['gradingProgress'];
                     }
                 )
-            );
+        );
+
+        $subject = $this->createMock(LtiAgsListener::class);
+        $subject->method('isScoringOwnsGradingProgressEnabled')
+            ->willReturn(true);
+
+        $subject->method('getQueueDispatcher')
+            ->willReturn($queue);
 
         $subject->onDeliveryExecutionStateUpdate($this->event);
+
 
         $this->assertEquals($gradingProgress, ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY);
     }
 
     public function testSendNotReadyStatusIfScoringOwnsGradingProgressDisable()
     {
+        $gradingProgress = ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY;
+        $queue = $this->createMock(
+            QueueDispatcherInterface::class
+        )
+            ->method('createTask')
+            ->with(
+                $this->callback(
+                    function ($class, $params) use(&$gradingProgress) {
+                        $gradingProgress = $params['data']['gradingProgress'];
+                    }
+                )
+        );
+
         $subject = $this->createMock(LtiAgsListener::class);
         $subject->method('isScoringOwnsGradingProgressEnabled')
             ->willReturn(false);
+        $subject->method('getQueueDispatcher')
+            ->willReturn($queue);
 
-        $gradingProgress = ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED;
         $this->createMock(
             QueueDispatcherInterface::class
         )
@@ -104,6 +123,7 @@ class LtiAgsListenerTest extends TestCase
 
         $subject->onDeliveryExecutionStateUpdate($this->event);
 
-        $this->assertEquals($gradingProgress, ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY);
+
+        $this->assertEquals($gradingProgress, ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED);
     }
 }
