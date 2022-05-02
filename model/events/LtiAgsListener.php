@@ -96,6 +96,11 @@ class LtiAgsListener extends ConfigurableService
             );
     }
 
+    public function getQueueDispatcher(): QueueDispatcherInterface
+    {
+         return $this->getServiceManager()->get(QueueDispatcherInterface::SERVICE_ID);
+    }
+
     private function onDeliveryExecutionFinish(DeliveryExecutionState $event): void
     {
         /** @var User $user */
@@ -135,8 +140,7 @@ class LtiAgsListener extends ConfigurableService
             }
 
             /** @var QueueDispatcherInterface $taskQueue */
-            $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
-            $taskQueue->createTask(new SendAgsScoreTask(), [
+            $this->getQueueDispatcher()->createTask(new SendAgsScoreTask(), [
                 'retryMax' => $this->getAgsMaxRetries(),
                 'registrationId' => $user->getRegistrationId(),
                 'agsClaim' => $agsClaim->normalize(),
