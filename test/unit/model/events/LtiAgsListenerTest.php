@@ -22,20 +22,29 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\test\unit\model\events;
 
-use oat\generis\test\MockObject;
 use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use oat\oatbox\user\User;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionStateContext;
 use \PHPUnit\Framework\TestCase;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\ltiDeliveryProvider\model\events\LtiAgsListener;
+use oat\generis\test\ServiceManagerMockTrait;
 
 class LtiAgsListenerTest extends TestCase
 {
-    /** @var DeliveryExecutionState  */
+    use ServiceManagerMockTrait;
+
+    /** @var DeliveryExecutionState */
     private $event;
+
+    /** @var LtiAgsListener */
+    private $subject;
+
+    /** @var string */
+    private $gradingProgress;
 
     /**
      * @inheritdoc
@@ -47,7 +56,7 @@ class LtiAgsListenerTest extends TestCase
         $deliveryExecutionMock = $this->createMock(DeliveryExecutionInterface::class);
 
         $deliveryExecutionContext = new DeliveryExecutionStateContext([
-            DeliveryExecutionStateContext::PARAM_USER => $this->createMock(User::class)
+            DeliveryExecutionStateContext::PARAM_USER => $this->createMock(User::class),
         ]);
 
         $this->event = new DeliveryExecutionState(
@@ -56,74 +65,44 @@ class LtiAgsListenerTest extends TestCase
             DeliveryExecutionInterface::STATE_ACTIVE,
             $deliveryExecutionContext
         );
+
+        $self = &$this;
+        $queue = $this->createMock(
+            QueueDispatcherInterface::class
+        )
+            ->method('createTask')
+            ->with(
+                $this->callback(
+                    function ($class, $params) use (&$self) {
+                        $self->gradingProgress = $params['data']['gradingProgress'];
+                    }
+                )
+            );
+
+        $this->subject = $this->createMock(LtiAgsListener::class);
+        $this->subject->expects($this->once())->method('getQueueDispatcher')->willReturn($queue);
     }
 
 
     public function testSendNotReadyStatusIfScoringOwnsGradingProgressEnabled()
     {
-        $gradingProgress = ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED;
-        $queue = $this->createMock(
-            QueueDispatcherInterface::class
-        )
-            ->method('createTask')
-            ->with(
-                $this->callback(
-                    function ($class, $params) use(&$gradingProgress) {
-                        print_r($params);
-                        $gradingProgress = $params['data']['gradingProgress'];
-                    }
-                )
-        );
-
-        $subject = $this->createMock(LtiAgsListener::class);
-        $subject->method('isScoringOwnsGradingProgressEnabled')
-            ->willReturn(true);
-
-        $subject->method('getQueueDispatcher')
-            ->willReturn($queue);
-
-        $subject->onDeliveryExecutionStateUpdate($this->event);
-
-
-        $this->assertEquals($gradingProgress, ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY);
+        $this->subject->expects($this->once())->method('isScoringOwnsGradingProgressEnabled')->willReturn(true);
+        $this->subject->onDeliveryExecutionStateUpdate($this->event);
+        $this->assertEquals(ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY, $this->gradingProgress);
     }
 
     public function testSendNotReadyStatusIfScoringOwnsGradingProgressDisable()
     {
-        $gradingProgress = ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY;
-        $queue = $this->createMock(
-            QueueDispatcherInterface::class
-        )
-            ->method('createTask')
-            ->with(
-                $this->callback(
-                    function ($class, $params) use(&$gradingProgress) {
-                        $gradingProgress = $params['data']['gradingProgress'];
-                    }
-                )
-        );
+        $this->subject->method('isScoringOwnsGradingProgressEnabled')->willReturn(false);
+        $this->subject->onDeliveryExecutionStateUpdate($this->event);
+        $this->assertEquals(ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED, $this->gradingProgress);
+    }
 
-        $subject = $this->createMock(LtiAgsListener::class);
-        $subject->method('isScoringOwnsGradingProgressEnabled')
-            ->willReturn(false);
-        $subject->method('getQueueDispatcher')
-            ->willReturn($queue);
-
-        $this->createMock(
-            QueueDispatcherInterface::class
-        )
-            ->method('createTask')
-            ->with(
-                $this->callback(
-                    function ($class, $params) use(&$gradingProgress) {
-                        $gradingProgress = $params['data']['gradingProgress'];
-                    }
-                )
-            );
-
-        $subject->onDeliveryExecutionStateUpdate($this->event);
-
-
-        $this->assertEquals($gradingProgress, ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED);
+    public function testSendNotReadyStatusFlagEnabled()
+    {
+        $_ENV[FeatureFlagCheckerInterface::FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS] = true;
+        $this->assertTrue($this->subject->isScoringOwnsGradingProgressEnabled());
+        $this->subject->onDeliveryExecutionStateUpdate($this->event);
+        $this->assertEquals(ScoreInterface::GRADING_PROGRESS_STATUS_NOT_READY, $this->gradingProgress);
     }
 }
