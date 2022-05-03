@@ -161,3 +161,10 @@ This parameter will always be set to a delivery execution state label.
 
 ## Extension Wiki
 You can find the [extension wiki here](https://github.com/oat-sa/extension-tao-ltideliveryprovider/wiki).
+
+## Feature flgs
+Here you can find the environment variables including feature flags
+
+| Variable                                   | Description                                                            | Default value |
+|--------------------------------------------|------------------------------------------------------------------------|---------------|
+| FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS | Outcome of the test, summing both automatic scores and manual scores   | false         |

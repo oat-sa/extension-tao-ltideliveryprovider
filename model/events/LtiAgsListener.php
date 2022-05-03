@@ -29,7 +29,7 @@ use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\ltiDeliveryProvider\model\tasks\SendAgsScoreTask;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
@@ -49,6 +49,7 @@ class LtiAgsListener extends ConfigurableService
     public const SERVICE_ID ='ltiDeliveryProvider/LtiAgsListener';
     public const OPTION_AGS_MAX_RETRY = 'ags_max_retries';
     public const OPTION_SCORING_OWNS_GRADING_PROGRESS = 'scoring_owns_grading_progress';
+    public const FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS = 'FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS';
 
     public function onDeliveryExecutionStart(DeliveryExecutionCreated $event): void
     {
@@ -85,14 +86,14 @@ class LtiAgsListener extends ConfigurableService
 
     public function isScoringOwnsGradingProgressEnabled(): bool
     {
-        /** @var FeatureFlagCheckerInterface $featureFlagChecker */
-        $featureFlagChecker = $this->getServiceLocator()->get(FeatureFlagCheckerInterface::class);
+        /** @var FeatureFlagChecker $featureFlagChecker */
+        $featureFlagChecker = $this->getServiceLocator()->get(FeatureFlagChecker::class);
         return $this->getServiceLocator()
             ->get(ServiceOptions::SERVICE_ID)
             ->get(
                 self::SERVICE_ID
                 , self::OPTION_SCORING_OWNS_GRADING_PROGRESS
-                , $featureFlagChecker->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS)
+                , $featureFlagChecker->isEnabled(self::FEATURE_FLAG_SCORING_OWNS_GRADING_PROGRESS)
             );
     }
 
