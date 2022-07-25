@@ -5,6 +5,7 @@
 ![GitHub](https://img.shields.io/github/license/oat-sa/extension-tao-ltideliveryprovider.svg)
 ![GitHub release](https://img.shields.io/github/release/oat-sa/extension-tao-ltideliveryprovider.svg)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/oat-sa/extension-tao-ltideliveryprovider.svg)
+[![codecov](https://codecov.io/gh/oat-sa/extension-tao-ltideliveryprovider/branch/master/graph/badge.svg)](https://codecov.io/gh/oat-sa/extension-tao-ltideliveryprovider)
 
 > The LTI Delivery extension allows test-takers to take a delivery (delivered test) via LTI
 
