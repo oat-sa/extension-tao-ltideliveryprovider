@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint117\n"
-"PO-Revision-Date: 2020-09-22T16:02:17\n"
+"Project-Id-Version: TAO 2022.09\n"
+"PO-Revision-Date: 2022-08-12T16:46:01\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -29,7 +29,7 @@ msgid "An unusually high number of people are testing right now, your test will 
 msgstr "現在、非常に多くの方がテストを行っています。テストがスムーズに行われるよう、しばらくしてからテストが開始されます。ご迷惑をおかけしますが、ご了承ください。"
 
 msgid "Attempts limit has been reached."
-msgstr "受検回数の上限に達しました"
+msgstr "受験回数の上限に達しました"
 
 msgid "Available Deliveries"
 msgstr "利用できるデリバリ"
@@ -102,9 +102,6 @@ msgstr "キーとなる値に　Lti delivery execution service　を登録"
 msgid "Registered Lti delivery execution service in Ontology"
 msgstr "オントロジーの　Lti delivery execution service　の登録"
 
-msgid "Registered Lti delivery launch data service"
-msgstr "Lti delivery launch data service　の登録"
-
 msgid "Repeat"
 msgstr "リピート"
 
@@ -112,7 +109,7 @@ msgid "Repeat the test"
 msgstr "テストを繰り返し行う"
 
 msgid "Retake the test"
-msgstr "テストを再受検する"
+msgstr "テストを再受験する"
 
 msgid "Return to %s."
 msgstr "%s に戻る"
@@ -129,8 +126,14 @@ msgstr "デリバリを選択しました。"
 msgid "Test Launch Queue"
 msgstr "テスト開始待機中"
 
+msgid "Test Session not found"
+msgstr "テストセッションが見つかりません"
+
 msgid "Thank you"
 msgstr "ありがとうございました"
+
+msgid "The delivery is currently unavailable."
+msgstr "現在、デリバリーできない状態です"
 
 msgid "This tool has been configured:"
 msgstr "このツールは設定されています:"
@@ -148,7 +151,7 @@ msgid "Wrong value of \"secure\" variable."
 msgstr "変数 \"secure\" の値が違っています"
 
 msgid "You have already taken this test."
-msgstr "あなたはこのテストを既に受検しています"
+msgstr "あなたはこのテストを既に受験しています"
 
 msgid "You have finished the test!"
 msgstr "テストを完了しました！"
