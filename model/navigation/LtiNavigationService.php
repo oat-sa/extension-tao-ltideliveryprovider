@@ -39,6 +39,7 @@ class LtiNavigationService extends ConfigurableService
 
     public const OPTION_DELIVERY_RETURN_STATUS = 'delivery_return_status';
     public const OPTION_MESSAGE_FACTORY = 'message';
+    public const OPTION_RETURN_URL_IDENTIFIER = 'returnUrlId';
 
     /**
      * Whenever or not the thank you screen should be shown by default
@@ -94,8 +95,11 @@ class LtiNavigationService extends ConfigurableService
     {
         $ltiReturnQueryParams = $this->getLtiReturnUrlQueryParams($deliveryExecution);
         $deliveryReturnQueryParams = $this->getDeliveryReturnQueryParams($deliveryExecution);
-        $returnUrlID = $this->getReturnUrlIdParams();
-        return array_merge($ltiReturnQueryParams, $deliveryReturnQueryParams, $returnUrlID);
+        $returnUrlIdParams = [];
+        if ($this->getOption(self::OPTION_RETURN_URL_IDENTIFIER)) {
+            $returnUrlIdParams = $this->getReturnUrlIdParams();
+        }
+        return array_merge($ltiReturnQueryParams, $deliveryReturnQueryParams, $returnUrlIdParams);
     }
 
     /**
@@ -183,6 +187,6 @@ class LtiNavigationService extends ConfigurableService
      */
     private function getReturnUrlIdParams(): array
     {
-        return ['returnUrlId' => bin2hex(random_bytes(10))];
+        return ['returnUrlId' => \helpers_Random::generateString(10)];
     }
 }
