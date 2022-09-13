@@ -94,8 +94,8 @@ class LtiNavigationService extends ConfigurableService
     {
         $ltiReturnQueryParams = $this->getLtiReturnUrlQueryParams($deliveryExecution);
         $deliveryReturnQueryParams = $this->getDeliveryReturnQueryParams($deliveryExecution);
-
-        return array_merge($ltiReturnQueryParams, $deliveryReturnQueryParams);
+        $returnUrlID = $this->getReturnUrlIdParams();
+        return array_merge($ltiReturnQueryParams, $deliveryReturnQueryParams, $returnUrlID);
     }
 
     /**
@@ -175,5 +175,14 @@ class LtiNavigationService extends ConfigurableService
         }
 
         return $params;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    private function getReturnUrlIdParams(): array
+    {
+        return ['returnUrlId' => bin2hex(random_bytes(10))];
     }
 }
