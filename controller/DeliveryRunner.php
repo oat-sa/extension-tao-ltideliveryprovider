@@ -78,7 +78,15 @@ class DeliveryRunner extends DeliveryServer
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        $this->redirect($navigation->getReturnUrl($launchData, $deliveryExecution));
+        $redirectUrl = $navigation->getReturnUrl($launchData, $deliveryExecution);
+        \common_Logger::i(
+            sprintf(
+                'Redirected from the deliveryExecution %s to %s',
+                $deliveryExecution->getIdentifier(),
+                $redirectUrl
+            )
+        );
+        $this->redirect($redirectUrl);
     }
 
     /**
