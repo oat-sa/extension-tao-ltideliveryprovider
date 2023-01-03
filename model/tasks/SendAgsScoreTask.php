@@ -43,7 +43,7 @@ class SendAgsScoreTask extends AbstractAction
     public const RETRY_MAX = 'retryMax';
 
     /** @var array */
-    private $params = [self::RETRY_COUNT => 0];
+    private array $params = [self::RETRY_COUNT => 0];
 
     public function __invoke($params): Report
     {
@@ -128,7 +128,7 @@ class SendAgsScoreTask extends AbstractAction
         }
 
         $this->increaseRetryCount();
-        $this->getQueueDispatcher()->createTask(new self, $this->params);
+        $this->getQueueDispatcher()->createTask(new self(), $this->params);
         $this->logInfo('AGS Score message has been rescheduled for another try');
     }
 
