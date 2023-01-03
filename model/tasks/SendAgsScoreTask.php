@@ -42,7 +42,6 @@ class SendAgsScoreTask extends AbstractAction
     public const RETRY_COUNT = 'retryCount';
     public const RETRY_MAX = 'retryMax';
 
-    /** @var array */
     private array $params = [self::RETRY_COUNT => 0];
 
     public function __invoke($params): Report
