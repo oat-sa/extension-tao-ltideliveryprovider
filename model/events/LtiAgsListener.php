@@ -49,6 +49,7 @@ class LtiAgsListener extends ConfigurableService
     public function onDeliveryExecutionStart(DeliveryExecutionCreated $event): void
     {
         $user = $event->getUser();
+        $deliveryExcecution = $event->getDeliveryExecution();
 
         if ($user instanceof Lti1p3User && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
 
@@ -59,6 +60,7 @@ class LtiAgsListener extends ConfigurableService
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $taskQueue->createTask(new SendAgsScoreTask(), [
                 'registrationId' => $user->getRegistrationId(),
+                'deliveryExecutionId' => $deliveryExcecution->getIdentifier(),
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
                     'userId' => $user->getIdentifier(),
