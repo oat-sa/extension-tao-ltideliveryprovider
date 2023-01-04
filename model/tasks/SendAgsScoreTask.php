@@ -57,7 +57,7 @@ class SendAgsScoreTask extends AbstractAction
         }
 
         $registrationId = $params['registrationId'];
-        $deliveryExecutionId = $params['deliveryExecutionId'];
+        $deliveryExecutionId = $params['deliveryExecutionId'] ?? 'not passed to sender task';
         $agsClaim = AgsClaim::denormalize($params['agsClaim']);
         $data = $params['data'];
 
