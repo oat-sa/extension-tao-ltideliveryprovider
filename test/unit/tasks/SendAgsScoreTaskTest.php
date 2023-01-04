@@ -126,6 +126,7 @@ class SendAgsScoreTaskTest extends TestCase
         return [
             [
                 [
+                    'deliveryExecutionId' => 'some_id',
                     'registrationId' => 1, // invalid
                     'agsClaim' => [],
                     'data' => [],
@@ -134,6 +135,16 @@ class SendAgsScoreTaskTest extends TestCase
             ],
             [
                 [
+                    'deliveryExecutionId' => 1, // invalid
+                    'registrationId' => '',
+                    'agsClaim' => [],
+                    'data' => [],
+                ],
+                'Parameter "deliveryExecutionId" must be a string'
+            ],
+            [
+                [
+                    'deliveryExecutionId' => 'some_id',
                     'registrationId' => 'valid',
                     'agsClaim' => null, // invalid
                     'data' => [],
@@ -142,6 +153,7 @@ class SendAgsScoreTaskTest extends TestCase
             ],
             [
                 [
+                    'deliveryExecutionId' => 'some_id',
                     'registrationId' => 'valid',
                     'agsClaim' => [], // scope missing
                     'data' => [],
@@ -150,6 +162,7 @@ class SendAgsScoreTaskTest extends TestCase
             ],
             [
                 [
+                    'deliveryExecutionId' => 'some_id',
                     'registrationId' => 'valid',
                     'agsClaim' => [
                         'scope' => [
@@ -169,6 +182,7 @@ class SendAgsScoreTaskTest extends TestCase
     {
         return [
             'registrationId' => 'id',
+            'deliveryExecutionId' => 'id',
             'agsClaim' => [
                 'scope' => [
                     "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
