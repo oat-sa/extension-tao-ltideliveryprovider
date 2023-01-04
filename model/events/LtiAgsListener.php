@@ -49,6 +49,7 @@ class LtiAgsListener extends ConfigurableService
     public function onDeliveryExecutionStart(DeliveryExecutionCreated $event): void
     {
         $user = $event->getUser();
+        $deliveryExecution = $event->getDeliveryExecution();
 
         if ($user instanceof Lti1p3User && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
 
@@ -59,6 +60,7 @@ class LtiAgsListener extends ConfigurableService
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $taskQueue->createTask(new SendAgsScoreTask(), [
                 'registrationId' => $user->getRegistrationId(),
+                'deliveryExecutionId' => $deliveryExecution->getIdentifier(),
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
                     'userId' => $user->getIdentifier(),
@@ -83,6 +85,7 @@ class LtiAgsListener extends ConfigurableService
     {
         /** @var User $user */
         $user = $event->getContext()->getParameter(DeliveryExecutionStateContext::PARAM_USER);
+        $deliveryExecution = $event->getDeliveryExecution();
 
         if ($user instanceof Lti1p3User && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
             /** @var AgsClaim $agsClaim */
@@ -122,6 +125,7 @@ class LtiAgsListener extends ConfigurableService
             $taskQueue->createTask(new SendAgsScoreTask(), [
                 'retryMax' => $this->getAgsMaxRetries(),
                 'registrationId' => $user->getRegistrationId(),
+                'deliveryExecutionId' => $deliveryExecution->getIdentifier(),
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
                     'userId' => $user->getIdentifier(),
