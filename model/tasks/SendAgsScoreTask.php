@@ -91,7 +91,7 @@ class SendAgsScoreTask extends AbstractAction
             throw new InvalidArgumentException('Parameter "registrationId" must be a string');
         }
 
-        if (!is_string($params['deliveryExecutionId'] ?? null)) {
+        if (isset($params['deliveryExecutionId']) && !is_string($params['deliveryExecutionId'])) {
             throw new InvalidArgumentException('Parameter "deliveryExecutionId" must be a string');
         }
 
