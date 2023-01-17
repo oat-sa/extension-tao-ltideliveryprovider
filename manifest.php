@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013-2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
@@ -24,6 +24,7 @@ use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\ltiDeliveryProvider\install\InstallAssignmentService;
 use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
 use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
+use oat\ltiDeliveryProvider\model\serviceProvider\LtiDeliveryServiceProvider;
 use oat\ltiDeliveryProvider\scripts\e2e\BuildE2eConfiguration;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLti1p3ResultServerServiceFactory;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
@@ -104,5 +105,7 @@ return [
     'e2ePrerequisiteActions' => [
         BuildE2eConfiguration::class
     ],
-
+    'containerServiceProviders' => [
+        LtiDeliveryServiceProvider::class
+    ],
 ];

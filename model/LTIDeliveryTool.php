@@ -15,29 +15,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  *
  */
 
 namespace oat\ltiDeliveryProvider\model;
 
+use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
+use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\oatbox\mutex\LockTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\session\SessionService;
+use oat\oatbox\user\User;
+use oat\taoDelivery\model\authorization\AuthorizationProvider;
+use oat\taoDelivery\model\authorization\AuthorizationService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
-use \core_kernel_classes_Property;
-use \core_kernel_classes_Resource;
-use oat\oatbox\user\User;
-use oat\oatbox\mutex\LockTrait;
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
-use oat\taoDelivery\model\execution\StateServiceInterface;
-use oat\taoDelivery\model\authorization\AuthorizationService;
-use oat\taoDelivery\model\authorization\AuthorizationProvider;
 use oat\taoLti\models\classes\TaoLtiSession;
 
 class LTIDeliveryTool extends ConfigurableService
@@ -45,7 +46,7 @@ class LTIDeliveryTool extends ConfigurableService
     use LockTrait;
 
     const TOOL_INSTANCE = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery';
-    
+
     const EXTENSION = 'ltiDeliveryProvider';
     const MODULE = 'DeliveryTool';
     const ACTION = 'launch';
@@ -66,13 +67,13 @@ class LTIDeliveryTool extends ConfigurableService
         $fullAction = self::ACTION . '/' . base64_encode(json_encode($parameters));
         return _url($fullAction, self::MODULE, self::EXTENSION);
     }
-    
+
     public function getDeliveryFromLink()
     {
         $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
     }
-    
+
     public function linkDeliveryExecution(core_kernel_classes_Resource $link, $userUri, core_kernel_classes_Resource $deliveryExecution)
     {
 
@@ -120,6 +121,13 @@ class LTIDeliveryTool extends ConfigurableService
         $this->linkLtiResultId($deliveryExecution);
         $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
         $lock->release();
+
+        /* @var LtiContextRepositoryInterface $service */
+        $contextRepository = $this->getServiceManager()
+            ->getContainer()
+            ->get(LtiContextRepositoryInterface::class);
+        $contextRepository->save($user->getLaunchData(), $deliveryExecution);
+
         return $deliveryExecution;
     }
 
