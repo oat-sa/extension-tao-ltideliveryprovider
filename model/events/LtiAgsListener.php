@@ -83,7 +83,7 @@ class LtiAgsListener extends ConfigurableService
         }
     }
 
-    public function onDeliveryExecutionResultsRecalculated(DeliveryExecutionResultsRecalculated $event)
+    public function onDeliveryExecutionResultsRecalculated(DeliveryExecutionResultsRecalculated $event): void
     {
         $deliveryExecution = $event->getDeliveryExecution();
 
@@ -94,7 +94,7 @@ class LtiAgsListener extends ConfigurableService
                 $deliveryExecution,
                 $event->getScore(),
                 $event->getMaxScore(),
-                ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED // Todo pass actual status TR-4952
+                ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED //todo pass actual status
             );
         }
     }
@@ -152,8 +152,8 @@ class LtiAgsListener extends ConfigurableService
         string $taskLabel,
         LtiLaunchData $ltiLaunchData,
         DeliveryExecutionInterface $deliveryExecution,
-        ?float $scoreTotal,
-        ?float $scoreTotalMax,
+        $scoreTotal,
+        $scoreTotalMax,
         string $gradingStatus
     ): void {
 
