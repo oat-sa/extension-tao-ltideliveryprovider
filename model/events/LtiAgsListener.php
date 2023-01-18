@@ -152,8 +152,8 @@ class LtiAgsListener extends ConfigurableService
         string $taskLabel,
         LtiLaunchData $ltiLaunchData,
         DeliveryExecutionInterface $deliveryExecution,
-        $scoreTotal,
-        $scoreTotalMax,
+        ?float $scoreTotal,
+        ?float $scoreTotalMax,
         string $gradingStatus
     ): void {
 
