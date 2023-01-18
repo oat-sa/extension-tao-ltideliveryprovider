@@ -98,13 +98,9 @@ class LTIDeliveryTool extends ConfigurableService
     /**
      * Start a new delivery execution
      *
-     * @param Resource $delivery
-     * @param Resource $link
-     * @param User $user
-     * @return DeliveryExecution
      * @throws \common_exception_Unauthorized
      */
-    public function startDelivery(Resource $delivery, Resource $link, User $user)
+    public function startDelivery(Resource $delivery, Resource $link, User $user): DeliveryExecution
     {
         $lock = $this->createLock(__METHOD__ . $delivery->getUri() . $user->getIdentifier(), 30);
         $lock->acquire(true);
@@ -147,8 +143,6 @@ class LTIDeliveryTool extends ConfigurableService
     /**
      * Returns an array of DeliveryExecution
      *
-     * @param Resource $delivery
-     * @param Resource $link
      * @param string $userId
      * @return array
      */
@@ -161,9 +155,9 @@ class LTIDeliveryTool extends ConfigurableService
     }
 
     /**
-     * Link `lis_result_sourcedid` to delivery execution in order to be able to retrieve delivery execution by lis_result_sourcedid
+     * Link `lis_result_sourcedid` to delivery execution
+     * in order to be able to retrieve delivery execution by lis_result_sourcedid
      *
-     * @param DeliveryExecution $deliveryExecution
      * @throws \common_exception_Error
      * @throws \oat\taoLti\models\classes\LtiException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
@@ -186,7 +180,6 @@ class LTIDeliveryTool extends ConfigurableService
     }
 
     /**
-     * @return LtiLaunchData
      * @throws LtiException
      */
     protected function getLtiLaunchData(): LtiLaunchData
