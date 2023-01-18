@@ -39,7 +39,9 @@ class Lti1p3ContextCacheRepositoryTest extends TestCase
         $this->storage = $this->createMock(CacheItemPoolInterface::class);
         $this->subject = new Lti1p3ContextCacheRepository($this->storage);
         $this->launchDataObject = new LtiLaunchData(['key' => 'value'], ['custom_key', 'value']);
-        $this->deliveryExecution = new TestMockDeliveryExecution();
+        $this->deliveryExecution = $this->createConfiguredMock(DeliveryExecutionInterface::class, [
+            'getIdentifier' => 'test/test#deliveryID'
+        ]);
     }
 
     public function testFindByDeliveryExecutionHappyPath(): void
@@ -93,42 +95,5 @@ class Lti1p3ContextCacheRepositoryTest extends TestCase
             );
 
         $this->subject->save($this->launchDataObject, $this->deliveryExecution);
-    }
-}
-
-// phpcs:ignore
-final class TestMockDeliveryExecution implements DeliveryExecutionInterface
-{
-    public function getIdentifier()
-    {
-        return 'test/test#deliveryID';
-    }
-
-    public function getLabel()
-    {
-    }
-
-    public function getStartTime()
-    {
-    }
-
-    public function getFinishTime()
-    {
-    }
-
-    public function getState()
-    {
-    }
-
-    public function setState($state)
-    {
-    }
-
-    public function getDelivery()
-    {
-    }
-
-    public function getUserIdentifier()
-    {
     }
 }
