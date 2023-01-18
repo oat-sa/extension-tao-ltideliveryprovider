@@ -120,11 +120,7 @@ class LTIDeliveryTool extends ConfigurableService
             ->createDeliveryExecutionLink($user->getIdentifier(), $link->getUri(), $deliveryExecution->getIdentifier());
         $lock->release();
 
-        /* @var LtiContextRepositoryInterface $contextRepository */
-        $contextRepository = $this->getServiceManager()
-            ->getContainer()
-            ->get(LtiContextRepositoryInterface::class);
-        $contextRepository->save($user->getLaunchData(), $deliveryExecution);
+        $this->storeLtiContext($this->getLtiLaunchData(), $deliveryExecution);
 
         return $deliveryExecution;
     }
@@ -172,7 +168,8 @@ class LTIDeliveryTool extends ConfigurableService
         // of the TC system or if the TC moved from one domain to another.
         $launchData = $this->getLtiLaunchData();
         $resultIdentifier = $launchData->hasVariable('lis_result_sourcedid')
-            ? $launchData->getVariable('lis_result_sourcedid') : $executionIdentifier;
+            ? $launchData->getVariable('lis_result_sourcedid')
+            : $executionIdentifier;
 
         /** @var LtiResultAliasStorage $ltiResultIdStorage */
         $ltiResultIdStorage = $this->getServiceLocator()->get(LtiResultAliasStorage::SERVICE_ID);
@@ -190,5 +187,17 @@ class LTIDeliveryTool extends ConfigurableService
         }
 
         return $session->getLaunchData();
+    }
+
+    private function storeLtiContext(LtiLaunchData $ltiLaunchData, $deliveryExecution): void
+    {
+        $this->getLtiContextRepository()->save($ltiLaunchData, $deliveryExecution);
+    }
+
+    private function getLtiContextRepository(): LtiContextRepositoryInterface
+    {
+        return $this->getServiceManager()
+            ->getContainer()
+            ->get(LtiContextRepositoryInterface::class);
     }
 }
