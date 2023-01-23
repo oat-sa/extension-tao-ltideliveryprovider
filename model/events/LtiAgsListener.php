@@ -92,8 +92,8 @@ class LtiAgsListener extends ConfigurableService
                 'AGS scores send on result recalculation',
                 $launchData,
                 $deliveryExecution,
-                $event->getScore(),
-                $event->getMaxScore(),
+                $event->getTotalScore(),
+                $event->getTotalMaxScore(),
                 ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED //todo pass actual status
             );
         }
