@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2021-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
@@ -25,6 +25,7 @@ namespace oat\ltiDeliveryProvider\model\events;
 
 use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
+use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
 use oat\ltiDeliveryProvider\model\tasks\SendAgsScoreTask;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
@@ -36,6 +37,7 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionStateContext
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\user\Lti1p3User;
 use oat\taoQtiTest\models\TestSessionService;
+use oat\taoResultServer\models\Events\DeliveryExecutionResultsRecalculated;
 use qtism\common\datatypes\QtiScalar;
 use qtism\data\AssessmentItemRef;
 use qtism\data\state\OutcomeDeclaration;
@@ -81,19 +83,32 @@ class LtiAgsListener extends ConfigurableService
         }
     }
 
+    public function onDeliveryExecutionResultsRecalculated(DeliveryExecutionResultsRecalculated $event): void
+    {
+        $deliveryExecution = $event->getDeliveryExecution();
+
+        if ($launchData = $this->getLtiContextRepository()->findByDeliveryExecution($deliveryExecution)) {
+            $this->queueSendAgsScoreTaskWithScores(
+                'AGS scores send on result recalculation',
+                $launchData,
+                $deliveryExecution,
+                $event->getTotalScore(),
+                $event->getTotalMaxScore(),
+                ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED //todo pass actual status
+            );
+        }
+    }
+
     private function onDeliveryExecutionFinish(DeliveryExecutionState $event): void
     {
         /** @var User $user */
         $user = $event->getContext()->getParameter(DeliveryExecutionStateContext::PARAM_USER);
         $deliveryExecution = $event->getDeliveryExecution();
 
-        if ($user instanceof Lti1p3User && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
-            /** @var AgsClaim $agsClaim */
-            $agsClaim = $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS);
-
+        if ($user instanceof Lti1p3User) {
             /** @var TestSessionService $testSessionService */
             $testSessionService = $this->getServiceManager()->get(TestSessionService::SERVICE_ID);
-            $session = $testSessionService->getTestSession($event->getDeliveryExecution());
+            $session = $testSessionService->getTestSession($deliveryExecution);
 
             $scoreTotal = null;
             $scoreTotalMax = null;
@@ -120,24 +135,51 @@ class LtiAgsListener extends ConfigurableService
                 }
             }
 
-            /** @var QueueDispatcherInterface $taskQueue */
-            $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
-            $taskQueue->createTask(new SendAgsScoreTask(), [
-                'retryMax' => $this->getAgsMaxRetries(),
-                'registrationId' => $user->getRegistrationId(),
-                'deliveryExecutionId' => $deliveryExecution->getIdentifier(),
-                'agsClaim' => $agsClaim->normalize(),
-                'data' => [
-                    'userId' => $user->getIdentifier(),
-                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_COMPLETED,
-                    'gradingProgress' => $this->isManualScored($session)
-                        ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
-                        : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED,
-                    'scoreGiven' => $scoreTotal,
-                    'scoreMaximum' => $scoreTotalMax,
-                ]
-            ], 'AGS score send on test finish');
+            $this->queueSendAgsScoreTaskWithScores(
+                'AGS score send on test finish',
+                $user->getLaunchData(),
+                $deliveryExecution,
+                $scoreTotal,
+                $scoreTotalMax,
+                $this->isManualScored($session)
+                    ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
+                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED
+            );
         }
+    }
+
+    private function queueSendAgsScoreTaskWithScores(
+        string $taskLabel,
+        LtiLaunchData $ltiLaunchData,
+        DeliveryExecutionInterface $deliveryExecution,
+        $scoreTotal,
+        $scoreTotalMax,
+        string $gradingStatus
+    ): void {
+
+        if (!$ltiLaunchData->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
+            return;
+        }
+
+        $agsClaim = $ltiLaunchData->getVariable(LtiLaunchData::AGS_CLAIMS);
+        $registrationId = $ltiLaunchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_ID);
+        $userId = $deliveryExecution->getUserIdentifier();
+
+        /** @var QueueDispatcherInterface $taskQueue */
+        $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+        $taskQueue->createTask(new SendAgsScoreTask(), [
+            'retryMax' => $this->getAgsMaxRetries(),
+            'registrationId' => $registrationId,
+            'deliveryExecutionId' => $deliveryExecution->getIdentifier(),
+            'agsClaim' => $agsClaim->normalize(),
+            'data' => [
+                'userId' => $userId,
+                'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_COMPLETED,
+                'gradingProgress' => $gradingStatus,
+                'scoreGiven' => $scoreTotal,
+                'scoreMaximum' => $scoreTotalMax,
+            ]
+        ], $taskLabel);
     }
 
     private function isManualScored(AssessmentTestSession $session): bool
@@ -159,5 +201,10 @@ class LtiAgsListener extends ConfigurableService
     private function getAgsMaxRetries(): int
     {
         return $this->getOption(self::OPTION_AGS_MAX_RETRY, 5);
+    }
+
+    private function getLtiContextRepository(): LtiContextRepositoryInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(LtiContextRepositoryInterface::class);
     }
 }
