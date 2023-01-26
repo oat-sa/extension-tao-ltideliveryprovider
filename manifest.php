@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013-2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 use oat\ltiDeliveryProvider\controller\DeliveryRunner;
@@ -24,6 +24,7 @@ use oat\ltiDeliveryProvider\controller\LinkConfiguration;
 use oat\ltiDeliveryProvider\install\InstallAssignmentService;
 use oat\ltiDeliveryProvider\install\InstallDeliveryContainerService;
 use oat\ltiDeliveryProvider\install\RegisterLaunchAction;
+use oat\ltiDeliveryProvider\model\serviceProvider\LtiDeliveryServiceProvider;
 use oat\ltiDeliveryProvider\scripts\e2e\BuildE2eConfiguration;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLti1p3ResultServerServiceFactory;
 use oat\ltiDeliveryProvider\scripts\install\RegisterLtiAttemptService;
@@ -40,7 +41,9 @@ use oat\taoLti\models\classes\LtiRoles;
 return [
     'name' => 'ltiDeliveryProvider',
     'label' => 'LTI Delivery Tool Provider',
-    'description' => 'The LTI Delivery Tool Provider allows third party applications to embed deliveries created in Tao',
+    'description' => 'The LTI Delivery Tool Provider' .
+        ' allows third party applications to embed deliveries created in Tao',
+
     'license' => 'GPL-2.0',
     'author' => 'Open Assessment Technologies',
     'models' => [
@@ -71,10 +74,14 @@ return [
     'update' => Updater::class,
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole',
     'acl' => [
-        ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', ['ext' => 'ltiDeliveryProvider']],
+        ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', [
+            'ext' => 'ltiDeliveryProvider'
+        ]],
         ['grant', TaoRoles::ANONYMOUS, ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch']],
         ['grant', TaoRoles::ANONYMOUS, ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch1p3']],
-        ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run']],
+        ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', [
+            'ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run'
+        ]],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LTI1P3_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'],
@@ -104,5 +111,7 @@ return [
     'e2ePrerequisiteActions' => [
         BuildE2eConfiguration::class
     ],
-
+    'containerServiceProviders' => [
+        LtiDeliveryServiceProvider::class
+    ],
 ];
