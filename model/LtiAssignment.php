@@ -85,7 +85,7 @@ class LtiAssignment extends ConfigurableService
     protected function verifyToken(KernelResource $delivery, User $user)
     {
         $propMaxExec = $delivery->getOnePropertyValue($this->getProperty(DeliveryContainerService::PROPERTY_MAX_EXEC));
-        $maxExec = is_null($propMaxExec) ? 0 : $propMaxExec->literal;
+        $maxExec = is_null($propMaxExec) ? 0 : (int) $propMaxExec->literal;
 
         $currentSession = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
 
