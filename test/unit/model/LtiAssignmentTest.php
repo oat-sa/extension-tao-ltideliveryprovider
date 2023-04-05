@@ -177,7 +177,10 @@ class LtiAssignmentTest extends TestCase
 
         $result = $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
 
-        $this->assertTrue($result, 'Delivery execution must be allowed when user did less attempts than allowed by LTI custom parameter');
+        $this->assertTrue(
+            $result,
+            'Delivery execution must be allowed when user did less attempts than allowed by LTI custom parameter'
+        );
     }
 
     /**
@@ -288,6 +291,27 @@ class LtiAssignmentTest extends TestCase
         $result = $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
 
         $this->assertTrue($result, 'Delivery execution must be allowed when user did less attempts than allowed');
+    }
+
+    /**
+     * Test isDeliveryExecutionAllowed when max attempts limit value is empty.
+     */
+    public function testIsDeliveryExecutionAllowedReturnsTrueWhenAttemptsLimitIsEmpty()
+    {
+        $this->deliveryProperties = [
+            DeliveryContainerService::PROPERTY_MAX_EXEC => '',
+            DeliveryAssemblyService::PROPERTY_START => time() - self::TIME_ERROR_MARGIN,
+            DeliveryAssemblyService::PROPERTY_END => time() + self::TIME_ERROR_MARGIN,
+        ];
+
+        $userTokens = [0];
+        $this->attemptServiceMock->expects($this->once())
+            ->method('getAttempts')
+            ->willReturn($userTokens);
+
+        $result = $this->object->isDeliveryExecutionAllowed('URI', $this->userMock);
+
+        $this->assertTrue($result, 'Delivery execution is unlimited when attempts limit is empty');
     }
 
     private function expectAttemptLimitException(): void
