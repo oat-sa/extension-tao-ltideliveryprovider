@@ -49,14 +49,14 @@ class LtiAssignment extends ConfigurableService
     use OntologyAwareTrait;
     use LoggerAwareTrait;
 
-    const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
+    public const LTI_MAX_ATTEMPTS_VARIABLE = 'custom_max_attempts';
 
     /**
      * @deprecated Use LtiAssignmentAuthorizationService::SERVICE_ID instead
      */
-    const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
+    public const LTI_SERVICE_ID = 'ltiDeliveryProvider/assignment';
 
-    const SERVICE_ID = 'ltiDeliveryProvider/assignment';
+    public const SERVICE_ID = 'ltiDeliveryProvider/assignment';
 
     /**
      * @param string $deliveryIdentifier
