@@ -94,7 +94,7 @@ class LtiAgsListener extends ConfigurableService
                 $deliveryExecution,
                 $event->getTotalScore(),
                 $event->getTotalMaxScore(),
-                ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED //todo pass actual status
+                $event->getGradingStatus(),
             );
         }
     }
@@ -178,6 +178,7 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
+                'timestamp' => time(),
             ]
         ], $taskLabel);
     }
