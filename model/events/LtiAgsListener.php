@@ -86,6 +86,10 @@ class LtiAgsListener extends ConfigurableService
     public function onDeliveryExecutionResultsRecalculated(DeliveryExecutionResultsRecalculated $event): void
     {
         $deliveryExecution = $event->getDeliveryExecution();
+        $gradingStatus = ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL;
+        if ($event->isFullyGraded()) {
+            $gradingStatus = ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED;
+        }
 
         if ($launchData = $this->getLtiContextRepository()->findByDeliveryExecution($deliveryExecution)) {
             $this->queueSendAgsScoreTaskWithScores(
@@ -94,7 +98,7 @@ class LtiAgsListener extends ConfigurableService
                 $deliveryExecution,
                 $event->getTotalScore(),
                 $event->getTotalMaxScore(),
-                $event->getGradingStatus(),
+                $gradingStatus
             );
         }
     }
