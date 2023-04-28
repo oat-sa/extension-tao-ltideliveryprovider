@@ -66,7 +66,7 @@
 		"oat-sa/tao-core" : ">=50.24.6",
 		"oat-sa/extension-tao-delivery" : ">=15.8.0",
 		"oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
-		"oat-sa/extension-tao-lti" : ">=15.11.0",
+		"oat-sa/extension-tao-lti" : "dev-feature/AUT-2995",
 		"oat-sa/extension-tao-outcomeui" : ">=10.0.0",
 		"oat-sa/extension-tao-testqti" : ">=42.2.0",
 		"oat-sa/extension-tao-outcome" : ">=13.3.0"
