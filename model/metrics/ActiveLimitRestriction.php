@@ -16,24 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\model\metrics;
 
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
-use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\model\actionQueue\restriction\BasicRestriction;
 use oat\tao\model\metrics\MetricsService;
 
 class ActiveLimitRestriction extends BasicRestriction
 {
-
-    const METRIC = activeExecutionsMetrics::class;
+    public const METRIC = activeExecutionsMetrics::class;
 
     /**
      * @param $value
+     *
      * @return bool
      */
     public function doesComply($value)
@@ -42,6 +39,7 @@ class ActiveLimitRestriction extends BasicRestriction
             return true;
         }
         $metric = $this->getServiceLocator()->get(MetricsService::class)->getOneMetric(self::METRIC);
+
         return $value > $metric->collect();
     }
 }

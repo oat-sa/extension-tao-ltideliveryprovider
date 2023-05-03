@@ -20,6 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\model\delivery;
 
+use core_kernel_classes_Resource;
 use oat\oatbox\session\SessionService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService as DeliveryRdfContainerService;
 use oat\taoLti\models\classes\LtiException;
@@ -35,13 +36,15 @@ use oat\taoLti\models\classes\TaoLtiSession;
  */
 class DeliveryContainerService extends DeliveryRdfContainerService
 {
-    const CUSTOM_LTI_SECURE = 'custom_secure';
+    public const CUSTOM_LTI_SECURE = 'custom_secure';
 
-    const CUSTOM_LTI_TAO_FEATURES = 'custom_x_tao_features';
+    public const CUSTOM_LTI_TAO_FEATURES = 'custom_x_tao_features';
 
     /**
      * Validate and prepare launch variables
+     *
      * @param LtiLaunchData $launchData
+     *
      * @throws LtiException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
@@ -49,6 +52,7 @@ class DeliveryContainerService extends DeliveryRdfContainerService
     {
         if ($launchData->hasVariable(self::CUSTOM_LTI_SECURE)) {
             $val = mb_strtolower($launchData->getVariable(self::CUSTOM_LTI_SECURE));
+
             if ($val !== 'true' && $val !== 'false') {
                 throw new LtiException(
                     __('Wrong value of "secure" variable.'),
@@ -61,16 +65,18 @@ class DeliveryContainerService extends DeliveryRdfContainerService
     /**
      * @inheritdoc
      */
-    protected function getActiveFeatures(\core_kernel_classes_Resource $delivery)
+    protected function getActiveFeatures(core_kernel_classes_Resource $delivery)
     {
         $result = parent::getActiveFeatures($delivery);
         $currentSession = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
+
         if ($currentSession instanceof TaoLtiSession) {
             $launchData = $currentSession->getLaunchData();
             $allFeatures = $this->getAllAvailableFeatures();
             $ltiFeatures = $this->getLtiFeaturesList($launchData);
             $enabledLtiFeatures = [];
             $disabledLtiFeatures = [];
+
             foreach ($ltiFeatures as $featureName => $featureStatus) {
                 if (empty($allFeatures[$featureName])) {
                     continue;
@@ -85,6 +91,7 @@ class DeliveryContainerService extends DeliveryRdfContainerService
 
             // TODO: Deprecated method, to be removed in version 11.0.0
             $this->validateLtiParams($launchData);
+
             if (!isset($ltiFeatures['security']) && $launchData->hasVariable(self::CUSTOM_LTI_SECURE)) {
                 if ($launchData->getVariable(self::CUSTOM_LTI_SECURE) === 'true') {
                     $enabledLtiFeatures[] = 'security';
@@ -102,10 +109,13 @@ class DeliveryContainerService extends DeliveryRdfContainerService
 
     /**
      * @param LtiLaunchData $launchData
+     *
      * @return array
      */
-    private function getLtiFeaturesList(LtiLaunchData $launchData) {
+    private function getLtiFeaturesList(LtiLaunchData $launchData)
+    {
         $ltiFeatures = [];
+
         try {
             if (!$launchData->hasVariable(self::CUSTOM_LTI_TAO_FEATURES)) {
                 return $ltiFeatures;
@@ -113,6 +123,7 @@ class DeliveryContainerService extends DeliveryRdfContainerService
 
             $toolsLtiVariable = $launchData->getVariable(self::CUSTOM_LTI_TAO_FEATURES);
             $features = json_decode($toolsLtiVariable, true);
+
             if (is_array($features)) {
                 $ltiFeatures = $features;
             }

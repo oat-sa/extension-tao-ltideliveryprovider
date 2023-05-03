@@ -19,6 +19,7 @@
  *
  * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
+
 declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\options\DataAccess\Repository;
@@ -47,7 +48,7 @@ class OverriddenLtiToolsRepository extends AbstractOverriddenToolsRepository
         parent::__construct($presetRepository);
 
         $this->sessionService = $sessionService;
-        $this->mapper         = $mapper;
+        $this->mapper = $mapper;
     }
 
     protected function findAllUnfiltered(): OptionCollection

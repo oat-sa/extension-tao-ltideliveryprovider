@@ -16,43 +16,50 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_exception_MissingParameter;
+use common_exception_NotFound;
+use common_exception_NotImplemented;
+use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
+use Exception;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\tao\model\TaoOntology;
+use Request;
+use tao_actions_RestController;
 
 /**
  * LTI Delivery REST API
  */
-class DeliveryRestService extends \tao_actions_RestController
+class DeliveryRestService extends tao_actions_RestController
 {
-    
     /**
      * return a LTI link URI from a valid delivery id
+     *
      * @author Christophe GARCIA <christopheg@taotesing.com>
      */
     public function getUrl()
     {
         try {
-            if ($this->getRequestMethod() != \Request::HTTP_GET) {
-                throw new \common_exception_NotImplemented('Only GET method is accepted to request this service.');
+            if ($this->getRequestMethod() != Request::HTTP_GET) {
+                throw new common_exception_NotImplemented('Only GET method is accepted to request this service.');
             }
 
             if (!$this->hasRequestParameter('deliveryId')) {
                 $this->returnFailure(
-                    new \common_exception_MissingParameter(
+                    new common_exception_MissingParameter(
                         'At least one mandatory parameter was required but found missing in your request'
                     )
                 );
             }
 
-            $selectedDelivery = new \core_kernel_classes_Resource($this->getRequestParameter('deliveryId'));
-            if (!$selectedDelivery->isInstanceOf(new \core_kernel_classes_Class(TaoOntology::CLASS_URI_DELIVERY))) {
-                $this->returnFailure(new \common_exception_NotFound('Delivery not found'));
+            $selectedDelivery = new core_kernel_classes_Resource($this->getRequestParameter('deliveryId'));
+
+            if (!$selectedDelivery->isInstanceOf(new core_kernel_classes_Class(TaoOntology::CLASS_URI_DELIVERY))) {
+                $this->returnFailure(new common_exception_NotFound('Delivery not found'));
             }
 
             $this->returnSuccess(
@@ -60,7 +67,7 @@ class DeliveryRestService extends \tao_actions_RestController
                     ['delivery' => $selectedDelivery->getUri()]
                 )
             );
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $this->returnFailure($ex);
         }
     }

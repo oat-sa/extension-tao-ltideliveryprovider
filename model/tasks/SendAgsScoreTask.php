@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 declare(strict_types=1);
@@ -119,7 +118,7 @@ class SendAgsScoreTask extends AbstractAction
                     'agsClaim' => $exception->getAgsClaim()->normalize(),
                     'score' => json_encode($exception->getScore()),
                     'registration' => $exception->getRegistration()->getIdentifier(),
-                    'deliveryExecution' => $deliveryExecutionId
+                    'deliveryExecution' => $deliveryExecutionId,
                 ]
             );
 

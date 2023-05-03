@@ -16,26 +16,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
-use oat\oatbox\extension\InstallAction;
+use common_Exception;
 use oat\ltiDeliveryProvider\model\AttemptService;
+use oat\oatbox\extension\InstallAction;
 use oat\taoDelivery\model\AttemptServiceInterface;
 
 /**
  * Class RegisterProctorAttemptService
+ *
  * @package oat\ltiDeliveryProvider\scripts\install
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class RegisterLtiAttemptService extends InstallAction
 {
     /**
      * @param $params
-     * @throws \common_Exception
+     *
+     * @throws common_Exception
      */
     public function __invoke($params)
     {

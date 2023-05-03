@@ -40,7 +40,7 @@ class Lti1p3ContextCacheRepositoryTest extends TestCase
         $this->subject = new Lti1p3ContextCacheRepository($this->storage);
         $this->launchDataObject = new LtiLaunchData(['key' => 'value'], ['custom_key', 'value']);
         $this->deliveryExecution = $this->createConfiguredMock(DeliveryExecutionInterface::class, [
-            'getIdentifier' => 'test/test#deliveryID'
+            'getIdentifier' => 'test/test#deliveryID',
         ]);
     }
 

@@ -16,11 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model\navigation;
 
+use common_exception_NotFound;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
@@ -29,27 +29,35 @@ class DefaultMessageFactory extends ConfigurableService implements LtiMessageFac
 {
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
+     *
+     * @throws common_exception_NotFound
+     *
      * @return LtiMessage
-     * @throws \common_exception_NotFound
      */
     public function getLtiMessage(DeliveryExecutionInterface $deliveryExecution): LtiMessage
     {
         $state = $deliveryExecution->getState();
         $code = null;
+
         switch ($state->getUri()) {
             case DeliveryExecutionInterface::STATE_ACTIVE:
                 $code = 100;
+
                 break;
             case DeliveryExecutionInterface::STATE_PAUSED:
                 $code = 101;
+
                 break;
             case DeliveryExecutionInterface::STATE_FINISHED:
                 $code = 200;
+
                 break;
             case DeliveryExecutionInterface::STATE_TERMINATED:
                 $code = 201;
+
                 break;
         }
+
         return new LtiMessage('', $code);
     }
 }

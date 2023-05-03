@@ -16,11 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018  (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\dbMigrations;
 
+use common_persistence_KeyValuePersistence;
+use common_report_Report;
 use oat\ltiDeliveryProvider\model\execution\implementation\KvLTIDeliveryExecutionLink;
 use oat\ltiDeliveryProvider\model\execution\implementation\KvLtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -36,18 +37,20 @@ class LtiLinksStorage extends InstallAction
 {
     public function __invoke($params)
     {
-        /** @var LtiDeliveryExecutionService  $ltiDeliveryExecution */
+        /** @var LtiDeliveryExecutionService $ltiDeliveryExecution */
         $ltiDeliveryExecution = $this->getServiceLocator()->get('ltiDeliveryProvider/LtiDeliveryExecution');
+
         if (!$ltiDeliveryExecution instanceof KvLtiDeliveryExecutionService) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' migration only available for KvLtiDeliveryExecutionService');
+            return new common_report_Report(common_report_Report::TYPE_ERROR, ' migration only available for KvLtiDeliveryExecutionService');
         }
         $migrated = false;
         $persistenceOption = $ltiDeliveryExecution->getOption(KvLtiDeliveryExecutionService::OPTION_PERSISTENCE);
-        $persistence = (is_object($persistenceOption)) ? $persistenceOption : \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
+        $persistence = (is_object($persistenceOption)) ? $persistenceOption : common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
         $keys = $persistence->getDriver()->keys(KvLtiDeliveryExecutionService::LTI_DE_LINK_LINK . '*');
 
         foreach ($keys as $key) {
             $data = $persistence->get($key);
+
             if (is_null($data)) {
                 continue;
             }
@@ -71,9 +74,9 @@ class LtiLinksStorage extends InstallAction
         }
 
         if ($migrated) {
-            return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, ' migration success');
+            return new common_report_Report(common_report_Report::TYPE_SUCCESS, ' migration success');
         }
 
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, ' nothing migrated');
+        return new common_report_Report(common_report_Report::TYPE_SUCCESS, ' nothing migrated');
     }
 }

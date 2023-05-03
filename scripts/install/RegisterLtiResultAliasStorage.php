@@ -16,27 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016  (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
 use common_exception_Error;
+use common_ext_action_InstallAction;
 use common_persistence_SqlPersistence;
 use common_report_Report;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 
 /**
  * Class RegisterLtiResultAliasStorage
+ *
  * @package oat\ltiDeliveryProvider\scripts\install
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class RegisterLtiResultAliasStorage extends \common_ext_action_InstallAction
+class RegisterLtiResultAliasStorage extends common_ext_action_InstallAction
 {
     /**
      * @param $params
-     * @return common_report_Report
+     *
      * @throws common_exception_Error
+     *
+     * @return common_report_Report
      */
     public function __invoke($params)
     {
@@ -44,13 +48,14 @@ class RegisterLtiResultAliasStorage extends \common_ext_action_InstallAction
         $storageService = new LtiResultAliasStorage([LtiResultAliasStorage::OPTION_PERSISTENCE => $persistenceId]);
         $this->getServiceManager()->register(LtiResultAliasStorage::SERVICE_ID, $storageService);
         $this->createTable($storageService->getPersistence());
+
         return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('Registered and created LtiResultIdStorage Rds Storage'));
     }
 
     /**
      * @param common_persistence_SqlPersistence $persistence
      */
-    public function createTable(\common_persistence_SqlPersistence $persistence)
+    public function createTable(common_persistence_SqlPersistence $persistence)
     {
         LtiResultAliasStorage::install($persistence);
     }

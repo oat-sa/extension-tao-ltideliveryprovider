@@ -16,17 +16,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\dbMigrations;
 
+use common_Exception;
+use common_persistence_KeyValuePersistence;
+use common_persistence_Manager;
+use common_report_Report;
+use core_kernel_classes_Resource;
+use core_kernel_classes_ResourceIterator;
+use Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\ltiDeliveryProvider\model\execution\implementation\KvLtiDeliveryExecutionService;
-use oat\ltiDeliveryProvider\model\execution\implementation\OntologyLTIDeliveryExecutionLink;
-use oat\oatbox\extension\script\ScriptAction;
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService as OntologyDeliveryExecutionService;
+use oat\ltiDeliveryProvider\model\execution\implementation\OntologyLTIDeliveryExecutionLink;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
+use oat\oatbox\extension\script\ScriptAction;
 use oat\oatbox\log\LoggerAggregator;
 use oat\oatbox\log\VerboseLoggerFactory;
 
@@ -52,24 +58,26 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
         try {
             $this->setVerbosity();
 
-            /** @var LtiDeliveryExecutionService  $ltiDeliveryExecution */
+            /** @var LtiDeliveryExecutionService $ltiDeliveryExecution */
             $ltiDeliveryExecution = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
 
             if (!$ltiDeliveryExecution instanceof OntologyDeliveryExecutionService) {
-                return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' LtiDeliveryExecution migration must be done on a Ontology Service e.q. LtiDeliveryExecutionService.');
+                return new common_report_Report(common_report_Report::TYPE_ERROR, ' LtiDeliveryExecution migration must be done on a Ontology Service e.q. LtiDeliveryExecutionService.');
             }
 
             $kvDeliveryExecutionService = new KvLtiDeliveryExecutionService([
-                KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $this->getKeyValuePersistenceName()
+                KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $this->getKeyValuePersistenceName(),
             ]);
+
             if ($this->getOption('no-migrate-service') !== true) {
                 $this->registerService(LtiDeliveryExecutionService::SERVICE_ID, $kvDeliveryExecutionService);
                 $this->logNotice('LtiDeliveryExecution service was set to KeyValue implementation.');
             }
 
             $class = $this->getClass(OntologyLTIDeliveryExecutionLink::CLASS_LTI_DELIVERYEXECUTION_LINK);
-            $iterator = new \core_kernel_classes_ResourceIterator($class);
+            $iterator = new core_kernel_classes_ResourceIterator($class);
             $i = 0;
+
             foreach ($iterator as $instance) {
                 $properties = $instance->getPropertiesValues([
                     OntologyLTIDeliveryExecutionLink::PROPERTY_LTI_DEL_EXEC_LINK_USER,
@@ -93,19 +101,19 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
                 }
             }
             $this->logNotice('LtiDeliveryExecution migrated: ' . $i);
-        } catch (\Exception $e) {
-            return \common_report_Report::createFailure('LtiDeliveryExecution migration has failed with error message : ' . $e->getMessage());
+        } catch (Exception $e) {
+            return common_report_Report::createFailure('LtiDeliveryExecution migration has failed with error message : ' . $e->getMessage());
         }
 
-        return \common_report_Report::createSuccess('LtiDeliveryExecution successfully has been migrated from Ontology to KV value. Count of LtiDeliveryExecution migrated: ' . $i);
+        return common_report_Report::createSuccess('LtiDeliveryExecution successfully has been migrated from Ontology to KV value. Count of LtiDeliveryExecution migrated: ' . $i);
     }
-
 
     /**
      * Extract a property value from $properties array
      *
      * @param array $properties
      * @param $propertyName
+     *
      * @return string
      */
     protected function getPropertyValue(array $properties, $propertyName)
@@ -114,36 +122,42 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
             return null;
         }
         $value = reset($properties[$propertyName]);
-        return $value instanceof \core_kernel_classes_Resource ? $value->getUri() : (string) $value;
+
+        return $value instanceof core_kernel_classes_Resource ? $value->getUri() : (string) $value;
     }
 
     /**
      * Get the persistence name from option
      *
+     * @throws common_Exception
+     *
      * @return string
-     * @throws \common_Exception
      */
     protected function getKeyValuePersistenceName()
     {
         $this->getKeyValuePersistence();
+
         return $this->getOption('kv-persistence');
     }
 
     /**
      * Create the persistence from option and validate as KeyValue persistence
      *
-     * @return \common_persistence_KeyValuePersistence
-     * @throws \common_Exception
+     * @throws common_Exception
+     *
+     * @return common_persistence_KeyValuePersistence
      */
     protected function getKeyValuePersistence()
     {
         $persistenceName = $this->getOption('kv-persistence');
-        /** @var \common_persistence_Manager $persistenceManager */
-        $persistenceManager = $this->getServiceLocator()->get(\common_persistence_Manager::SERVICE_ID);
+        /** @var common_persistence_Manager $persistenceManager */
+        $persistenceManager = $this->getServiceLocator()->get(common_persistence_Manager::SERVICE_ID);
         $persistence = $persistenceManager->getPersistenceById($persistenceName);
-        if (!$persistence instanceof \common_persistence_KeyValuePersistence) {
-            throw new \common_Exception('Given persistence is not a key value');
+
+        if (!$persistence instanceof common_persistence_KeyValuePersistence) {
+            throw new common_Exception('Given persistence is not a key value');
         }
+
         return $persistence;
     }
 
@@ -156,7 +170,7 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
             $verboseLogger = VerboseLoggerFactory::getInstance(['-nc', '-vv']);
             $this->setLogger(new LoggerAggregator([
                 $this->getLogger(),
-                $verboseLogger
+                $verboseLogger,
             ]));
         }
     }
@@ -216,7 +230,7 @@ class OntologyLtiDeliveryExecutionToKvMigration extends ScriptAction
         return [
             'prefix' => 'h',
             'longPrefix' => 'help',
-            'description' => 'Prints the help.'
+            'description' => 'Prints the help.',
         ];
     }
 }

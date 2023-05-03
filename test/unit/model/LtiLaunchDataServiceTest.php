@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2019-2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
@@ -34,7 +33,7 @@ class LtiLaunchDataServiceTest extends TestCase
     public function testFindDeliveryFromLaunchData(): void
     {
         $service = $this->getLtiLaunchDataService([
-            LtiDeliveryFactory::SERVICE_ID => $this->getLtiDeliveryFactoryMock()
+            LtiDeliveryFactory::SERVICE_ID => $this->getLtiDeliveryFactoryMock(),
         ]);
 
         $data = new LtiLaunchData([], []);
@@ -47,7 +46,7 @@ class LtiLaunchDataServiceTest extends TestCase
     public function testFindDeliveryExecutionFromLaunchData(): void
     {
         $service = $this->getLtiLaunchDataService([
-            LtiDeliveryFactory::SERVICE_ID => $this->getLtiDeliveryFactoryMock()
+            LtiDeliveryFactory::SERVICE_ID => $this->getLtiDeliveryFactoryMock(),
         ]);
 
         $data = new LtiLaunchData([], []);

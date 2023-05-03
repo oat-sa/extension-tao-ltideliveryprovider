@@ -16,36 +16,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2013 Open Assessment Technologies S.A.
- *
  */
 
 namespace oat\ltiDeliveryProvider\helper;
 
-use \core_kernel_classes_Resource;
-use \common_session_SessionManager;
-use oat\taoLti\models\classes\LtiLaunchData;
+use common_session_SessionManager;
+use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
+use oat\taoLti\models\classes\LtiLaunchData;
 
 class ResultServer
 {
-
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, $executionIdentifier, $launchData)
     {
         $options = [];
-        if ($launchData->hasVariable("lis_result_sourcedid") && $launchData->hasVariable("lis_outcome_service_url")) {
+
+        if ($launchData->hasVariable('lis_result_sourcedid') && $launchData->hasVariable('lis_outcome_service_url')) {
             $options = [
                 [
-                    "implementation" => "taoLtiBasicOutcome_models_classes_LtiBasicOutcome",
-                    "parameters" => [
-                        "result_identifier" => $launchData->getVariable("lis_result_sourcedid"),
-                        "consumer_key" => $launchData->getOauthKey(),
-                        "service_url" => $launchData->getVariable("lis_outcome_service_url"),
-                        "user_identifier" => common_session_SessionManager::getSession()->getUserUri(),
-                        "user_fullName" => ($launchData->hasVariable(LtiLaunchData::LIS_PERSON_NAME_FULL)
+                    'implementation' => 'taoLtiBasicOutcome_models_classes_LtiBasicOutcome',
+                    'parameters' => [
+                        'result_identifier' => $launchData->getVariable('lis_result_sourcedid'),
+                        'consumer_key' => $launchData->getOauthKey(),
+                        'service_url' => $launchData->getVariable('lis_outcome_service_url'),
+                        'user_identifier' => common_session_SessionManager::getSession()->getUserUri(),
+                        'user_fullName' => ($launchData->hasVariable(LtiLaunchData::LIS_PERSON_NAME_FULL)
                             ? $launchData->getVariable(LtiLaunchData::LIS_PERSON_NAME_FULL)
-                            : '')
-                    ]
-                ]
+                            : ''),
+                    ],
+                ],
             ];
         }
         ServiceManager::getServiceManager()->get(\oat\taoResultServer\models\classes\ResultServerService::SERVICE_ID)

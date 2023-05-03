@@ -16,37 +16,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_session_SessionManager;
+use core_kernel_classes_Resource;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\oatbox\user\User;
 use oat\taoLti\models\classes\TaoLtiSession;
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 
 /**
  * Service to count the attempts to pass the test.
  *
  * @access public
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class AttemptService extends \oat\taoDelivery\model\AttemptService
 {
-
     /**
      * @inheritdoc
      */
     public function getAttempts($deliveryId, User $user)
     {
-        $currentSession = \common_session_SessionManager::getSession();
+        $currentSession = common_session_SessionManager::getSession();
+
         if ($currentSession instanceof TaoLtiSession) {
             $executionService = $this->getServiceManager()->get(LtiDeliveryExecutionService::SERVICE_ID);
-            $delivery = new \core_kernel_classes_Resource($deliveryId);
+            $delivery = new core_kernel_classes_Resource($deliveryId);
             $executions = $executionService->getLinkedDeliveryExecutions($delivery, $currentSession->getLtiLinkResource(), $user->getIdentifier());
+
             return $this->filterStates($executions);
-        } else {
-            return parent::getAttempts($deliveryId, $user);
         }
+
+        return parent::getAttempts($deliveryId, $user);
     }
 }

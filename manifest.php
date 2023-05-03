@@ -48,7 +48,7 @@ return [
     'author' => 'Open Assessment Technologies',
     'models' => [
         'http://www.tao.lu/Ontologies/TAOLTI.rdf',
-        'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership'
+        'http://www.imsglobal.org/imspurl/lis/v1/vocab/membership',
      ],
     'install' => [
         'php' => [
@@ -62,36 +62,35 @@ return [
             RegisterOverriddenLtiToolRepository::class,
             RegisterSessionCookieAttributesFactory::class,
             RegisterLtiEvents::class,
-            RegisterLti1p3ResultServerServiceFactory::class
+            RegisterLti1p3ResultServerServiceFactory::class,
         ],
         'rdf' => [
-            __DIR__ . '/install/ontology/deliverytool.rdf'
-        ]
+            __DIR__ . '/install/ontology/deliverytool.rdf',
+        ],
     ],
     'routes' => [
-        '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller'
+        '/ltiDeliveryProvider' => 'oat\\ltiDeliveryProvider\\controller',
     ],
     'update' => Updater::class,
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole',
     'acl' => [
         ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiDeliveryProviderManagerRole', [
-            'ext' => 'ltiDeliveryProvider'
+            'ext' => 'ltiDeliveryProvider',
         ]],
         ['grant', TaoRoles::ANONYMOUS, ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch']],
         ['grant', TaoRoles::ANONYMOUS, ['ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'launch1p3']],
         ['grant', 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LtiBaseRole', [
-            'ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run'
+            'ext' => 'ltiDeliveryProvider', 'mod' => 'DeliveryTool', 'act' => 'run',
         ]],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LTI1P3_LEARNER, DeliveryRunner::class],
         ['grant', LtiRoles::CONTEXT_LEARNER, DeliveryTool::class, 'launchQueue'],
         ['grant', LtiRoles::CONTEXT_INSTRUCTOR, LinkConfiguration::class],
-        ['grant', LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, DeliveryRunner::class]
+        ['grant', LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, DeliveryRunner::class],
     ],
     'constants' => [
-
         # views directory
-        'DIR_VIEWS'           => __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR,
+        'DIR_VIEWS' => __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR,
 
         # default module name
         'DEFAULT_MODULE_NAME' => 'Browser',
@@ -100,18 +99,18 @@ return [
         'DEFAULT_ACTION_NAME' => 'index',
 
         #BASE PATH: the root path in the file system (usually the document root)
-        'BASE_PATH'           => __DIR__ . DIRECTORY_SEPARATOR ,
+        'BASE_PATH' => __DIR__ . DIRECTORY_SEPARATOR ,
 
         #BASE URL (usually the domain root)
-        'BASE_URL'                => ROOT_URL . 'ltiDeliveryProvider/',
+        'BASE_URL' => ROOT_URL . 'ltiDeliveryProvider/',
     ],
     'extra' => [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     ],
     'e2ePrerequisiteActions' => [
-        BuildE2eConfiguration::class
+        BuildE2eConfiguration::class,
     ],
     'containerServiceProviders' => [
-        LtiDeliveryServiceProvider::class
+        LtiDeliveryServiceProvider::class,
     ],
 ];

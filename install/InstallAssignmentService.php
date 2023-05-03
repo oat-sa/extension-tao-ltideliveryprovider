@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\install;
@@ -25,7 +24,6 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
 
 class InstallAssignmentService extends \oat\oatbox\extension\InstallAction
 {
-
     /**
      * @param $params
      */

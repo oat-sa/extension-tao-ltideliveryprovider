@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
@@ -29,10 +27,10 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\session\SessionService;
+use oat\oatbox\user\User;
 use oat\taoDelivery\model\AttemptServiceInterface;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoDeliveryRdf\model\DeliveryContainerService;
-use oat\oatbox\user\User;
 use oat\taoLti\models\classes\LtiClientException;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -41,7 +39,9 @@ use oat\taoLti\models\classes\TaoLtiSession;
 
 /**
  * Class LtiAssignment
+ *
  * @package oat\ltiDeliveryProvider\model
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class LtiAssignment extends ConfigurableService
@@ -61,6 +61,7 @@ class LtiAssignment extends ConfigurableService
     /**
      * @param string $deliveryIdentifier
      * @param User $user
+     *
      * @return bool
      */
     public function isDeliveryExecutionAllowed($deliveryIdentifier, User $user)
@@ -68,6 +69,7 @@ class LtiAssignment extends ConfigurableService
         $delivery = $this->getResource($deliveryIdentifier);
 
         $this->verifyAvailabilityFrame($delivery);
+
         return $this->verifyToken($delivery, $user);
     }
 
@@ -76,11 +78,13 @@ class LtiAssignment extends ConfigurableService
      *
      * @param KernelResource $delivery
      * @param User $user
-     * @return bool
+     *
      * @throws LtiException
      * @throws common_exception_Error
      * @throws core_kernel_persistence_Exception
      * @throws LtiVariableMissingException
+     *
+     * @return bool
      */
     protected function verifyToken(KernelResource $delivery, User $user)
     {
@@ -91,8 +95,10 @@ class LtiAssignment extends ConfigurableService
 
         if ($currentSession instanceof TaoLtiSession) {
             $launchData = $currentSession->getLaunchData();
+
             if ($launchData->hasVariable(self::LTI_MAX_ATTEMPTS_VARIABLE)) {
                 $val = $launchData->getVariable(self::LTI_MAX_ATTEMPTS_VARIABLE);
+
                 if (!is_numeric($val)) {
                     throw new LtiClientException(
                         __('"max_attempts" variable must me numeric.'),
@@ -108,12 +114,14 @@ class LtiAssignment extends ConfigurableService
             ->getAttempts($delivery->getUri(), $user));
 
         if (($maxExec != 0) && ($usedTokens >= $maxExec)) {
-            $this->logDebug("Attempt to start the compiled delivery " . $delivery->getUri() . " without tokens");
+            $this->logDebug('Attempt to start the compiled delivery ' . $delivery->getUri() . ' without tokens');
+
             throw new LtiClientException(
                 __('Attempts limit has been reached.'),
                 LtiErrorMessage::ERROR_LAUNCH_FORBIDDEN
             );
         }
+
         return true;
     }
 

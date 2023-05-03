@@ -16,32 +16,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017  (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_persistence_Manager;
+use common_persistence_SqlPersistence;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDelete;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
+use PDO;
 
 /**
  * Class LtiResultAliasStorage
+ *
  * @package oat\ltiDeliveryProvider\model
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecutionDelete
 {
-    const OPTION_PERSISTENCE = 'persistence';
+    public const OPTION_PERSISTENCE = 'persistence';
 
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiResultIdStorage';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiResultIdStorage';
 
-    const TABLE_NAME = 'lti_result_identifiers';
-    const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
-    const RESULT_ID = 'result_id';
+    public const TABLE_NAME = 'lti_result_identifiers';
+    public const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
+    public const RESULT_ID = 'result_id';
 
-    /** @var \common_persistence_SqlPersistence */
+    /** @var common_persistence_SqlPersistence */
     protected $persistence;
 
     /**
@@ -54,8 +58,10 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
 
     /**
      * Add record to the storage
+     *
      * @param string $deliveryExecutionId
      * @param string $resultId
+     *
      * @return boolean
      */
     public function storeResultAlias($deliveryExecutionId, $resultId)
@@ -70,11 +76,14 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
         $queryBuilder->orWhere(self::DELIVERY_EXECUTION_ID . '=:' . self::DELIVERY_EXECUTION_ID);
         $queryBuilder->setParameters([self::RESULT_ID => $resultId, self::DELIVERY_EXECUTION_ID => $deliveryExecutionId]);
         $queryBuilder->execute();
+
         return $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
     }
 
     /**
      * @see ResultAliasServiceInterface::getResultAlias
+     *
+     * @param mixed $deliveryExecutionId
      */
     public function getResultAlias($deliveryExecutionId)
     {
@@ -83,7 +92,8 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
         $queryBuilder->where('t.' . self::DELIVERY_EXECUTION_ID . '=?');
         $queryBuilder->setParameters([$deliveryExecutionId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
-        $result = $stmt->fetch(\PDO::FETCH_COLUMN);
+        $result = $stmt->fetch(PDO::FETCH_COLUMN);
+
         return $result === false ? [] : [$result];
     }
 
@@ -93,6 +103,8 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
      * Should return null if not found, but as there is no aggregation of alias
      * services yet, we need mimic the oat\taoResultServer\models\classes::ResultAliasService
      * behaviour here
+     *
+     * @param mixed $aliasId
      */
     public function getDeliveryExecutionId($aliasId)
     {
@@ -101,14 +113,15 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
         $queryBuilder->where('t.' . self::RESULT_ID . '=?');
         $queryBuilder->setParameters([$aliasId]);
         $stmt = $this->persistence->query($queryBuilder->getSQL(), $queryBuilder->getParameters());
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return isset($data[self::DELIVERY_EXECUTION_ID])
-            ? $data[self::DELIVERY_EXECUTION_ID]
-            : $aliasId;
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $data[self::DELIVERY_EXECUTION_ID]
+            ?? $aliasId;
     }
 
     /**
      * Create table in database
+     *
      * @param $persistence
      */
     public static function install($persistence)
@@ -118,14 +131,15 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
     }
 
     /**
-     * @return \common_persistence_SqlPersistence
+     * @return common_persistence_SqlPersistence
      */
     public function getPersistence()
     {
         $persistenceId = $this->getOption(self::OPTION_PERSISTENCE);
+
         if (is_null($this->persistence)) {
             $this->persistence = $this->getServiceManager()
-                ->get(\common_persistence_Manager::SERVICE_ID)
+                ->get(common_persistence_Manager::SERVICE_ID)
                 ->getPersistenceById($persistenceId);
         }
 

@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2019 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
@@ -25,7 +24,7 @@ use oat\oatbox\service\ConfigurableService;
 
 class LTIDeliveryToolFactory extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LTIDeliveryToolFactory';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LTIDeliveryToolFactory';
 
     public function create()
     {

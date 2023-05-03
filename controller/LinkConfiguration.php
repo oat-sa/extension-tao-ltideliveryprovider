@@ -16,52 +16,53 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_Exception;
+use common_exception_Error;
+use common_exception_NoImplementation;
+use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\tao\helpers\UrlHelper;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
-use \tao_actions_CommonModule;
-use \core_kernel_classes_Resource;
-use \core_kernel_classes_Property;
-use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
+use tao_actions_CommonModule;
 
 /**
  * Allows instructors to configure the LTI remote_link
  *
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
+ *
  * @package ltiDeliveryProvider
-
  */
 class LinkConfiguration extends tao_actions_CommonModule
 {
-
     /**
      * Displays the form to select a delivery
      *
-     * @throws \common_Exception
-     * @throws \common_exception_Error
+     * @throws common_Exception
+     * @throws common_exception_Error
      * @throws \oat\taoLti\models\classes\LtiException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
     protected function selectDelivery()
     {
-        
         $ltiSession = LtiService::singleton()->getLtiSession();
+
         if ($ltiSession->getLaunchData()->hasVariable(LtiLaunchData::RESOURCE_LINK_TITLE)) {
             $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(LtiLaunchData::RESOURCE_LINK_TITLE));
         }
         $this->setData('link', $ltiSession->getLtiLinkResource()->getUri());
         $this->setData('submitUrl', _url('setDelivery'));
-        
+
         $deliveries = DeliveryAssemblyService::singleton()->getAllAssemblies();
+
         if (count($deliveries) > 0) {
             $this->setData('deliveries', $deliveries);
             $this->setView('instructor/selectDelivery.tpl');
@@ -80,7 +81,7 @@ class LinkConfiguration extends tao_actions_CommonModule
         $link->editPropertyValues(new core_kernel_classes_Property(LTIDeliveryTool::PROPERTY_LINK_DELIVERY), $compiled);
         $this->redirect(_url('showDelivery', null, null, ['uri' => $compiled->getUri()]));
     }
-    
+
     /**
      * Either displays the currently associated delivery
      * or calls selectDelivery in order to allow the user to select a delivery
@@ -90,6 +91,7 @@ class LinkConfiguration extends tao_actions_CommonModule
     public function configureDelivery()
     {
         $compiledDelivery = $this->getServiceLocator()->get(LTIDeliveryTool::class)->getDeliveryFromLink();
+
         if (is_null($compiledDelivery)) {
             $this->selectDelivery();
         } else {
@@ -99,7 +101,7 @@ class LinkConfiguration extends tao_actions_CommonModule
                 null,
                 ['uri' => $compiledDelivery->getUri()]
             );
-            
+
             $this->redirect($showDeliveryUrl);
         }
     }
@@ -108,8 +110,9 @@ class LinkConfiguration extends tao_actions_CommonModule
      * Displays the currently associated delivery
      *
      * Only accessible to LTI instructors
-     * @throws \common_exception_Error
-     * @throws \common_exception_NoImplementation
+     *
+     * @throws common_exception_Error
+     * @throws common_exception_NoImplementation
      * @throws \oat\taoLti\models\classes\LtiException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
@@ -117,17 +120,18 @@ class LinkConfiguration extends tao_actions_CommonModule
     {
         $delivery = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
         $this->setData('delivery', $delivery);
-        
+
         $ltiSession = LtiService::singleton()->getLtiSession();
+
         if ($ltiSession->getLaunchData()->hasVariable(LtiLaunchData::RESOURCE_LINK_TITLE)) {
             $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(LtiLaunchData::RESOURCE_LINK_TITLE));
         }
-        
+
         if (ServiceProxy::singleton()->implementsMonitoring()) {
             $executions = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('executionCount', count($executions));
         }
-        
+
         $this->setView('instructor/viewDelivery.tpl');
     }
 }

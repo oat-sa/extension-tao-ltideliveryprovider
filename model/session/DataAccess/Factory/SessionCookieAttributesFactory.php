@@ -48,7 +48,7 @@ class SessionCookieAttributesFactory extends InjectionAwareService implements Se
         parent::__construct();
 
         $this->sessionCookieAttributesFactory = $sessionCookieAttributesFactory;
-        $this->securitySettingsRepository     = $securitySettingsRepository;
+        $this->securitySettingsRepository = $securitySettingsRepository;
     }
 
     public function create(): SessionCookieAttributeCollection

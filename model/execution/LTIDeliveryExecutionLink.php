@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\model\execution;
@@ -25,11 +23,9 @@ namespace oat\ltiDeliveryProvider\model\execution;
 /**
  * Interface LTIDeliveryExecutionLink
  * Business object that represent a LinkDeliveryExecution
+ *
  * @package oat\ltiDeliveryProvider\model\execution
  */
 interface LTIDeliveryExecutionLink
 {
-
-
-
 }

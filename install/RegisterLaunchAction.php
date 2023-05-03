@@ -16,21 +16,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 namespace oat\ltiDeliveryProvider\install;
 
+use common_Exception;
+use common_exception_Error;
+use common_report_Report;
+use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
+use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\metrics\ActiveLimitRestriction;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
+use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\AbstractAction;
 use oat\tao\model\actionQueue\ActionQueue;
-use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
 use oat\tao\model\metrics\MetricsService;
-use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
-use oat\oatbox\event\EventManager;
-use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
+use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 
 /**
  * Installation action that register delivery launch action in the action queue.
@@ -39,12 +41,13 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
  */
 class RegisterLaunchAction extends AbstractAction
 {
-
     /**
      * @param $params
-     * @return \common_report_Report
-     * @throws \common_Exception
-     * @throws \common_exception_Error
+     *
+     * @throws common_Exception
+     * @throws common_exception_Error
+     *
+     * @return common_report_Report
      */
     public function __invoke($params)
     {
@@ -52,7 +55,7 @@ class RegisterLaunchAction extends AbstractAction
         $actions = $actionQueue->getOption(ActionQueue::OPTION_ACTIONS);
         $actions[GetActiveDeliveryExecution::class] = [
                 'restrictions' => [
-                    ActiveLimitRestriction::class => 0
+                    ActiveLimitRestriction::class => 0,
                 ],
                 ActionQueue::ACTION_PARAM_TTL => 3600, //one hour
         ];
@@ -70,9 +73,9 @@ class RegisterLaunchAction extends AbstractAction
 
         $metrics[activeExecutionsMetrics::class] = new activeExecutionsMetrics([
             activeExecutionsMetrics::OPTION_TTL => 1,
-            activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache'
+            activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache',
         ]);
 
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('GetActiveDeliveryExecution action registered'));
+        return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('GetActiveDeliveryExecution action registered'));
     }
 }

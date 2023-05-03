@@ -16,22 +16,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\navigation;
 
+use common_exception_NotFound;
+use Exception;
+use helpers_Random;
+use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\helpers\UrlHelper;
+use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
-use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
-use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 
 class LtiNavigationService extends ConfigurableService
 {
@@ -46,15 +48,16 @@ class LtiNavigationService extends ConfigurableService
      */
     public const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
-
     /**
      * @param LtiLaunchData $launchData
      * @param DeliveryExecutionInterface $deliveryExecution
-     * @return string
-     * @throws \common_exception_NotFound
+     *
+     * @throws common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      * @throws LtiException
+     *
+     * @return string
      */
     public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution): string
     {
@@ -66,11 +69,13 @@ class LtiNavigationService extends ConfigurableService
     /**
      * @param LtiLaunchData $launchData
      * @param DeliveryExecutionInterface $deliveryExecution
-     * @return string
-     * @throws \common_exception_NotFound
+     *
+     * @throws common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      * @throws LtiException
+     *
+     * @return string
      */
     protected function buildConsumerReturnUrl(
         LtiLaunchData $launchData,
@@ -86,25 +91,31 @@ class LtiNavigationService extends ConfigurableService
 
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
-     * @return array
-     * @throws \common_exception_NotFound
+     *
+     * @throws common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
+     *
+     * @return array
      */
     protected function getConsumerReturnParams(DeliveryExecutionInterface $deliveryExecution): array
     {
         $ltiReturnQueryParams = $this->getLtiReturnUrlQueryParams($deliveryExecution);
         $deliveryReturnQueryParams = $this->getDeliveryReturnQueryParams($deliveryExecution);
         $returnUrlIdParams = [];
+
         if ($this->getOption(self::OPTION_RETURN_URL_IDENTIFIER)) {
             $returnUrlIdParams = $this->getReturnUrlIdParams();
         }
+
         return array_merge($ltiReturnQueryParams, $deliveryReturnQueryParams, $returnUrlIdParams);
     }
 
     /**
      * Whenever or not to show the thank you screen
+     *
      * @param LtiLaunchData $launchData
+     *
      * @return bool
      */
     protected function shouldShowThankYou(LtiLaunchData $launchData): bool
@@ -124,6 +135,7 @@ class LtiNavigationService extends ConfigurableService
                         . $launchData->getVariable(DeliveryTool::PARAM_SKIP_THANKYOU));
             }
         }
+
         return $this->getOption(self::OPTION_THANK_YOU_SCREEN);
     }
 
@@ -138,8 +150,10 @@ class LtiNavigationService extends ConfigurableService
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param array $urlParts
+     *
+     * @throws common_exception_NotFound
+     *
      * @return array
-     * @throws \common_exception_NotFound
      */
     private function buildConsumerReturnUrlQuery(DeliveryExecutionInterface $deliveryExecution, array $urlParts): string
     {
@@ -151,9 +165,11 @@ class LtiNavigationService extends ConfigurableService
 
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
-     * @return array
+     *
      * @throws InvalidService
      * @throws InvalidServiceManagerException
+     *
+     * @return array
      */
     private function getLtiReturnUrlQueryParams(DeliveryExecutionInterface $deliveryExecution): array
     {
@@ -165,13 +181,15 @@ class LtiNavigationService extends ConfigurableService
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param $params
+     *
+     * @throws common_exception_NotFound
+     *
      * @return mixed
-     * @throws \common_exception_NotFound
      */
     private function getDeliveryReturnQueryParams(DeliveryExecutionInterface $deliveryExecution): array
     {
         $params = [
-            'deliveryExecution' => $deliveryExecution->getIdentifier()
+            'deliveryExecution' => $deliveryExecution->getIdentifier(),
         ];
 
         if ($this->getOption(self::OPTION_DELIVERY_RETURN_STATUS)) {
@@ -182,11 +200,12 @@ class LtiNavigationService extends ConfigurableService
     }
 
     /**
+     * @throws Exception
+     *
      * @return array
-     * @throws \Exception
      */
     private function getReturnUrlIdParams(): array
     {
-        return ['returnUrlId' => \helpers_Random::generateString(10)];
+        return ['returnUrlId' => helpers_Random::generateString(10)];
     }
 }

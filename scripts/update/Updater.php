@@ -20,6 +20,9 @@
 
 namespace oat\ltiDeliveryProvider\scripts\update;
 
+use common_ext_ExtensionsManager;
+use common_ext_ExtensionUpdater;
+use common_persistence_Manager;
 use common_report_Report as Report;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\actions\GetActiveDeliveryExecution;
@@ -58,11 +61,11 @@ use oat\taoQtiTest\models\TestCategoryPresetProvider;
 /**
  * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
  */
-class Updater extends \common_ext_ExtensionUpdater
+class Updater extends common_ext_ExtensionUpdater
 {
-
     /**
      * @param string $initialVersion
+     *
      * @return string|void
      */
     public function update($initialVersion)
@@ -81,7 +84,7 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('2.0.0', '2.0.1');
 
         if ($this->isVersion('2.0.1')) {
-            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider');
+            $extension = common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider');
 
             $config = $extension->getConfig('deliveryRunner');
 
@@ -101,7 +104,7 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('2.2.0', '2.3.0');
 
         if ($this->isVersion('2.3.0')) {
-            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider');
+            $extension = common_ext_ExtensionsManager::singleton()->getExtensionById('ltiDeliveryProvider');
 
             $extension->unsetConfig('deliveryRunner');
 
@@ -112,13 +115,13 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('3.2.1')) {
             $service = new LtiResultAliasStorage([
-                LtiResultAliasStorage::OPTION_PERSISTENCE => 'default'
+                LtiResultAliasStorage::OPTION_PERSISTENCE => 'default',
             ]);
             $service->setServiceManager($this->getServiceManager());
 
             $migration = new \oat\ltiDeliveryProvider\scripts\dbMigrations\LtiResultAliasStorage_v1();
             $migration->apply(
-                $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID)->getPersistenceById('default')
+                $this->getServiceManager()->get(common_persistence_Manager::SERVICE_ID)->getPersistenceById('default')
             );
 
             $this->getServiceManager()->register(LtiResultAliasStorage::SERVICE_ID, $service);
@@ -134,10 +137,9 @@ class Updater extends \common_ext_ExtensionUpdater
                 'config' => [
                     'relaunchInterval' => 30,
                     'relaunchIntervalDeviation' => 5,
-                ]
+                ],
             ]);
             $this->getServiceManager()->register('ltiDeliveryProvider/LaunchQueue', $launchQueueConfig);
-
 
             $actionQueue = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
             $actions = $actionQueue->getOption(ActionQueue::OPTION_ACTIONS);
@@ -207,6 +209,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('6.0.0')) {
             $attemptService = $this->safeLoadService(AttemptServiceInterface::SERVICE_ID);
+
             if (!$attemptService instanceof AttemptServiceInterface) {
                 $attemptService = new AttemptService([]);
             }
@@ -221,7 +224,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(
                 DeliveryExecutionCounterInterface::SERVICE_ID,
                 new DeliveryExecutionCounterService([
-                    DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache'
+                    DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache',
                 ])
             );
             $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . DeliveryExecutionCounterInterface::SERVICE_ID . ' to common one'));
@@ -233,6 +236,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('6.3.0')) {
             $service = $this->getServiceManager()->get(InstantActionQueue::class);
             $actions = $service->getOption('actions');
+
             foreach ($actions as $action => $params) {
                 if (array_key_exists('limit', $params)) {
                     $limit = $params['limit'];
@@ -259,6 +263,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('6.4.0')) {
             $metricService = $this->getServiceManager()->get(MetricsService::class);
+
             try {
                 $limitMetric = $metricService->getOneMetric(activeExecutionsMetrics::class);
             } catch (InconsistencyConfigException $exception) {
@@ -276,9 +281,8 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         if ($this->isVersion('6.4.1')) {
-
-            /** @var \common_persistence_Manager $pm */
-            $pm = $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID);
+            /** @var common_persistence_Manager $pm */
+            $pm = $this->getServiceManager()->get(common_persistence_Manager::SERVICE_ID);
             $pm->registerPersistence('metricsCache', ['driver' => 'phpfile', 'ttlMode' => true,]);
 
             $metricService = $this->getServiceManager()->get(MetricsService::class);
@@ -295,7 +299,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('6.4.2')) {
             $pm = $this->getServiceManager()->register(LtiNavigationService::SERVICE_ID, new LtiNavigationService([
                 LtiNavigationService::OPTION_THANK_YOU_SCREEN => true,
-                LtiNavigationService::OPTION_MESSAGE_FACTORY => new DefaultMessageFactory()
+                LtiNavigationService::OPTION_MESSAGE_FACTORY => new DefaultMessageFactory(),
             ]));
             $this->setVersion('6.5.0');
         }
@@ -304,6 +308,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('9.0.1')) {
             $service = $this->getServiceManager()->get(LtiNavigationService::SERVICE_ID);
+
             if (!$service->getOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS)) {
                 $service->setOption(LtiNavigationService::OPTION_DELIVERY_RETURN_STATUS, false);
                 $this->getServiceManager()->register(LtiNavigationService::SERVICE_ID, $service);
@@ -347,10 +352,12 @@ class Updater extends \common_ext_ExtensionUpdater
             if ($this->getServiceManager()->has(ActionQueue::SERVICE_ID)) {
                 $actionQueueService = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
                 $options = $actionQueueService->getOptions();
+
                 if (isset($options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'])) {
                     $restrictions = $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'];
 
                     $renamedClassname = 'oat\\ltiDeliveryProvider\\model\\metrics\\activeLimitRestriction';
+
                     if (isset($restrictions[$renamedClassname])) {
                         $restrictionOptions = $restrictions[$renamedClassname];
                         unset($restrictions[$renamedClassname]);
@@ -367,7 +374,7 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('11.2.0', '11.2.1');
-        
+
         //Updater files are deprecated. Please use migrations.
         //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
 

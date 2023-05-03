@@ -29,9 +29,8 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class Lti1p3ContextCacheRepository implements LtiContextRepositoryInterface
 {
-    private CacheItemPoolInterface $cache;
-
     private const KEY_PREFIX = 'de_lti1p3context_';
+    private CacheItemPoolInterface $cache;
 
     public function __construct(?CacheItemPoolInterface $cache = null)
     {
@@ -40,7 +39,6 @@ class Lti1p3ContextCacheRepository implements LtiContextRepositoryInterface
 
     public function findByDeliveryExecution(DeliveryExecutionInterface $deliveryExecution): ?LtiLaunchData
     {
-
         $item = $this->cache->getItem($this->buildKey($deliveryExecution->getIdentifier()));
 
         if ($data = $item->get()) {

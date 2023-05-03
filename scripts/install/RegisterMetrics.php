@@ -16,12 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
+use common_Exception;
 use common_exception_Error;
+use common_persistence_Manager;
 use common_report_Report as Report;
 use oat\ltiDeliveryProvider\model\metrics\implementation\activeExecutionsMetrics;
 use oat\oatbox\extension\InstallAction;
@@ -32,21 +33,23 @@ use oat\tao\model\metrics\MetricsService;
  *
  * usage :
  * sudo -u www-data php index.php 'oat\ltiDeliveryProvider\scripts\install\RegisterMetrics'
+ *
  * @package oat\ltiDeliveryProvider\scripts\install
  */
 class RegisterMetrics extends InstallAction
 {
     /**
      * @param $params
-     * @return Report
-     * @throws \common_Exception
+     *
+     * @throws common_Exception
      * @throws common_exception_Error
+     *
+     * @return Report
      */
     public function __invoke($params)
     {
-
-        /** @var \common_persistence_Manager $pm */
-        $pm = $this->getServiceManager()->get(\common_persistence_Manager::SERVICE_ID);
+        /** @var common_persistence_Manager $pm */
+        $pm = $this->getServiceManager()->get(common_persistence_Manager::SERVICE_ID);
         $pm->registerPersistence('metricsCache', ['driver' => 'phpfile',
             'ttlMode' => true,]);
 
@@ -58,9 +61,7 @@ class RegisterMetrics extends InstallAction
         ]);
         $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
 
-
         $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
-
 
         return new Report(Report::TYPE_SUCCESS, __('Registered activeExecutions metric'));
     }

@@ -19,6 +19,7 @@
  *
  * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
+
 declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\test\unit\model\options\DataAccess\Mapper;
@@ -42,7 +43,7 @@ class OptionCollectionMapperTest extends TestCase
     }
 
     /**
-     * @param array            $rawData
+     * @param array $rawData
      * @param OptionCollection $expected
      *
      * @dataProvider dataProvider

@@ -20,10 +20,15 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_exception_Error;
+use common_exception_IsAjaxAction;
+use common_exception_NotFound;
+use common_ext_ExtensionException;
 use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
+use InterruptedActionException;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -40,6 +45,7 @@ use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
+use ResolverException;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
 
@@ -60,21 +66,22 @@ class DeliveryTool extends ToolModule
      *
      * @var string
      */
-    const PARAM_FORCE_RESTART = 'custom_force_restart';
+    public const PARAM_FORCE_RESTART = 'custom_force_restart';
     /**
      * Setting this parameter to 'true' will prevent the thank you screen to be shown after
      * the test and skip directly to the return url
      *
      * @var string
      */
-    const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+    public const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
 
     /**
      * Setting this parameter to 'true' will prevent the 'You have already taken this test'
      * screen to be shown skip directly to the return url
+     *
      * @var string
      */
-    const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
+    public const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
 
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
@@ -82,23 +89,25 @@ class DeliveryTool extends ToolModule
      *
      * @var string
      */
-    const PARAM_THANKYOU_MESSAGE = 'custom_message';
+    public const PARAM_THANKYOU_MESSAGE = 'custom_message';
 
     /**
      * (non-PHPdoc)
+     *
      * @see ToolModule::run()
      *
      * @throws LtiException
-     * @throws \InterruptedActionException
-     * @throws \ResolverException
-     * @throws \common_exception_Error
-     * @throws \common_exception_IsAjaxAction
-     * @throws \common_exception_NotFound
+     * @throws InterruptedActionException
+     * @throws ResolverException
+     * @throws common_exception_Error
+     * @throws common_exception_IsAjaxAction
+     * @throws common_exception_NotFound
      * @throws LtiVariableMissingException
      */
     public function run()
     {
         $compiledDelivery = $this->getDelivery();
+
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // user authorised to select the Delivery
@@ -133,6 +142,7 @@ class DeliveryTool extends ToolModule
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
+
                         throw new LtiException($e->getMessage());
                     } catch (ActionFullException $e) {
                         $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
@@ -154,14 +164,15 @@ class DeliveryTool extends ToolModule
 
     /**
      * @throws LtiException
-     * @throws \common_exception_Error
-     * @throws \common_ext_ExtensionException
+     * @throws common_exception_Error
+     * @throws common_ext_ExtensionException
      */
     public function launchQueue()
     {
         $this->configureI18n();
 
         $delivery = $this->getDelivery();
+
         if (!$delivery->exists()) {
             throw new LtiException(
                 __('Delivery does not exist. Please contact your instructor.'),
@@ -188,6 +199,7 @@ class DeliveryTool extends ToolModule
             'id' => '',
             'status' => 0,
         ];
+
         if ($capacity === -1 || $capacity > 0) {
             $payload['status'] = 1;
         }
@@ -206,16 +218,18 @@ class DeliveryTool extends ToolModule
 
     /**
      * @param core_kernel_classes_Resource $delivery
-     * @param DeliveryExecution            $activeExecution
+     * @param DeliveryExecution $activeExecution
+     *
+     * @throws LtiException
+     * @throws common_exception_Error
      *
      * @return string
-     * @throws LtiException
-     * @throws \common_exception_Error
      */
-    protected function getLearnerUrl(\core_kernel_classes_Resource $delivery, DeliveryExecution $activeExecution = null)
+    protected function getLearnerUrl(core_kernel_classes_Resource $delivery, DeliveryExecution $activeExecution = null)
     {
-        $currentSession = \common_session_SessionManager::getSession();
+        $currentSession = common_session_SessionManager::getSession();
         $user = $currentSession->getUser();
+
         if ($activeExecution === null) {
             $activeExecution = $this->getActiveDeliveryExecution($delivery);
         }
@@ -249,6 +263,7 @@ class DeliveryTool extends ToolModule
                 ['delivery' => $delivery->getUri()]
             );
         }
+
         return $url;
     }
 
@@ -257,14 +272,16 @@ class DeliveryTool extends ToolModule
      *
      * @return mixed|null|DeliveryExecution
      */
-    protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
+    protected function getActiveDeliveryExecution(core_kernel_classes_Resource $delivery)
     {
         $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
+
         return $deliveryExecutionService->getActiveDeliveryExecution($delivery);
     }
 
     /**
      * (non-PHPdoc)
+     *
      * @see ToolModule::getTool()
      */
     protected function getTool()
@@ -277,9 +294,10 @@ class DeliveryTool extends ToolModule
      * either from url or from the remote_link if configured
      * returns null if none found
      *
-     * @return core_kernel_classes_Resource
      * @throws LtiException
-     * @throws \common_exception_Error
+     * @throws common_exception_Error
+     *
+     * @return core_kernel_classes_Resource
      */
     protected function getDelivery()
     {

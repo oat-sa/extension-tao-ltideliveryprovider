@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 declare(strict_types=1);
@@ -36,7 +35,7 @@ use Psr\Log\LoggerInterface;
 
 class SendAgsScoreTaskTest extends TestCase
 {
-    /** @var SendAgsScoreTask $subject */
+    /** @var SendAgsScoreTask */
     private $subject;
 
     public function setUp(): void
@@ -94,7 +93,7 @@ class SendAgsScoreTaskTest extends TestCase
 
         $serviceLocatorMock = $this->getServiceLocatorMock(
             [
-                Lti1p3RegistrationRepository::SERVICE_ID => $registrationRepository
+                Lti1p3RegistrationRepository::SERVICE_ID => $registrationRepository,
             ]
         );
         $this->subject->setServiceLocator($serviceLocatorMock);
@@ -131,7 +130,7 @@ class SendAgsScoreTaskTest extends TestCase
                     'agsClaim' => [],
                     'data' => [],
                 ],
-                'Parameter "registrationId" must be a string'
+                'Parameter "registrationId" must be a string',
             ],
             [
                 [
@@ -140,7 +139,7 @@ class SendAgsScoreTaskTest extends TestCase
                     'agsClaim' => [],
                     'data' => [],
                 ],
-                'Parameter "deliveryExecutionId" must be a string'
+                'Parameter "deliveryExecutionId" must be a string',
             ],
             [
                 [
@@ -149,7 +148,7 @@ class SendAgsScoreTaskTest extends TestCase
                     'agsClaim' => null, // invalid
                     'data' => [],
                 ],
-                'Parameter "agsClaim" must be an array and include "scope" as an array'
+                'Parameter "agsClaim" must be an array and include "scope" as an array',
             ],
             [
                 [
@@ -158,7 +157,7 @@ class SendAgsScoreTaskTest extends TestCase
                     'agsClaim' => [], // scope missing
                     'data' => [],
                 ],
-                'Parameter "agsClaim" must be an array and include "scope" as an array'
+                'Parameter "agsClaim" must be an array and include "scope" as an array',
             ],
             [
                 [
@@ -166,15 +165,15 @@ class SendAgsScoreTaskTest extends TestCase
                     'registrationId' => 'valid',
                     'agsClaim' => [
                         'scope' => [
-                            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
-                            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
-                            "https://purl.imsglobal.org/spec/lti-ags/scope/score"
-                        ]
+                            'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
+                            'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly',
+                            'https://purl.imsglobal.org/spec/lti-ags/scope/score',
+                        ],
                     ],
                     'data' => 1, // invalid
                 ],
-                'Parameter "data" must be an array'
-            ]
+                'Parameter "data" must be an array',
+            ],
         ];
     }
 
@@ -185,14 +184,14 @@ class SendAgsScoreTaskTest extends TestCase
             'deliveryExecutionId' => 'id',
             'agsClaim' => [
                 'scope' => [
-                    "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
-                    "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
-                    "https://purl.imsglobal.org/spec/lti-ags/scope/score"
-                ]
+                    'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
+                    'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly',
+                    'https://purl.imsglobal.org/spec/lti-ags/scope/score',
+                ],
             ],
             'data' => [
-                'userId' => 'anonymous'
-            ]
+                'userId' => 'anonymous',
+            ],
         ];
     }
 
@@ -222,7 +221,7 @@ class SendAgsScoreTaskTest extends TestCase
         $serviceLocatorMock = $this->getServiceLocatorMock(
             [
                 Lti1p3RegistrationRepository::SERVICE_ID => $registrationRepository,
-                LtiAgsScoreServiceInterface::class => $ltiAgsScoreService
+                LtiAgsScoreServiceInterface::class => $ltiAgsScoreService,
             ]
         );
         $this->subject->setServiceLocator($serviceLocatorMock);

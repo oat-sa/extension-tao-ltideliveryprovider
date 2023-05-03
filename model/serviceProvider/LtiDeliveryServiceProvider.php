@@ -46,7 +46,7 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
                 [
                     inline_service(CacheItemPoolInterface::class)
                         ->factory([service(CacheItemPoolFactory::class), 'create'])
-                        ->args([[]])
+                        ->args([[]]),
                 ]
             );
     }

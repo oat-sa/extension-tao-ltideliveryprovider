@@ -16,12 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\test\integration\model\requestLog\rds;
 
+use common_persistence_InMemoryKvDriver;
+use common_persistence_KeyValuePersistence;
+use common_persistence_Manager;
 use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiResultAliasStorage;
 use oat\oatbox\service\ServiceManager;
@@ -29,7 +30,9 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 
 /**
  * Class LtiResultAliasStorageTest
+ *
  * @package oat\ltiDeliveryProvider\test\model
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class LtiResultAliasStorageTest extends TestCase
@@ -45,13 +48,11 @@ class LtiResultAliasStorageTest extends TestCase
         $this->assertTrue($storage->storeResultAlias($deId, '9'));
         $this->assertEquals(['9'], $storage->getResultAlias($deId));
 
-
         //Try to log another delivery execution with the same result id.
         //Delivery execution identifier should be overwritten
         $deId = $this->deId . '10';
         $this->assertTrue($storage->storeResultAlias($deId, '9'));
         $this->assertEquals($this->deId . '10', $storage->getDeliveryExecutionId('9'));
-
 
         //Try to log the same delivery execution with another .
         //Delivery execution identifier should be overwritten
@@ -93,13 +94,14 @@ class LtiResultAliasStorageTest extends TestCase
         $persistenceManager = $this->getSqlMock('test_LtiResultIdStorageTest');
         (new \oat\ltiDeliveryProvider\scripts\install\RegisterLtiResultAliasStorage())->createTable($persistenceManager->getPersistenceById('test_LtiResultIdStorageTest'));
         $storage = new LtiResultAliasStorage([
-            LtiResultAliasStorage::OPTION_PERSISTENCE => 'test_LtiResultIdStorageTest'
+            LtiResultAliasStorage::OPTION_PERSISTENCE => 'test_LtiResultIdStorageTest',
         ]);
-        $config = new \common_persistence_KeyValuePersistence([], new \common_persistence_InMemoryKvDriver());
-        $config->set(\common_persistence_Manager::SERVICE_ID, $persistenceManager);
+        $config = new common_persistence_KeyValuePersistence([], new common_persistence_InMemoryKvDriver());
+        $config->set(common_persistence_Manager::SERVICE_ID, $persistenceManager);
         $serviceManager = new ServiceManager($config);
         $storage->setServiceManager($serviceManager);
         $this->loadFixtures($storage);
+
         return $storage;
     }
 
@@ -120,6 +122,7 @@ class LtiResultAliasStorageTest extends TestCase
         $prophet = new \Prophecy\Prophet();
         $deliveryExecutionProphecy = $prophet->prophesize(DeliveryExecution::class);
         $deliveryExecutionProphecy->getIdentifier()->willReturn($id);
+
         return $deliveryExecutionProphecy->reveal();
     }
 }

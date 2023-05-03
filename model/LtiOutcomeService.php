@@ -16,11 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017  (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_exception_Error;
+use common_exception_NotFound;
 use common_session_SessionManager;
 use oat\ltiDeliveryProvider\model\tasks\SendLtiOutcomeTask;
 use oat\oatbox\service\ConfigurableService;
@@ -32,12 +33,13 @@ use oat\taoLti\models\classes\TaoLtiSession;
 
 class LtiOutcomeService extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
 
     /**
      * @param DeliveryExecutionState $event
-     * @throws \common_exception_Error
-     * @throws \common_exception_NotFound
+     *
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
      * @throws \oat\taoLti\models\classes\LtiException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
@@ -47,10 +49,10 @@ class LtiOutcomeService extends ConfigurableService
             DeliveryExecutionInterface::STATE_FINISHIED === $event->getState() && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
             && common_session_SessionManager::getSession() instanceof TaoLtiSession
         ) {
-
             /** @var QueueDispatcherInterface $taskQueue */
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+
             if ($launchData->hasVariable('lis_outcome_service_url')) {
                 $params['deliveryResultIdentifier'] = $event->getDeliveryExecution()->getIdentifier();
                 $params['consumerKey'] = $launchData->getOauthKey();

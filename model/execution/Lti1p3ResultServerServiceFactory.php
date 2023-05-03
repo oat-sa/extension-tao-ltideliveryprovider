@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 declare(strict_types=1);
@@ -28,9 +27,9 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\taoDelivery\model\execution\ResultServerServiceFactoryInterface;
 use oat\taoLti\models\classes\LtiRoles;
+use oat\taoResultServer\models\classes\implementation\ResultServerService as ResultServerServiceImplementation;
 use oat\taoResultServer\models\classes\NoResultStorage;
 use oat\taoResultServer\models\classes\ResultServerService;
-use oat\taoResultServer\models\classes\implementation\ResultServerService as ResultServerServiceImplementation;
 
 class Lti1p3ResultServerServiceFactory extends ConfigurableService implements ResultServerServiceFactoryInterface
 {
@@ -49,7 +48,7 @@ class Lti1p3ResultServerServiceFactory extends ConfigurableService implements Re
 
         if ($isDryRun) {
             $service = new ResultServerServiceImplementation([
-                ResultServerServiceImplementation::OPTION_RESULT_STORAGE => NoResultStorage::class
+                ResultServerServiceImplementation::OPTION_RESULT_STORAGE => NoResultStorage::class,
             ]);
 
             $this->propagate($service);

@@ -16,45 +16,53 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model\actions;
 
-use oat\tao\model\actionQueue\AbstractQueuedAction;
-use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use common_exception_Error;
+use common_exception_NotFound;
+use common_exception_Unauthorized;
+use common_session_SessionManager;
+use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
+use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
+use oat\tao\model\actionQueue\AbstractQueuedAction;
+use oat\taoDelivery\model\AttemptServiceInterface;
+use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\DeliveryServerService;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiService;
-use oat\taoDelivery\model\execution\Counter\DeliveryExecutionCounterInterface;
-use oat\taoDelivery\model\AttemptServiceInterface;
 
 /**
  * Class GetActiveDeliveryExecution
+ *
  * @package oat\ltiProctoring\model\actions
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
 class GetActiveDeliveryExecution extends AbstractQueuedAction
 {
     protected $delivery;
 
-    public function __construct(\core_kernel_classes_Resource $delivery = null)
+    public function __construct(core_kernel_classes_Resource $delivery = null)
     {
         $this->delivery = $delivery;
     }
 
     /**
      * @param $params
-     * @return DeliveryExecution
+     *
      * @throws LtiException
-     * @throws \common_exception_Error
-     * @throws \common_exception_NotFound
-     * @throws \common_exception_Unauthorized
+     * @throws common_exception_Error
+     * @throws common_exception_NotFound
+     * @throws common_exception_Unauthorized
      * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     *
+     * @return DeliveryExecution
      */
     public function __invoke($params)
     {
@@ -62,7 +70,7 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
 
         if ($this->delivery !== null) {
             $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
-            $user = \common_session_SessionManager::getSession()->getUser();
+            $user = common_session_SessionManager::getSession()->getUser();
 
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
             /** @var LtiDeliveryExecutionService $deliveryExecutionService */
@@ -87,9 +95,11 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
                 $active = $this->getTool()->startDelivery($this->delivery, $remoteLink, $user);
             } else {
                 $resumable = $this->getServiceLocator()->get(DeliveryServerService::SERVICE_ID)->getResumableStates();
+
                 foreach ($executions as $deliveryExecution) {
                     if (in_array($deliveryExecution->getState()->getUri(), $resumable)) {
                         $active = $deliveryExecution;
+
                         break;
                     }
                 }
@@ -110,13 +120,15 @@ class GetActiveDeliveryExecution extends AbstractQueuedAction
     }
 
     /**
-     * @return int
      * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
+     *
+     * @return int
      */
     public function getNumberOfActiveActions()
     {
         /** @var LtiDeliveryExecutionService $deliveryExecutionService */
         $deliveryExecutionService = $this->getServiceManager()->get(DeliveryExecutionCounterInterface::SERVICE_ID);
+
         return $deliveryExecutionService->count(DeliveryExecution::STATE_ACTIVE);
     }
 

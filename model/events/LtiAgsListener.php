@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2021-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 declare(strict_types=1);
@@ -54,7 +53,6 @@ class LtiAgsListener extends ConfigurableService
         $deliveryExecution = $event->getDeliveryExecution();
 
         if ($user instanceof Lti1p3User && $user->getLaunchData()->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
-
             /** @var AgsClaim $agsClaim */
             $agsClaim = $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS);
 
@@ -66,8 +64,8 @@ class LtiAgsListener extends ConfigurableService
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
                     'userId' => $user->getIdentifier(),
-                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED
-                ]
+                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED,
+                ],
             ], 'AGS score send on test launch');
         }
     }
@@ -156,7 +154,6 @@ class LtiAgsListener extends ConfigurableService
         $scoreTotalMax,
         string $gradingStatus
     ): void {
-
         if (!$ltiLaunchData->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
             return;
         }
@@ -178,7 +175,7 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
-            ]
+            ],
         ], $taskLabel);
     }
 

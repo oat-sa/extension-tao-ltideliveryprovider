@@ -22,5 +22,5 @@ return new oat\oatbox\config\ConfigurationService([
     'config' => [
         'relaunchInterval' => 30,
         'relaunchIntervalDeviation' => 5,
-    ]
+    ],
 ]);

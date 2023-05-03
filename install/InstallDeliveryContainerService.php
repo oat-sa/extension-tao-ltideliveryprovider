@@ -16,11 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\install;
 
+use common_Exception;
 use oat\ltiDeliveryProvider\model\delivery\DeliveryContainerService;
 use oat\oatbox\extension\InstallAction;
 
@@ -28,7 +28,8 @@ class InstallDeliveryContainerService extends InstallAction
 {
     /**
      * @param $params
-     * @throws \common_Exception
+     *
+     * @throws common_Exception
      * @throws \oat\oatbox\service\exception\InvalidServiceManagerException
      */
     public function __invoke($params)

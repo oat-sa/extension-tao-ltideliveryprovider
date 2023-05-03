@@ -16,12 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2013-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
 
+use common_exception_Error;
+use common_exception_Unauthorized;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource as Resource;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
@@ -52,7 +52,6 @@ class LTIDeliveryTool extends ConfigurableService
     private const MODULE = 'DeliveryTool';
     private const ACTION = 'launch';
 
-
     /**
      * @return static
      *
@@ -66,12 +65,14 @@ class LTIDeliveryTool extends ConfigurableService
     public function getLaunchUrl($parameters = [])
     {
         $fullAction = self::ACTION . '/' . base64_encode(json_encode($parameters));
+
         return _url($fullAction, self::MODULE, self::EXTENSION);
     }
 
     public function getDeliveryFromLink()
     {
         $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+
         return $remoteLink->getOnePropertyValue(new core_kernel_classes_Property(static::PROPERTY_LINK_DELIVERY));
     }
 
@@ -85,6 +86,7 @@ class LTIDeliveryTool extends ConfigurableService
 
     /**
      * @param DeliveryExecution $deliveryExecution
+     *
      * @return mixed
      */
     public function getFinishUrl(DeliveryExecution $deliveryExecution)
@@ -98,7 +100,7 @@ class LTIDeliveryTool extends ConfigurableService
     /**
      * Start a new delivery execution
      *
-     * @throws \common_exception_Unauthorized
+     * @throws common_exception_Unauthorized
      */
     public function startDelivery(Resource $delivery, Resource $link, User $user): DeliveryExecution
     {
@@ -109,9 +111,11 @@ class LTIDeliveryTool extends ConfigurableService
 
         /** @var LtiAssignment $assignmentService */
         $assignmentService = $this->getServiceLocator()->get(LtiAssignment::SERVICE_ID);
+
         if (!$assignmentService->isDeliveryExecutionAllowed($delivery->getUri(), $user)) {
             $lock->release();
-            throw new \common_exception_Unauthorized(__('User is not authorized to run this delivery'));
+
+            throw new common_exception_Unauthorized(__('User is not authorized to run this delivery'));
         }
         $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
         $deliveryExecution = $stateService->createDeliveryExecution($delivery->getUri(), $user, $delivery->getLabel());
@@ -133,6 +137,7 @@ class LTIDeliveryTool extends ConfigurableService
     protected function getAuthorizationProvider()
     {
         $authService = $this->getServiceLocator()->get(AuthorizationService::SERVICE_ID);
+
         return $authService->getAuthorizationProvider();
     }
 
@@ -140,6 +145,7 @@ class LTIDeliveryTool extends ConfigurableService
      * Returns an array of DeliveryExecution
      *
      * @param string $userId
+     *
      * @return array
      */
     public function getLinkedDeliveryExecutions(Resource $delivery, Resource $link, $userId)
@@ -147,6 +153,7 @@ class LTIDeliveryTool extends ConfigurableService
         /** @var LtiDeliveryExecutionService $deliveryExecutionService */
         $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
         $executions = $deliveryExecutionService->getLinkedDeliveryExecutions($delivery, $link, $userId);
+
         return $executions;
     }
 
@@ -154,7 +161,7 @@ class LTIDeliveryTool extends ConfigurableService
      * Link `lis_result_sourcedid` to delivery execution
      * in order to be able to retrieve delivery execution by lis_result_sourcedid
      *
-     * @throws \common_exception_Error
+     * @throws common_exception_Error
      * @throws \oat\taoLti\models\classes\LtiException
      * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
@@ -182,6 +189,7 @@ class LTIDeliveryTool extends ConfigurableService
     protected function getLtiLaunchData(): LtiLaunchData
     {
         $session = $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession();
+
         if (!$session instanceof TaoLtiSession) {
             throw new LtiException('Not an LTI session.');
         }

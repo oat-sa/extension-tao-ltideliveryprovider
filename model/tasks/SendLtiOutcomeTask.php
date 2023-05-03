@@ -16,14 +16,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\tasks;
 
+use common_Exception;
+use common_exception_Error;
+use common_http_Request;
 use common_report_Report;
+use Exception;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -31,13 +34,15 @@ use oat\taoLti\models\classes\LtiOutcome\LtiOutcomeXmlFactory;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoOutcomeUi\model\ResultsService;
 use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
+use tao_models_classes_oauth_Credentials;
+use tao_models_classes_oauth_Service;
 use taoResultServer_models_classes_OutcomeVariable;
 
 class SendLtiOutcomeTask extends AbstractAction
 {
     use LoggerAwareTrait;
 
-    const VARIABLE_IDENTIFIER = 'LtiOutcome';
+    public const VARIABLE_IDENTIFIER = 'LtiOutcome';
 
     public function __invoke($params)
     {
@@ -60,17 +65,20 @@ class SendLtiOutcomeTask extends AbstractAction
                 if (self::VARIABLE_IDENTIFIER == $variable->getIdentifier()) {
                     $this->sendLtiOutcome($variable, $deliveryResultIdentifier, $consumerKey, $serviceUrl);
                     $submitted++;
+
                     break;
                 }
             }
+
             if (0 === $submitted) {
-                throw new \common_Exception('No LTI Outcome has been submitter for execution' . $deliveryResultIdentifier);
+                throw new common_Exception('No LTI Outcome has been submitter for execution' . $deliveryResultIdentifier);
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $report->setMessage($exception->getMessage());
         }
 
         $report->setType(common_report_Report::TYPE_SUCCESS);
+
         return $report;
     }
 
@@ -79,9 +87,11 @@ class SendLtiOutcomeTask extends AbstractAction
      * @param $deliveryResultIdentifier
      * @param $consumerKey
      * @param $serviceUrl
-     * @return bool
-     * @throws \common_exception_Error
+     *
+     * @throws common_exception_Error
      * @throws \oat\taoLti\models\classes\LtiException
+     *
+     * @return bool
      */
     private function sendLtiOutcome(taoResultServer_models_classes_OutcomeVariable $testVariable, $deliveryResultIdentifier, $consumerKey, $serviceUrl)
     {
@@ -95,14 +105,14 @@ class SendLtiOutcomeTask extends AbstractAction
         $message = $this->getLtiOutcomeXmlFactory()->buildReplaceResultRequest($deliveryResultIdentifier, $grade, uniqid('', true));
 
         $credentialResource = LtiService::singleton()->getCredential($consumerKey);
-        $credentials = new \tao_models_classes_oauth_Credentials($credentialResource);
+        $credentials = new tao_models_classes_oauth_Credentials($credentialResource);
         //Building POX raw http message
-        $unSignedOutComeRequest = new \common_http_Request($serviceUrl, 'POST', []);
+        $unSignedOutComeRequest = new common_http_Request($serviceUrl, 'POST', []);
         $unSignedOutComeRequest->setBody($message);
-        $signingService = new \tao_models_classes_oauth_Service();
+        $signingService = new tao_models_classes_oauth_Service();
         $signedRequest = $signingService->sign($unSignedOutComeRequest, $credentials, true);
         //Hack for moodle compatibility, the header is ignored for the signature computation
-        $signedRequest->setHeader("Content-Type", "application/xml");
+        $signedRequest->setHeader('Content-Type', 'application/xml');
 
         $response = $signedRequest->send();
 
@@ -114,10 +124,10 @@ class SendLtiOutcomeTask extends AbstractAction
             $this->logWarning("\nHTTP From: " . $response->effectiveUrl . "\n");
             $this->logWarning("\nHTTP Content received: " . $response->responseData . "\n");
 
-            throw new \common_exception_Error('An HTTP level problem occurred when sending the outcome to the service url');
-        } else {
-            $this->logInfo('Submited LTI score with id "' . $deliveryResultIdentifier . '"');
+            throw new common_exception_Error('An HTTP level problem occurred when sending the outcome to the service url');
         }
+        $this->logInfo('Submited LTI score with id "' . $deliveryResultIdentifier . '"');
+
         return true;
     }
 

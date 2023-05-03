@@ -19,6 +19,7 @@
  *
  * @author Sergei Mikhailov <sergei.mikhailov@taotesting.com>
  */
+
 declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\test\unit\model\options\DataAccess\Repository;
@@ -53,7 +54,7 @@ class OverriddenLtiToolsRepositoryTest extends TestCase
     public function init(): void
     {
         $this->presetRepository = $this->createMock(TestCategoryPresetProvider::class);
-        $this->sessionService   = $this->createMock(SessionService::class);
+        $this->sessionService = $this->createMock(SessionService::class);
 
         $this->sut = new OverriddenLtiToolsRepository(
             $this->presetRepository,
@@ -63,8 +64,8 @@ class OverriddenLtiToolsRepositoryTest extends TestCase
     }
 
     /**
-     * @param OptionCollection   $expected
-     * @param Session            $sessionData
+     * @param OptionCollection $expected
+     * @param Session $sessionData
      * @param TestCategoryPreset ...$availableToolPresets
      *
      * @dataProvider dataProvider
@@ -89,7 +90,7 @@ class OverriddenLtiToolsRepositoryTest extends TestCase
     public function dataProvider(): array
     {
         return [
-            'Matching options'         => [
+            'Matching options' => [
                 new OptionCollection(
                     new Option('opt_1', true),
                     new Option('opt_2', false)
@@ -104,7 +105,7 @@ class OverriddenLtiToolsRepositoryTest extends TestCase
                 $this->createPreset('opt_2'),
                 $this->createPreset('opt_3'),
             ],
-            'Extra options'            => [
+            'Extra options' => [
                 new OptionCollection(
                     new Option('opt_1', true),
                     new Option('opt_2', false)
@@ -139,13 +140,13 @@ class OverriddenLtiToolsRepositoryTest extends TestCase
 
     private function createPreset(string $id): TestCategoryPreset
     {
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         return new TestCategoryPreset($id, 'test', 'test', []);
     }
 
     private function createLtiSession(array $toolConfiguration): TaoLtiSession
     {
-        $session    = $this->createMock(TaoLtiSession::class);
+        $session = $this->createMock(TaoLtiSession::class);
         $launchData = $this->createMock(LtiLaunchData::class);
 
         $session

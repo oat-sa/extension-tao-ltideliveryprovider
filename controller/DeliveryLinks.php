@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\controller;
@@ -30,9 +28,9 @@ use tao_actions_CommonModule;
 use tao_helpers_Uri;
 
 /**
- *
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
+ *
  * @package filemanager
  */
 class DeliveryLinks extends tao_actions_CommonModule
@@ -40,6 +38,7 @@ class DeliveryLinks extends tao_actions_CommonModule
     /**
      * Displays the LTI link for the consumer with respect to the currently selected delviery
      * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome service impelmentation
+     *
      * @author patrick <patrick@taotesting.com>
      */
     public function index()

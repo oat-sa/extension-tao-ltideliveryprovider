@@ -16,39 +16,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
+use common_Exception;
+use common_exception_NotFound;
+use common_persistence_KeyValuePersistence;
+use common_persistence_Persistence;
+use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService as LtiDeliveryExecutionServiceInterface;
 use oat\taoDelivery\model\execution\Delete\DeliveryExecutionDeleteRequest;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\oatbox\service\ConfigurableService;
 use oat\taoDelivery\model\execution\ServiceProxy;
-use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 
 /**
  * Class KvLtiDeliveryExecutionService
  * Key value implementation of the LtiDeliveryExecutionServiceInterface
+ *
  * @package oat\ltiDeliveryProvider\model\execution
  */
 class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 {
+    public const OPTION_PERSISTENCE = 'persistence';
 
-    const OPTION_PERSISTENCE = 'persistence';
+    public const LTI_DE_LINK_LINK = 'kvlti_ll_';
 
-    const LTI_DE_LINK_LINK = 'kvlti_ll_';
-
-    const LINKS_OF_DELIVERY_EXECUTION = 'kvlti_links_de_';
+    public const LINKS_OF_DELIVERY_EXECUTION = 'kvlti_links_de_';
 
     /**
-     * @var \common_persistence_KeyValuePersistence
+     * @var common_persistence_KeyValuePersistence
      */
     private $persistence;
 
     /**
-     * @return \common_persistence_KeyValuePersistence|\common_persistence_Persistence
+     * @return common_persistence_KeyValuePersistence|common_persistence_Persistence
      */
     protected function getPersistence()
     {
@@ -56,31 +58,33 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
             $persistenceOption = $this->getOption(self::OPTION_PERSISTENCE);
             $this->persistence = (is_object($persistenceOption))
                 ? $persistenceOption
-                : \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
+                : common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
         }
+
         return $this->persistence;
     }
 
     /**
      * Returns an array of DeliveryExecution
      *
-     * @param \core_kernel_classes_Resource $delivery
-     * @param \core_kernel_classes_Resource $link
+     * @param core_kernel_classes_Resource $delivery
+     * @param core_kernel_classes_Resource $link
      * @param string $userId
      *
-     * @throws \common_exception_NotFound
+     * @throws common_exception_NotFound
      *
      * @return DeliveryExecution[]
      */
     public function getLinkedDeliveryExecutions(
-        \core_kernel_classes_Resource $delivery,
-        \core_kernel_classes_Resource $link,
+        core_kernel_classes_Resource $delivery,
+        core_kernel_classes_Resource $link,
         $userId
     ) {
         $data = $this->getPersistence()->get(self::LTI_DE_LINK_LINK . $link->getUri() . $userId);
         $ltiDeliveryExecutionLinks = KvLTIDeliveryExecutionLink::unSerialize($data);
 
         $results = [];
+
         foreach ($ltiDeliveryExecutionLinks as $ltiDeliveryExecutionLink) {
             /** @var DeliveryExecution $deliveryExecution */
             $deliveryExecution = $this->getServiceLocator()->get(ServiceProxy::SERVICE_ID)->getDeliveryExecution(
@@ -100,7 +104,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      * @param string $link
      * @param string $deliveryExecutionUri
      *
-     * @throws \common_Exception
+     * @throws common_Exception
      *
      * @return KvLTIDeliveryExecutionLink
      */
@@ -129,7 +133,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
     public function deleteDeliveryExecutionData(DeliveryExecutionDeleteRequest $request)
     {
         $userUri = $request->getDeliveryExecution()->getUserIdentifier();
-        $deUri   = $request->getDeliveryExecution()->getIdentifier();
+        $deUri = $request->getDeliveryExecution()->getIdentifier();
         $deleted = [];
 
         $linksOfDelivery = $this->getDeliveryExecutionLinks($userUri, $deUri);
@@ -147,8 +151,10 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      * @param $link
      * @param $userUri
      * @param $deliveryExecutionUri
+     *
+     * @throws common_Exception
+     *
      * @return bool
-     * @throws \common_Exception
      */
     protected function saveLinkReference($link, $userUri, $deliveryExecutionUri)
     {
@@ -168,6 +174,7 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
     /**
      * @param $userUri
      * @param $deliveryExecutionUri
+     *
      * @return array
      */
     protected function getDeliveryExecutionLinks($userUri, $deliveryExecutionUri)

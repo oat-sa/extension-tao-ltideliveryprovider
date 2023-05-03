@@ -16,14 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
 
-use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
 
 /**
  * class ResultAliasService

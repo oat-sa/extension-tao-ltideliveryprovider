@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017  (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\model;
@@ -25,18 +24,19 @@ use core_kernel_classes_Container;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoLti\models\classes\LtiLaunchData;
-use RuntimeException;
 
 /**
  * @package oat\ltiDeliveryProvider\model
+ *
  * @author Aleksej Tikhanovich, <aleksej@taotesting.com>
  */
 class LtiLaunchDataService extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
      * @param LtiLaunchData $launchData
+     *
      * @return core_kernel_classes_Resource
      */
     public function findDeliveryFromLaunchData(LtiLaunchData $launchData)

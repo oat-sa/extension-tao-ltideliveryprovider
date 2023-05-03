@@ -20,10 +20,12 @@
 
 namespace oat\ltiDeliveryProvider\test\unit\model\requestLog\rds;
 
+use common_session_Session;
 use core_kernel_classes_Literal as KernelLiteralProperty;
 use core_kernel_classes_Property as KernelProperty;
 use core_kernel_classes_Resource as KernelResource;
 use oat\generis\model\data\Ontology;
+use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\oatbox\session\SessionService;
@@ -36,10 +38,10 @@ use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\TaoLtiSession;
 use Psr\Log\LoggerInterface;
-use oat\generis\test\MockObject;
 
 /**
  * Class LtiAssignmentAuthorizationServiceTest
+ *
  * @package oat\ltiDeliveryProvider\test\unit\model\requestLog\rds
  */
 class LtiAssignmentTest extends TestCase
@@ -61,7 +63,7 @@ class LtiAssignmentTest extends TestCase
     /** @var KernelResource|MockObject */
     private $deliveryMock;
 
-    /** @var \common_session_Session|MockObject */
+    /** @var common_session_Session|MockObject */
     private $sessionMock;
 
     /** @var LtiLaunchData|MockObject */
@@ -91,7 +93,7 @@ class LtiAssignmentTest extends TestCase
 
         $servileLocatorMock = $this->getServiceLocatorMock([
             SessionService::SERVICE_ID => $this->sessionServiceMock,
-            AttemptServiceInterface::SERVICE_ID => $this->attemptServiceMock
+            AttemptServiceInterface::SERVICE_ID => $this->attemptServiceMock,
         ]);
 
         $modelMock = $this->createMock(Ontology::class);
@@ -191,7 +193,7 @@ class LtiAssignmentTest extends TestCase
         $this->expectAttemptLimitException();
 
         $this->deliveryProperties = [
-            DeliveryContainerService::PROPERTY_MAX_EXEC => 2
+            DeliveryContainerService::PROPERTY_MAX_EXEC => 2,
         ];
 
         $userTokens = [1, 2, 3, 4]; // Amount must be higher than max allowed executions.
@@ -265,7 +267,7 @@ class LtiAssignmentTest extends TestCase
             $result[$property->getUri()] = [
                 isset($this->deliveryProperties[$property->getUri()])
                     ? new KernelLiteralProperty($this->deliveryProperties[$property->getUri()])
-                    : null
+                    : null,
             ];
         }
 

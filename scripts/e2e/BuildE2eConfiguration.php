@@ -32,7 +32,6 @@ use stdClass;
 
 class BuildE2eConfiguration extends AbstractAction
 {
-
     public function __invoke($params)
     {
         if (!$this->getExtensionManager()->isEnabled('ltiDeliveryProvider')) {
@@ -77,9 +76,11 @@ class BuildE2eConfiguration extends AbstractAction
     {
         $map = new stdClass();
         $config = $this->getE2eConfigDriver()->setConfigPath((new PrepareEnvironment())->getConfigPath())->read();
+
         foreach ($config->deliveryIds as $type => $uri) {
-            $map->{$type} = base64_encode(json_encode((object)["delivery" => $uri], JSON_UNESCAPED_SLASHES));
+            $map->{$type} = base64_encode(json_encode((object)['delivery' => $uri], JSON_UNESCAPED_SLASHES));
         }
+
         return $map;
     }
 
@@ -102,5 +103,4 @@ class BuildE2eConfiguration extends AbstractAction
     {
         $this->getE2eConfigDriver()->setConfigPath((new PrepareEnvironment())->getConfigPath())->append($config);
     }
-
 }

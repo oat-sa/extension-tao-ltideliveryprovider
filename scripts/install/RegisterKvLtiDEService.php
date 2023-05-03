@@ -16,11 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2016  (original work) Open Assessment Technologies SA;
- *
  */
 
 namespace oat\ltiDeliveryProvider\scripts\install;
 
+use common_Exception;
 use common_exception_Error;
 use common_report_Report;
 use oat\ltiDeliveryProvider\model\execution\implementation\KvLtiDeliveryExecutionService;
@@ -31,16 +31,20 @@ use oat\oatbox\extension\InstallAction;
  *
  * usage :
  * sudo -u www-data php index.php 'oat\ltiDeliveryProvider\scripts\install\RegisterKvLtiDEService' redis
+ *
  * @package oat\ltiDeliveryProvider\scripts\install
+ *
  * @author Antoine Robin, <antoine@taotesting.com>
  */
 class RegisterKvLtiDEService extends InstallAction
 {
     /**
      * @param $params
-     * @return common_report_Report
-     * @throws \common_Exception
+     *
+     * @throws common_Exception
      * @throws common_exception_Error
+     *
+     * @return common_report_Report
      */
     public function __invoke($params)
     {
@@ -50,6 +54,7 @@ class RegisterKvLtiDEService extends InstallAction
         $persistenceId = reset($params);
         $ltiDeliveryExecution = new KvLtiDeliveryExecutionService([KvLtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE => 'cache', KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $persistenceId]);
         $this->getServiceManager()->register(KvLtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecution);
+
         return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('Registered Lti delivery execution service in Key value'));
     }
 }

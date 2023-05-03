@@ -16,29 +16,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
  */
 
 namespace oat\ltiDeliveryProvider\model\execution\implementation;
 
+use JsonSerializable;
 use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
 
 /**
  * Class KvLTIDeliveryExecutionLink
  * Key value implementation of LTIDeliveryExecutionLink
+ *
  * @package oat\ltiDeliveryProvider\model\execution\implementation
  */
-class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSerializable
+class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, JsonSerializable
 {
-
-
     private $userId;
     private $deliveryExecutionId;
     private $linkId;
 
     /**
      * KvLTIDeliveryExecutionLink constructor.
+     *
      * @param $userId
      * @param $deliveryExecutionId
      * @param $linkId
@@ -49,7 +48,6 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
         $this->deliveryExecutionId = $deliveryExecutionId;
         $this->linkId = $linkId;
     }
-
 
     /**
      * @return string
@@ -99,9 +97,9 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
         $this->linkId = $linkId;
     }
 
-
     /**
      * @param $values
+     *
      * @return KvLTIDeliveryExecutionLink[]
      */
     public static function unSerialize($values)
@@ -117,7 +115,6 @@ class KvLTIDeliveryExecutionLink implements LTIDeliveryExecutionLink, \JsonSeria
 
         return $links;
     }
-
 
     public function jsonSerialize()
     {
