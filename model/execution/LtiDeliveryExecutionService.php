@@ -44,7 +44,11 @@ interface LtiDeliveryExecutionService extends DeliveryExecutionDelete
      * @param string $userId
      * @return DeliveryExecution[]
      */
-    public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId);
+    public function getLinkedDeliveryExecutions(
+        \core_kernel_classes_Resource $delivery,
+        \core_kernel_classes_Resource $link,
+        $userId
+    );
 
     /**
      * Get delivery active execution by delivery for current user

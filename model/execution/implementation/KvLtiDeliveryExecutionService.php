@@ -151,7 +151,9 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      */
     protected function saveLinkReference($link, $userUri, $deliveryExecutionUri)
     {
-        $linksOfExecutionAndUser = $this->getPersistence()->get(static::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri);
+        $linksOfExecutionAndUser = $this->getPersistence()->get(
+            static::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri
+        );
 
         if (is_null($linksOfExecutionAndUser)) {
             $linksOfExecutionAndUser = [];
@@ -161,7 +163,10 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 
         $linksOfExecutionAndUser[] = $link;
 
-        return $this->getPersistence()->set(static::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri, json_encode($linksOfExecutionAndUser));
+        return $this->getPersistence()->set(
+            static::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri,
+            json_encode($linksOfExecutionAndUser)
+        );
     }
 
     /**
@@ -171,7 +176,9 @@ class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
      */
     protected function getDeliveryExecutionLinks($userUri, $deliveryExecutionUri)
     {
-        $linksOfExecutionAndUser = $this->getPersistence()->get(self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri);
+        $linksOfExecutionAndUser = $this->getPersistence()->get(
+            self::LINKS_OF_DELIVERY_EXECUTION . $userUri . $deliveryExecutionUri
+        );
 
         if (empty($linksOfExecutionAndUser)) {
             $linksOfExecutionAndUser = [];

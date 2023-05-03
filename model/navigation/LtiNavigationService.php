@@ -132,7 +132,11 @@ class LtiNavigationService extends ConfigurableService
      */
     protected function buildThankYouUrl(): string
     {
-        return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+        return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
+            'thankYou',
+            'DeliveryRunner',
+            'ltiDeliveryProvider'
+        );
     }
 
     /**

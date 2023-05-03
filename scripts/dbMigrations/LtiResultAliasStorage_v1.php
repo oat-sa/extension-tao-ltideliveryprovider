@@ -56,7 +56,14 @@ class LtiResultAliasStorage_v1
             $table = $schema->createTable(self::TABLE_NAME);
             $table->addOption('engine', 'MyISAM');
 
-            $table->addColumn(self::DELIVERY_EXECUTION_ID, "string", ["notnull" => true, 'comment' => 'Delivery Execution Identifier']);
+            $table->addColumn(
+                self::DELIVERY_EXECUTION_ID,
+                "string",
+                [
+                    "notnull" => true,
+                    'comment' => 'Delivery Execution Identifier'
+                ]
+            );
             $table->addColumn(self::RESULT_ID, "string", ["notnull" => true, 'comment' => 'Results Identifier']);
 
             $table->setPrimaryKey([self::DELIVERY_EXECUTION_ID]);

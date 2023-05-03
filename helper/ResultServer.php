@@ -28,8 +28,11 @@ use oat\oatbox\service\ServiceManager;
 
 class ResultServer
 {
-    public static function initLtiResultServer(core_kernel_classes_Resource $delivery, $executionIdentifier, $launchData)
-    {
+    public static function initLtiResultServer(
+        core_kernel_classes_Resource $delivery,
+        $executionIdentifier,
+        $launchData
+    ) {
         $options = [];
         if ($launchData->hasVariable("lis_result_sourcedid") && $launchData->hasVariable("lis_outcome_service_url")) {
             $options = [

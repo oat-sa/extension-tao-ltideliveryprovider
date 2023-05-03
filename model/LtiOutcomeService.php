@@ -44,7 +44,8 @@ class LtiOutcomeService extends ConfigurableService
     public function deferTransmit(DeliveryExecutionState $event)
     {
         if (
-            DeliveryExecutionInterface::STATE_FINISHIED === $event->getState() && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
+            DeliveryExecutionInterface::STATE_FINISHIED === $event->getState()
+            && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
             && common_session_SessionManager::getSession() instanceof TaoLtiSession
         ) {
 

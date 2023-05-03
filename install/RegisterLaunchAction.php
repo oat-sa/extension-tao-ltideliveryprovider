@@ -60,8 +60,14 @@ class RegisterLaunchAction extends AbstractAction
 
         /** @var EventManager $eventManager */
         $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-        $eventManager->attach(DeliveryExecutionState::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionStateChanged']);
-        $eventManager->attach(DeliveryExecutionCreated::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionCreated']);
+        $eventManager->attach(
+            DeliveryExecutionState::class,
+            [LtiDeliveryExecutionService::SERVICE_ID, 'executionStateChanged']
+        );
+        $eventManager->attach(
+            DeliveryExecutionCreated::class,
+            [LtiDeliveryExecutionService::SERVICE_ID, 'executionCreated']
+        );
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
         $metricsService = $this->getServiceManager()->get(MetricsService::class);
@@ -72,6 +78,9 @@ class RegisterLaunchAction extends AbstractAction
             activeExecutionsMetrics::OPTION_PERSISTENCE => 'cache'
         ]);
 
-        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('GetActiveDeliveryExecution action registered'));
+        return new \common_report_Report(
+            \common_report_Report::TYPE_SUCCESS,
+            __('GetActiveDeliveryExecution action registered')
+        );
     }
 }
