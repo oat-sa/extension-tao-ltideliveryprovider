@@ -60,7 +60,6 @@ use oat\taoQtiTest\models\TestCategoryPresetProvider;
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
-
     /**
      * @param string $initialVersion
      * @return string|void
@@ -367,7 +366,7 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('11.2.0', '11.2.1');
-        
+
         //Updater files are deprecated. Please use migrations.
         //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
 

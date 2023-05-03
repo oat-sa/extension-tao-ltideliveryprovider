@@ -31,9 +31,8 @@ use oat\ltiDeliveryProvider\model\execution\LTIDeliveryExecutionLink;
  */
 class OntologyLTIDeliveryExecutionLink extends \core_kernel_classes_Resource implements LTIDeliveryExecutionLink
 {
-
-    const CLASS_LTI_DELIVERYEXECUTION_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution';
-    const PROPERTY_LTI_DEL_EXEC_LINK_USER = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser';
-    const PROPERTY_LTI_DEL_EXEC_LINK_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink';
-    const PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution';
+    public const CLASS_LTI_DELIVERYEXECUTION_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution';
+    public const PROPERTY_LTI_DEL_EXEC_LINK_USER = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionUser';
+    public const PROPERTY_LTI_DEL_EXEC_LINK_LINK = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionLink';
+    public const PROPERTY_LTI_DEL_EXEC_LINK_EXEC_ID = 'http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution';
 }

@@ -35,12 +35,11 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
  */
 class KvLtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 {
+    public const OPTION_PERSISTENCE = 'persistence';
 
-    const OPTION_PERSISTENCE = 'persistence';
+    public const LTI_DE_LINK_LINK = 'kvlti_ll_';
 
-    const LTI_DE_LINK_LINK = 'kvlti_ll_';
-
-    const LINKS_OF_DELIVERY_EXECUTION = 'kvlti_links_de_';
+    public const LINKS_OF_DELIVERY_EXECUTION = 'kvlti_links_de_';
 
     /**
      * @var \common_persistence_KeyValuePersistence

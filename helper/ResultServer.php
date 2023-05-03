@@ -21,14 +21,13 @@
 
 namespace oat\ltiDeliveryProvider\helper;
 
-use \core_kernel_classes_Resource;
-use \common_session_SessionManager;
+use core_kernel_classes_Resource;
+use common_session_SessionManager;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\oatbox\service\ServiceManager;
 
 class ResultServer
 {
-
     public static function initLtiResultServer(core_kernel_classes_Resource $delivery, $executionIdentifier, $launchData)
     {
         $options = [];

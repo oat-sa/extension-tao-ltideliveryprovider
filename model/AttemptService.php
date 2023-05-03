@@ -33,7 +33,6 @@ use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
  */
 class AttemptService extends \oat\taoDelivery\model\AttemptService
 {
-
     /**
      * @inheritdoc
      */

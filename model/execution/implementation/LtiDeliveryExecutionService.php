@@ -32,7 +32,6 @@ use oat\taoDelivery\model\execution\ServiceProxy;
  */
 class LtiDeliveryExecutionService extends AbstractLtiDeliveryExecutionService
 {
-
     /**
      * Returns an array of DeliveryExecution
      *

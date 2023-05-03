@@ -34,7 +34,7 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
  */
 interface LtiDeliveryExecutionService extends DeliveryExecutionDelete
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
 
     /**
      * Get delivery executions linked to user and $link resource

@@ -35,9 +35,9 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class LtiResultAliasStorage_v1
 {
-    const TABLE_NAME = 'lti_result_identifiers';
-    const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
-    const RESULT_ID = 'result_id';
+    public const TABLE_NAME = 'lti_result_identifiers';
+    public const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
+    public const RESULT_ID = 'result_id';
 
     /**
      * Create table in database

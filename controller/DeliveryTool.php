@@ -60,21 +60,21 @@ class DeliveryTool extends ToolModule
      *
      * @var string
      */
-    const PARAM_FORCE_RESTART = 'custom_force_restart';
+    public const PARAM_FORCE_RESTART = 'custom_force_restart';
     /**
      * Setting this parameter to 'true' will prevent the thank you screen to be shown after
      * the test and skip directly to the return url
      *
      * @var string
      */
-    const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
+    public const PARAM_SKIP_THANKYOU = 'custom_skip_thankyou';
 
     /**
      * Setting this parameter to 'true' will prevent the 'You have already taken this test'
      * screen to be shown skip directly to the return url
      * @var string
      */
-    const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
+    public const PARAM_SKIP_OVERVIEW = 'custom_skip_overview';
 
     /**
      * Setting this parameter to a string will show this string as the title of the thankyou
@@ -82,7 +82,7 @@ class DeliveryTool extends ToolModule
      *
      * @var string
      */
-    const PARAM_THANKYOU_MESSAGE = 'custom_message';
+    public const PARAM_THANKYOU_MESSAGE = 'custom_message';
 
     /**
      * (non-PHPdoc)

@@ -43,8 +43,7 @@ use oat\tao\model\search\Search;
  */
 abstract class AbstractLtiDeliveryExecutionService extends ConfigurableService implements LtiDeliveryExecutionServiceInterface
 {
-
-    const OPTION_QUEUE_PERSISTENCE = 'queue_persistence';
+    public const OPTION_QUEUE_PERSISTENCE = 'queue_persistence';
 
     /**
      * @inheritdoc

@@ -32,7 +32,7 @@ use oat\taoLti\models\classes\TaoLtiSession;
 
 class LtiOutcomeService extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
 
     /**
      * @param DeliveryExecutionState $event

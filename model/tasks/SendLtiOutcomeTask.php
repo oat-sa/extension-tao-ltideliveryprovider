@@ -37,7 +37,7 @@ class SendLtiOutcomeTask extends AbstractAction
 {
     use LoggerAwareTrait;
 
-    const VARIABLE_IDENTIFIER = 'LtiOutcome';
+    public const VARIABLE_IDENTIFIER = 'LtiOutcome';
 
     public function __invoke($params)
     {

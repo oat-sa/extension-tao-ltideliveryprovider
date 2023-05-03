@@ -27,9 +27,9 @@ use oat\tao\helpers\UrlHelper;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
-use \tao_actions_CommonModule;
-use \core_kernel_classes_Resource;
-use \core_kernel_classes_Property;
+use tao_actions_CommonModule;
+use core_kernel_classes_Resource;
+use core_kernel_classes_Property;
 use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
 
 /**
@@ -42,7 +42,6 @@ use oat\taoDeliveryRdf\model\DeliveryAssemblyService;
  */
 class LinkConfiguration extends tao_actions_CommonModule
 {
-
     /**
      * Displays the form to select a delivery
      *
@@ -53,14 +52,14 @@ class LinkConfiguration extends tao_actions_CommonModule
      */
     protected function selectDelivery()
     {
-        
+
         $ltiSession = LtiService::singleton()->getLtiSession();
         if ($ltiSession->getLaunchData()->hasVariable(LtiLaunchData::RESOURCE_LINK_TITLE)) {
             $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(LtiLaunchData::RESOURCE_LINK_TITLE));
         }
         $this->setData('link', $ltiSession->getLtiLinkResource()->getUri());
         $this->setData('submitUrl', _url('setDelivery'));
-        
+
         $deliveries = DeliveryAssemblyService::singleton()->getAllAssemblies();
         if (count($deliveries) > 0) {
             $this->setData('deliveries', $deliveries);
@@ -80,7 +79,7 @@ class LinkConfiguration extends tao_actions_CommonModule
         $link->editPropertyValues(new core_kernel_classes_Property(LTIDeliveryTool::PROPERTY_LINK_DELIVERY), $compiled);
         $this->redirect(_url('showDelivery', null, null, ['uri' => $compiled->getUri()]));
     }
-    
+
     /**
      * Either displays the currently associated delivery
      * or calls selectDelivery in order to allow the user to select a delivery
@@ -99,7 +98,7 @@ class LinkConfiguration extends tao_actions_CommonModule
                 null,
                 ['uri' => $compiledDelivery->getUri()]
             );
-            
+
             $this->redirect($showDeliveryUrl);
         }
     }
@@ -117,17 +116,17 @@ class LinkConfiguration extends tao_actions_CommonModule
     {
         $delivery = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
         $this->setData('delivery', $delivery);
-        
+
         $ltiSession = LtiService::singleton()->getLtiSession();
         if ($ltiSession->getLaunchData()->hasVariable(LtiLaunchData::RESOURCE_LINK_TITLE)) {
             $this->setData('linkTitle', $ltiSession->getLaunchData()->getVariable(LtiLaunchData::RESOURCE_LINK_TITLE));
         }
-        
+
         if (ServiceProxy::singleton()->implementsMonitoring()) {
             $executions = ServiceProxy::singleton()->getExecutionsByDelivery($delivery);
             $this->setData('executionCount', count($executions));
         }
-        
+
         $this->setView('instructor/viewDelivery.tpl');
     }
 }

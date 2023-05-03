@@ -39,7 +39,6 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
  */
 class RegisterLaunchAction extends AbstractAction
 {
-
     /**
      * @param $params
      * @return \common_report_Report
