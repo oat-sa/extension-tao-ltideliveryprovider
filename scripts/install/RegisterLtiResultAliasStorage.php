@@ -44,7 +44,10 @@ class RegisterLtiResultAliasStorage extends \common_ext_action_InstallAction
         $storageService = new LtiResultAliasStorage([LtiResultAliasStorage::OPTION_PERSISTENCE => $persistenceId]);
         $this->getServiceManager()->register(LtiResultAliasStorage::SERVICE_ID, $storageService);
         $this->createTable($storageService->getPersistence());
-        return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('Registered and created LtiResultIdStorage Rds Storage'));
+        return new common_report_Report(
+            common_report_Report::TYPE_SUCCESS,
+            __('Registered and created LtiResultIdStorage Rds Storage')
+        );
     }
 
     /**

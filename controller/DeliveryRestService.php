@@ -30,7 +30,6 @@ use oat\tao\model\TaoOntology;
  */
 class DeliveryRestService extends \tao_actions_RestController
 {
-    
     /**
      * return a LTI link URI from a valid delivery id
      * @author Christophe GARCIA <christopheg@taotesing.com>

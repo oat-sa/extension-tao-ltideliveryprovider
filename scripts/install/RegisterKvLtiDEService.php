@@ -45,11 +45,20 @@ class RegisterKvLtiDEService extends InstallAction
     public function __invoke($params)
     {
         if (count($params) === 0) {
-            return new common_report_Report(common_report_Report::TYPE_ERROR, __('Please give the key value persistence id'));
+            return new common_report_Report(
+                common_report_Report::TYPE_ERROR,
+                __('Please give the key value persistence id')
+            );
         }
         $persistenceId = reset($params);
-        $ltiDeliveryExecution = new KvLtiDeliveryExecutionService([KvLtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE => 'cache', KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $persistenceId]);
+        $ltiDeliveryExecution = new KvLtiDeliveryExecutionService([
+            KvLtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE => 'cache',
+            KvLtiDeliveryExecutionService::OPTION_PERSISTENCE => $persistenceId
+        ]);
         $this->getServiceManager()->register(KvLtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecution);
-        return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('Registered Lti delivery execution service in Key value'));
+        return new common_report_Report(
+            common_report_Report::TYPE_SUCCESS,
+            __('Registered Lti delivery execution service in Key value')
+        );
     }
 }

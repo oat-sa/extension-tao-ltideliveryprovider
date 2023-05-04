@@ -45,8 +45,13 @@ class RegisterOntologyLtiDEService extends InstallAction
      */
     public function __invoke($params)
     {
-        $ltiDeliveryExecution = new LtiDeliveryExecutionService([LtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE => 'cache']);
+        $ltiDeliveryExecution = new LtiDeliveryExecutionService([
+            LtiDeliveryExecutionService::OPTION_QUEUE_PERSISTENCE => 'cache'
+        ]);
         $this->getServiceManager()->register(LtiDeliveryExecutionService::SERVICE_ID, $ltiDeliveryExecution);
-        return new common_report_Report(common_report_Report::TYPE_SUCCESS, __('Registered Lti delivery execution service in Ontology'));
+        return new common_report_Report(
+            common_report_Report::TYPE_SUCCESS,
+            __('Registered Lti delivery execution service in Ontology')
+        );
     }
 }

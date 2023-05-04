@@ -35,9 +35,9 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class LtiResultAliasStorage_v1
 {
-    const TABLE_NAME = 'lti_result_identifiers';
-    const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
-    const RESULT_ID = 'result_id';
+    public const TABLE_NAME = 'lti_result_identifiers';
+    public const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
+    public const RESULT_ID = 'result_id';
 
     /**
      * Create table in database
@@ -56,7 +56,14 @@ class LtiResultAliasStorage_v1
             $table = $schema->createTable(self::TABLE_NAME);
             $table->addOption('engine', 'MyISAM');
 
-            $table->addColumn(self::DELIVERY_EXECUTION_ID, "string", ["notnull" => true, 'comment' => 'Delivery Execution Identifier']);
+            $table->addColumn(
+                self::DELIVERY_EXECUTION_ID,
+                "string",
+                [
+                    "notnull" => true,
+                    'comment' => 'Delivery Execution Identifier'
+                ]
+            );
             $table->addColumn(self::RESULT_ID, "string", ["notnull" => true, 'comment' => 'Results Identifier']);
 
             $table->setPrimaryKey([self::DELIVERY_EXECUTION_ID]);

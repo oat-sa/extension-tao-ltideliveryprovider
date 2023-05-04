@@ -33,13 +33,13 @@ use oat\taoResultServer\models\classes\ResultAliasServiceInterface;
  */
 class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecutionDelete
 {
-    const OPTION_PERSISTENCE = 'persistence';
+    public const OPTION_PERSISTENCE = 'persistence';
 
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiResultIdStorage';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiResultIdStorage';
 
-    const TABLE_NAME = 'lti_result_identifiers';
-    const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
-    const RESULT_ID = 'result_id';
+    public const TABLE_NAME = 'lti_result_identifiers';
+    public const DELIVERY_EXECUTION_ID = 'delivery_execution_id';
+    public const RESULT_ID = 'result_id';
 
     /** @var \common_persistence_SqlPersistence */
     protected $persistence;
@@ -68,7 +68,10 @@ class LtiResultAliasStorage extends ConfigurableService implements DeliveryExecu
         $queryBuilder->delete($this->getTableName());
         $queryBuilder->where(self::RESULT_ID . '=:' . self::RESULT_ID);
         $queryBuilder->orWhere(self::DELIVERY_EXECUTION_ID . '=:' . self::DELIVERY_EXECUTION_ID);
-        $queryBuilder->setParameters([self::RESULT_ID => $resultId, self::DELIVERY_EXECUTION_ID => $deliveryExecutionId]);
+        $queryBuilder->setParameters([
+            self::RESULT_ID => $resultId,
+            self::DELIVERY_EXECUTION_ID => $deliveryExecutionId
+        ]);
         $queryBuilder->execute();
         return $this->getPersistence()->insert(self::TABLE_NAME, $data) === 1;
     }
