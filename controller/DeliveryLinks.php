@@ -39,7 +39,8 @@ class DeliveryLinks extends tao_actions_CommonModule
 {
     /**
      * Displays the LTI link for the consumer with respect to the currently selected delviery
-     * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome service impelmentation
+     * at tdelviery level, checks if the delviery is related to a resultserver cofnigured with the correct outcome
+     * service impelmentation
      * @author patrick <patrick@taotesting.com>
      */
     public function index()

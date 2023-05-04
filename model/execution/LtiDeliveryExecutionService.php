@@ -34,7 +34,7 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
  */
 interface LtiDeliveryExecutionService extends DeliveryExecutionDelete
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryExecution';
 
     /**
      * Get delivery executions linked to user and $link resource
@@ -44,7 +44,11 @@ interface LtiDeliveryExecutionService extends DeliveryExecutionDelete
      * @param string $userId
      * @return DeliveryExecution[]
      */
-    public function getLinkedDeliveryExecutions(\core_kernel_classes_Resource $delivery, \core_kernel_classes_Resource $link, $userId);
+    public function getLinkedDeliveryExecutions(
+        \core_kernel_classes_Resource $delivery,
+        \core_kernel_classes_Resource $link,
+        $userId
+    );
 
     /**
      * Get delivery active execution by delivery for current user

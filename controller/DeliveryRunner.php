@@ -47,7 +47,7 @@ use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 class DeliveryRunner extends DeliveryServer
 {
     use LtiModuleTrait;
-    
+
     /**
      * Defines if the top and bottom action menu should be displayed or not
      *
@@ -147,21 +147,24 @@ class DeliveryRunner extends DeliveryServer
     public function thankYou()
     {
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        
+
         if ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
         } elseif ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)) {
-            $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION));
+            $this->setData(
+                'consumerLabel',
+                $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_DESCRIPTION)
+            );
         }
-        
+
         if ($launchData->hasReturnUrl()) {
             $this->setData('returnUrl', $launchData->getReturnUrl());
         }
-        
+
         if ($launchData->hasVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE)) {
             $this->setData('message', $launchData->getVariable(DeliveryTool::PARAM_THANKYOU_MESSAGE));
         }
-        
+
         $this->setData('allowRepeat', false);
         $this->setView('learner/thankYou.tpl');
     }

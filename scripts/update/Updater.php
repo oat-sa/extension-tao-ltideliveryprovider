@@ -60,7 +60,6 @@ use oat\taoQtiTest\models\TestCategoryPresetProvider;
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
-
     /**
      * @param string $initialVersion
      * @return string|void
@@ -154,8 +153,14 @@ class Updater extends \common_ext_ExtensionUpdater
 
             /** @var EventManager $eventManager */
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-            $eventManager->attach(DeliveryExecutionState::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionStateChanged']);
-            $eventManager->attach(DeliveryExecutionCreated::class, [LtiDeliveryExecutionService::SERVICE_ID, 'executionCreated']);
+            $eventManager->attach(
+                DeliveryExecutionState::class,
+                [LtiDeliveryExecutionService::SERVICE_ID, 'executionStateChanged']
+            );
+            $eventManager->attach(
+                DeliveryExecutionCreated::class,
+                [LtiDeliveryExecutionService::SERVICE_ID, 'executionCreated']
+            );
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
             $this->setVersion('3.6.0');
@@ -224,7 +229,12 @@ class Updater extends \common_ext_ExtensionUpdater
                     DeliveryExecutionCounterService::OPTION_PERSISTENCE => 'cache'
                 ])
             );
-            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence of ' . DeliveryExecutionCounterInterface::SERVICE_ID . ' to common one'));
+            $this->addReport(
+                new Report(
+                    Report::TYPE_WARNING,
+                    'Set persistence of ' . DeliveryExecutionCounterInterface::SERVICE_ID . ' to common one'
+                )
+            );
             $this->setVersion('6.2.0');
         }
 
@@ -287,7 +297,12 @@ class Updater extends \common_ext_ExtensionUpdater
             $metricService->setOption(MetricsService::OPTION_METRICS, [activeExecutionsMetrics::class => $limitMetric]);
             $this->getServiceManager()->register(MetricsService::SERVICE_ID, $metricService);
 
-            $this->addReport(new Report(Report::TYPE_WARNING, 'Set persistence named *metricsCache* to common one ( like redis )'));
+            $this->addReport(
+                new Report(
+                    Report::TYPE_WARNING,
+                    'Set persistence named *metricsCache* to common one ( like redis )'
+                )
+            );
 
             $this->setVersion('6.4.2');
         }
@@ -348,7 +363,9 @@ class Updater extends \common_ext_ExtensionUpdater
                 $actionQueueService = $this->getServiceManager()->get(ActionQueue::SERVICE_ID);
                 $options = $actionQueueService->getOptions();
                 if (isset($options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'])) {
+                    // phpcs:disable Generic.Files.LineLength
                     $restrictions = $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'];
+                    // phpcs:enable Generic.Files.LineLength
 
                     $renamedClassname = 'oat\\ltiDeliveryProvider\\model\\metrics\\activeLimitRestriction';
                     if (isset($restrictions[$renamedClassname])) {
@@ -357,7 +374,9 @@ class Updater extends \common_ext_ExtensionUpdater
                         $restrictions[ActiveLimitRestriction::class] = $restrictionOptions;
                     }
 
+                    // phpcs:disable Generic.Files.LineLength
                     $options[ActionQueue::OPTION_ACTIONS][GetActiveDeliveryExecution::class]['restrictions'] = $restrictions;
+                    // phpcs:enable Generic.Files.LineLength
                     $actionQueueService->setOptions($options);
                     $this->getServiceManager()->register(ActionQueue::SERVICE_ID, $actionQueueService);
                 }
@@ -367,7 +386,7 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('11.2.0', '11.2.1');
-        
+
         //Updater files are deprecated. Please use migrations.
         //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
 

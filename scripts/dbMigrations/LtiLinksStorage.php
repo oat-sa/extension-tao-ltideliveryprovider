@@ -39,11 +39,16 @@ class LtiLinksStorage extends InstallAction
         /** @var LtiDeliveryExecutionService  $ltiDeliveryExecution */
         $ltiDeliveryExecution = $this->getServiceLocator()->get('ltiDeliveryProvider/LtiDeliveryExecution');
         if (!$ltiDeliveryExecution instanceof KvLtiDeliveryExecutionService) {
-            return new \common_report_Report(\common_report_Report::TYPE_ERROR, ' migration only available for KvLtiDeliveryExecutionService');
+            return new \common_report_Report(
+                \common_report_Report::TYPE_ERROR,
+                ' migration only available for KvLtiDeliveryExecutionService'
+            );
         }
         $migrated = false;
         $persistenceOption = $ltiDeliveryExecution->getOption(KvLtiDeliveryExecutionService::OPTION_PERSISTENCE);
-        $persistence = (is_object($persistenceOption)) ? $persistenceOption : \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
+        $persistence = (is_object($persistenceOption))
+            ? $persistenceOption
+            : \common_persistence_KeyValuePersistence::getPersistence($persistenceOption);
         $keys = $persistence->getDriver()->keys(KvLtiDeliveryExecutionService::LTI_DE_LINK_LINK . '*');
 
         foreach ($keys as $key) {
@@ -54,7 +59,8 @@ class LtiLinksStorage extends InstallAction
             $objects = $ltiDeliveryExecutionLinks = KvLTIDeliveryExecutionLink::unSerialize($data);
             /** @var KvLTIDeliveryExecutionLink $object */
             foreach ($objects as $object) {
-                $linkKey = KvLtiDeliveryExecutionService::LINKS_OF_DELIVERY_EXECUTION . $object->getUserId() . $object->getDeliveryExecutionId();
+                $linkKey = KvLtiDeliveryExecutionService::LINKS_OF_DELIVERY_EXECUTION . $object->getUserId()
+                    . $object->getDeliveryExecutionId();
                 $linksOfExecutionAndUser = $persistence->get($linkKey);
 
                 if (is_null($linksOfExecutionAndUser)) {

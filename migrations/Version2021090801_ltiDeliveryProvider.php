@@ -31,6 +31,6 @@ final class Version2021090801_ltiDeliveryProvider extends AbstractMigration
 
     private function getRule(): AccessRule
     {
-        return new AccessRule(AccessRule::GRANT, TaoRoles::ANONYMOUS, DeliveryTool::class.'@launch1p3');
+        return new AccessRule(AccessRule::GRANT, TaoRoles::ANONYMOUS, DeliveryTool::class . '@launch1p3');
     }
 }

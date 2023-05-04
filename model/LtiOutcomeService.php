@@ -32,7 +32,7 @@ use oat\taoLti\models\classes\TaoLtiSession;
 
 class LtiOutcomeService extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiOutcome';
 
     /**
      * @param DeliveryExecutionState $event
@@ -44,7 +44,8 @@ class LtiOutcomeService extends ConfigurableService
     public function deferTransmit(DeliveryExecutionState $event)
     {
         if (
-            DeliveryExecutionInterface::STATE_FINISHIED === $event->getState() && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
+            DeliveryExecutionInterface::STATE_FINISHIED === $event->getState()
+            && DeliveryExecutionInterface::STATE_FINISHIED !== $event->getPreviousState()
             && common_session_SessionManager::getSession() instanceof TaoLtiSession
         ) {
 

@@ -33,7 +33,7 @@ use RuntimeException;
  */
 class LtiLaunchDataService extends ConfigurableService
 {
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiLaunchData';
 
     /**
      * @param LtiLaunchData $launchData

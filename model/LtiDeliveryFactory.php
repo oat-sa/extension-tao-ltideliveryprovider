@@ -30,7 +30,7 @@ class LtiDeliveryFactory extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryFactory';
+    public const SERVICE_ID = 'ltiDeliveryProvider/LtiDeliveryFactory';
 
     /**
      * @param string $uri
