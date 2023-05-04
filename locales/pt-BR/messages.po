@@ -1,0 +1,159 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /ltiDeliveryProvider/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 1221\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+msgid "%s Tool Provider"
+msgstr "%s Aplicação Externa"
+
+msgid "%s\" has been configured:"
+msgstr "%s\" foi configurado:"
+
+msgid "Access to this functionality is restricted"
+msgstr "O acesso a esta funcionalidade é restrito"
+
+msgid "Access to this functionality is restricted to students"
+msgstr "O acesso a esta funcionalidade é restrito aos alunos"
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr "Um número elevado de pessoas está fazendo o exame agora. Seu exame será lançado em alguns instantes para garantir que funcione sem problemas. Obrigado pela sua paciência!"
+
+msgid "Attempts limit has been reached."
+msgstr "Atingiu o limite de tentativas."
+
+msgid "Available Deliveries"
+msgstr "Exames disponíveis"
+
+msgid "Back"
+msgstr "Voltar"
+
+msgid "Click on the back button to return to %s."
+msgstr "Clique no botão voltar para retornar %s."
+
+msgid "Click on the back button to return."
+msgstr "Clique no botão voltar para retornar."
+
+msgid "Configured LTI Link"
+msgstr "Link LTI configurado"
+
+msgid "Copy and paste the following URL into your LTI compatible tool consumer."
+msgstr "Copie e cole a seguinte URL para o consumidor de ferramenta compatível com LTI."
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Exames"
+
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr "O exame não existe. Entre em contato com seu instrutor."
+
+msgid "Executions"
+msgstr "Intentos"
+
+msgid "Launch URL"
+msgstr "URL de Lançamento"
+
+#, tao-public
+msgid "LTI"
+msgstr "LTI"
+
+msgid "max_attempts\" variable must me numeric."
+msgstr "A variável max_attempts\" deve ser numérica."
+
+msgid "No deliveries available"
+msgstr "Não há exames disponíveis"
+
+msgid "No LTI consumers defined"
+msgstr "Nenhum consumidor LTI definido"
+
+msgid "no monitoring"
+msgstr "sem monitoramento"
+
+msgid "Please give the key value persistence id"
+msgstr "Por favor, informe o ID de persistência do valor principal"
+
+msgid "Please select a delivery"
+msgstr "Por favor, selecione um exame"
+
+msgid "Please select a delivery for \"%s"
+msgstr "Por favor, selecione um exame para \"%s"
+
+msgid "Registered activeExecutions metric"
+msgstr "Métrica de activeExecutions registrada"
+
+msgid "Registered and created LtiResultIdStorage Rds Storage"
+msgstr "Registrado e criado Armazenamento de Rds LtiResultIdStorage"
+
+msgid "Registered and created ResultAliasService / LtiOutcomeService services"
+msgstr "Registrado e criado ResultAliasService / LtiOutcomeService"
+
+msgid "Registered Lti delivery execution service in Key value"
+msgstr "Execução de entrega de Lti registrada no valor chave"
+
+msgid "Registered Lti delivery execution service in Ontology"
+msgstr "Serviço de execução de entrega Lti registrado na Ontology"
+
+msgid "Repeat"
+msgstr "Repetir"
+
+msgid "Repeat the test"
+msgstr "Repetir o teste"
+
+msgid "Retake the test"
+msgstr "Fazer o teste novamente"
+
+msgid "Return to %s."
+msgstr "Retornar para %s."
+
+msgid "Select"
+msgstr "Selecionar"
+
+msgid "Select Delivery"
+msgstr "Selecione o exame"
+
+msgid "Selected Delivery"
+msgstr "Exame Selecionado"
+
+msgid "Test Launch Queue"
+msgstr "Fila de Lançamento do Teste"
+
+msgid "Thank you"
+msgstr "Obrigado"
+
+msgid "This tool has been configured:"
+msgstr "Esta ferramenta foi configurada:"
+
+msgid "This tool has not yet been configured, please contact your instructor"
+msgstr "Esta ferramenta ainda não foi configurada, por favor contate seu instrutor"
+
+msgid "Tool consumer(s)"
+msgstr "Ferramenta de consumidor(es)"
+
+msgid "User is not authorized to run this delivery"
+msgstr "O usuário não está autorizado a executar este exame"
+
+msgid "Wrong value of \"secure\" variable."
+msgstr "Valor incorreto da variável \"secure\"."
+
+msgid "You have already taken this test."
+msgstr "Você já fez este teste."
+
+msgid "You have finished the test!"
+msgstr "Você terminou o teste!"
+
