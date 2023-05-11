@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /ltiDeliveryProvider/locales/en-US/deliverytool.rdf.po\n"
+"X-Crowdin-File-ID: 1219\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "LTI Delivery Execution Tool"
+msgstr "Ferramenta de Execução de Exames LTI"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Tool to allow test takers to take a delivery from within an tool consumer."
+msgstr "Ferramenta para permitir que os candidatos realizem uma avaliação a partir de uma ferramenta de externa."
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecutionExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Linked delivery"
+msgstr "Avaliação vinculada"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "LTI Delivery Link Execution"
+msgstr "LTI Link de execução da avaliação"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Link between delivery Tool and Consumer"
+msgstr "Link entre a aplicação de avaliações e a aplicação externa"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "LTI Delivery Execution Tool"
+msgstr "Ferramenta de Execução de Exames LTI"
+
+# http://www.tao.lu/Ontologies/TAOLTI.rdf#LinkDeliveryExecution
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "LTI Delivery Link Execution"
+msgstr "LTI Link de execução da avaliação"
+

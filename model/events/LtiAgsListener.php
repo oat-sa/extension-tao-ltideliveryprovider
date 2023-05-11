@@ -86,6 +86,10 @@ class LtiAgsListener extends ConfigurableService
     public function onDeliveryExecutionResultsRecalculated(DeliveryExecutionResultsRecalculated $event): void
     {
         $deliveryExecution = $event->getDeliveryExecution();
+        $gradingStatus = ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL;
+        if ($event->isFullyGraded()) {
+            $gradingStatus = ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED;
+        }
 
         if ($launchData = $this->getLtiContextRepository()->findByDeliveryExecution($deliveryExecution)) {
             $this->queueSendAgsScoreTaskWithScores(
@@ -94,7 +98,8 @@ class LtiAgsListener extends ConfigurableService
                 $deliveryExecution,
                 $event->getTotalScore(),
                 $event->getTotalMaxScore(),
-                ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED //todo pass actual status
+                $gradingStatus,
+                $event->getGradingTimestamp()
             );
         }
     }
@@ -154,7 +159,8 @@ class LtiAgsListener extends ConfigurableService
         DeliveryExecutionInterface $deliveryExecution,
         $scoreTotal,
         $scoreTotalMax,
-        string $gradingStatus
+        string $gradingStatus,
+        ?int $gradingTimestamp = null
     ): void {
 
         if (!$ltiLaunchData->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
@@ -165,9 +171,7 @@ class LtiAgsListener extends ConfigurableService
         $registrationId = $ltiLaunchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_ID);
         $userId = $deliveryExecution->getUserIdentifier();
 
-        /** @var QueueDispatcherInterface $taskQueue */
-        $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
-        $taskQueue->createTask(new SendAgsScoreTask(), [
+        $taskBody = [
             'retryMax' => $this->getAgsMaxRetries(),
             'registrationId' => $registrationId,
             'deliveryExecutionId' => $deliveryExecution->getIdentifier(),
@@ -179,7 +183,15 @@ class LtiAgsListener extends ConfigurableService
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
             ]
-        ], $taskLabel);
+        ];
+
+        if ($gradingTimestamp !== null) {
+            $taskBody['data']['timestamp'] = date('Y-m-d H:i:s', $gradingTimestamp);
+        }
+
+        /** @var QueueDispatcherInterface $taskQueue */
+        $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+        $taskQueue->createTask(new SendAgsScoreTask(), $taskBody, $taskLabel);
     }
 
     private function isManualScored(AssessmentTestSession $session): bool
