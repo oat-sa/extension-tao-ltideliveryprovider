@@ -99,7 +99,7 @@ class LtiAgsListener extends ConfigurableService
                 $event->getTotalScore(),
                 $event->getTotalMaxScore(),
                 $gradingStatus,
-                $event->getGradingTimestamp()
+                $event->getTimestamp()
             );
         }
     }
