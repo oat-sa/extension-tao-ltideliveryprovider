@@ -104,7 +104,8 @@ class SendLtiOutcomeTask extends AbstractAction
         //Hack for moodle compatibility, the header is ignored for the signature computation
         $signedRequest->setHeader("Content-Type", "application/xml");
 
-        $response = $signedRequest->send();
+        $followRedirects = true;
+        $response = $signedRequest->send($followRedirects);
 
         if ('200' != $response->httpCode) {
             $this->logWarning("Request sent (Body)\n" . $signedRequest->getBody() . "\n");
