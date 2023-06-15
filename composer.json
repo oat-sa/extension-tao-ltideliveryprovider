@@ -62,7 +62,7 @@
     "minimum-stability" : "dev",
     "require": {
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-		"oat-sa/generis" : ">=14.0.0",
+		"oat-sa/generis" : ">=15.5.2.1",
 		"oat-sa/tao-core" : ">=47.0.0",
 		"oat-sa/extension-tao-delivery" : ">=15.0.0",
 		"oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
