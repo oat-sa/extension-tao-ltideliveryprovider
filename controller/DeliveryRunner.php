@@ -75,6 +75,8 @@ class DeliveryRunner extends DeliveryServer
 
     public function ltiReturn()
     {
+        //FIXME @TODO Here it returns the http://backoffice.docker.localhost/ltiDeliveryProvider/DeliveryRunner/thankYou
+        //FIXME @TODO At this part
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
@@ -167,6 +169,17 @@ class DeliveryRunner extends DeliveryServer
 
         $this->setData('allowRepeat', false);
         $this->setView('learner/thankYou.tpl');
+    }
+
+    /**
+     * @throws LtiException
+     * @throws \common_exception_Error
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     */
+    public function feedback(): void
+    {
+        //@TODO Proper feedback based on the ticket ACs
+        $this->setView('learner/feedback.tpl');
     }
 
     /**

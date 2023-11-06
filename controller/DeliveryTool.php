@@ -24,6 +24,7 @@ use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
+use oat\generis\model\data\Ontology;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
@@ -103,6 +104,16 @@ class DeliveryTool extends ToolModule
     public function run()
     {
         $compiledDelivery = $this->getDelivery();
+
+        //FIXME
+        //FIXME
+        // @TODO Pause the previous delivery for the same user in case it is active
+//        $currentDeliveryExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+//        $this->getStateService()->pause($currentDeliveryExecution);
+        //FIXME
+        //FIXME
+        //FIXME
+
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // user authorised to select the Delivery
@@ -307,9 +318,14 @@ class DeliveryTool extends ToolModule
      */
     protected function getDelivery()
     {
+        /** @var Ontology $ontology */
+        $ontology = $this->getServiceManager()->get(Ontology::SERVICE_ID);
+
         //passed as a parameter
         if ($this->hasRequestParameter('delivery')) {
-            $returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
+            $returnValue = $ontology->getResource($this->getRequestParameter('delivery'));
+
+            //$returnValue = new core_kernel_classes_Resource($this->getRequestParameter('delivery'));
         } else {
             $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
 

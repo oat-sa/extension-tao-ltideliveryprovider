@@ -76,6 +76,8 @@ class LtiNavigationService extends ConfigurableService
         LtiLaunchData $launchData,
         DeliveryExecutionInterface $deliveryExecution
     ): string {
+        //FIXME @TODO Here it returns the http://backoffice.docker.localhost/ltiDeliveryProvider/DeliveryRunner/thankYou
+        // @TODO We may need to find a way to return the new feedback page instead...
         $urlParts = parse_url($launchData->getReturnUrl());
         $port = empty($urlParts['port']) ? '' : (':' . $urlParts['port']);
         $path = $urlParts['path'] ?? '';
