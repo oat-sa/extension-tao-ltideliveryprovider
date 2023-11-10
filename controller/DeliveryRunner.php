@@ -78,11 +78,6 @@ class DeliveryRunner extends DeliveryServer
         );
     }
 
-    private function getRuntimeService(): RuntimeService
-    {
-        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID);
-    }
-
     public function ltiReturn()
     {
         //FIXME @TODO Here it returns the http://backoffice.docker.localhost/ltiDeliveryProvider/DeliveryRunner/thankYou
@@ -90,37 +85,12 @@ class DeliveryRunner extends DeliveryServer
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
 
-        // @todo copypasted from class.Runner.php
-        $container = $this->getRuntimeService()->getDeliveryContainer(
-            $deliveryExecution->getDelivery()->getUri()
-        );
-        if (!$container instanceof QtiTestDeliveryContainer) {
-            throw new common_Exception(
-                'Non QTI test container ' . get_class($container) . ' in qti test runner'
-            );
-        }
-        $testDefinition = $container->getSourceTest($deliveryExecution);
-        $testCompilation = sprintf(
-            '%s|%s',
-            $container->getPrivateDirId($deliveryExecution),
-            $container->getPublicDirId($deliveryExecution)
-        );
-
-        $testContext = $this->getRunnerService()->getTestContext(
-            $this->getRunnerService()->getServiceContext(
-                $testDefinition,
-                $testCompilation,
-                $deliveryExecution->getIdentifier()
-            )
-        );
-
         $reason = null;
         if ($this->hasSessionAttribute('pauseReason')) {
             $reason = ($this->getSessionAttribute('pauseReason') ?? '');
         }
 
         if ($reason === taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
-
             die('ltiReturn due to a pause caused by concurrent tests');
         }
 
