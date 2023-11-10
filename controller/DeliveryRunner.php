@@ -22,10 +22,12 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_Exception;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoDelivery\model\execution\ServiceProxy;
+use oat\taoDelivery\model\RuntimeService;
 use oat\taoLti\controller\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
@@ -36,6 +38,9 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\taoQtiTest\models\container\QtiTestDeliveryContainer;
+use oat\taoQtiTest\models\runner\QtiRunnerService;
+use taoQtiTest_actions_Runner;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -73,12 +78,52 @@ class DeliveryRunner extends DeliveryServer
         );
     }
 
+    private function getRuntimeService(): RuntimeService
+    {
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID);
+    }
+
     public function ltiReturn()
     {
         //FIXME @TODO Here it returns the http://backoffice.docker.localhost/ltiDeliveryProvider/DeliveryRunner/thankYou
         //FIXME @TODO At this part
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
+
+        // @todo copypasted from class.Runner.php
+        $container = $this->getRuntimeService()->getDeliveryContainer(
+            $deliveryExecution->getDelivery()->getUri()
+        );
+        if (!$container instanceof QtiTestDeliveryContainer) {
+            throw new common_Exception(
+                'Non QTI test container ' . get_class($container) . ' in qti test runner'
+            );
+        }
+        $testDefinition = $container->getSourceTest($deliveryExecution);
+        $testCompilation = sprintf(
+            '%s|%s',
+            $container->getPrivateDirId($deliveryExecution),
+            $container->getPublicDirId($deliveryExecution)
+        );
+
+        $testContext = $this->getRunnerService()->getTestContext(
+            $this->getRunnerService()->getServiceContext(
+                $testDefinition,
+                $testCompilation,
+                $deliveryExecution->getIdentifier()
+            )
+        );
+
+        $reason = null;
+        if ($this->hasSessionAttribute('pauseReason')) {
+            $reason = ($this->getSessionAttribute('pauseReason') ?? '');
+        }
+
+        if ($reason === taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
+
+            die('ltiReturn due to a pause caused by concurrent tests');
+        }
+
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
         $redirectUrl = $navigation->getReturnUrl($launchData, $deliveryExecution);
         \common_Logger::i(
@@ -89,6 +134,15 @@ class DeliveryRunner extends DeliveryServer
             )
         );
         $this->redirect($redirectUrl);
+    }
+
+    /**
+     * @return QtiRunnerService
+     */
+    protected function getRunnerService()
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->getServiceLocator()->get(QtiRunnerService::SERVICE_ID);
     }
 
     /**
