@@ -15,14 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
+ * Copyright (c) 2013-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
 use common_Exception;
+use common_exception_Error;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
@@ -32,6 +31,7 @@ use oat\taoLti\controller\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
+use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoLti\models\classes\theme\LtiHeadless;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -80,43 +80,28 @@ class DeliveryRunner extends DeliveryServer
 
     public function ltiReturn()
     {
-        //FIXME @TODO Here it returns the http://backoffice.docker.localhost/ltiDeliveryProvider/DeliveryRunner/thankYou
-        //FIXME @TODO At this part
-        $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
 
-        $reason = null;
-        if ($this->hasSessionAttribute('pauseReason')) {
-            $reason = ($this->getSessionAttribute('pauseReason') ?? '');
-        }
+        $launchData = $this->getLtiService()->getLtiSession()->getLaunchData();
+        $redirectUrl = $this->getNavigationService()->getReturnUrl(
+            $launchData,
+            $deliveryExecution,
+            $this->getPauseReason()
+        );
 
-        if ($reason === taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
-            die('ltiReturn due to a pause caused by concurrent tests');
-        }
-
-        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        $redirectUrl = $navigation->getReturnUrl($launchData, $deliveryExecution);
-        \common_Logger::i(
+        $this->getLogger()->info(
             sprintf(
                 'Redirected from the deliveryExecution %s to %s',
                 $deliveryExecution->getIdentifier(),
                 $redirectUrl
             )
         );
+
         $this->redirect($redirectUrl);
     }
 
     /**
-     * @return QtiRunnerService
-     */
-    protected function getRunnerService()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->getServiceLocator()->get(QtiRunnerService::SERVICE_ID);
-    }
-
-    /**
-     * Shown uppon returning to a finished delivery execution
+     * Shown upon returning to a finished delivery execution
      */
     public function ltiOverview()
     {
@@ -129,15 +114,15 @@ class DeliveryRunner extends DeliveryServer
      * @throws LtiException
      * @throws \InterruptedActionException
      * @throws \ResolverException
-     * @throws \common_exception_Error
+     * @throws common_exception_Error
      * @throws \common_exception_IsAjaxAction
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     * @throws LtiVariableMissingException
      */
     public function repeat()
     {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
 
-        $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
+        $remoteLink = $this->getLtiService()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
 
         try {
@@ -167,12 +152,12 @@ class DeliveryRunner extends DeliveryServer
 
     /**
      * @throws LtiException
-     * @throws \common_exception_Error
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
+     * @throws common_exception_Error
+     * @throws LtiVariableMissingException
      */
     public function thankYou()
     {
-        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
+        $launchData = $this->getLtiService()->getLtiSession()->getLaunchData();
 
         if ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
@@ -195,14 +180,12 @@ class DeliveryRunner extends DeliveryServer
         $this->setView('learner/thankYou.tpl');
     }
 
-    /**
-     * @throws LtiException
-     * @throws \common_exception_Error
-     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
-     */
     public function feedback(): void
     {
-        //@TODO Proper feedback based on the ticket ACs
+        if ($this->getPauseReason() ===  taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
+            $this->setData('reason', 'concurrent-test');
+        }
+
         $this->setView('learner/feedback.tpl');
     }
 
@@ -223,5 +206,24 @@ class DeliveryRunner extends DeliveryServer
         }
         $redirectUrl = $this->getServiceLocator()->get(LTIDeliveryTool::class)->getFinishUrl($deliveryExecution);
         $this->redirect($redirectUrl);
+    }
+
+    private function getPauseReason(): ?string
+    {
+        if ($this->hasSessionAttribute('pauseReason')) {
+            return ($this->getSessionAttribute('pauseReason') ?? null);
+        }
+
+        return null;
+    }
+
+    private function getLtiService(): LtiService
+    {
+        return LtiService::singleton();
+    }
+
+    private function getNavigationService(): LtiNavigationService
+    {
+        return $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
     }
 }

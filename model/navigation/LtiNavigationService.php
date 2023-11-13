@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\navigation;
 
+use common_exception_NotFound;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
@@ -32,6 +33,7 @@ use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
+use taoQtiTest_actions_Runner;
 
 class LtiNavigationService extends ConfigurableService
 {
@@ -46,38 +48,36 @@ class LtiNavigationService extends ConfigurableService
      */
     public const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
-
     /**
-     * @param LtiLaunchData $launchData
-     * @param DeliveryExecutionInterface $deliveryExecution
-     * @return string
-     * @throws \common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      * @throws LtiException
+     * @throws common_exception_NotFound
      */
-    public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution): string
-    {
+    public function getReturnUrl(
+        LtiLaunchData $launchData,
+        DeliveryExecutionInterface $deliveryExecution,
+        ?string $pauseReason = null
+    ): string {
+        if ($pauseReason ===  taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
+            return $this->buildFeedbackUrl();
+        }
+
         return $this->shouldShowThankYou($launchData)
             ? $this->buildThankYouUrl()
             : $this->buildConsumerReturnUrl($launchData, $deliveryExecution);
     }
 
     /**
-     * @param LtiLaunchData $launchData
-     * @param DeliveryExecutionInterface $deliveryExecution
-     * @return string
-     * @throws \common_exception_NotFound
+     * @throws common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      * @throws LtiException
      */
     protected function buildConsumerReturnUrl(
         LtiLaunchData $launchData,
-        DeliveryExecutionInterface $deliveryExecution
+        DeliveryExecutionInterface $deliveryExecution,
     ): string {
-        //FIXME @TODO Here it returns the http://backoffice.docker.localhost/ltiDeliveryProvider/DeliveryRunner/thankYou
-        // @TODO We may need to find a way to return the new feedback page instead...
         $urlParts = parse_url($launchData->getReturnUrl());
         $port = empty($urlParts['port']) ? '' : (':' . $urlParts['port']);
         $path = $urlParts['path'] ?? '';
@@ -89,7 +89,7 @@ class LtiNavigationService extends ConfigurableService
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
      * @return array
-     * @throws \common_exception_NotFound
+     * @throws common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      */
@@ -129,23 +129,21 @@ class LtiNavigationService extends ConfigurableService
         return $this->getOption(self::OPTION_THANK_YOU_SCREEN);
     }
 
-    /**
-     * @return string
-     */
     protected function buildThankYouUrl(): string
     {
-        return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
-            'thankYou',
-            'DeliveryRunner',
-            'ltiDeliveryProvider'
-        );
+        return $this->getUrlHelper()->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
+    }
+
+    protected function buildFeedbackUrl(): string
+    {
+        return $this->getUrlHelper()->buildUrl('feedback', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param array $urlParts
      * @return array
-     * @throws \common_exception_NotFound
+     * @throws common_exception_NotFound
      */
     private function buildConsumerReturnUrlQuery(DeliveryExecutionInterface $deliveryExecution, array $urlParts): string
     {
@@ -172,7 +170,7 @@ class LtiNavigationService extends ConfigurableService
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param $params
      * @return mixed
-     * @throws \common_exception_NotFound
+     * @throws common_exception_NotFound
      */
     private function getDeliveryReturnQueryParams(DeliveryExecutionInterface $deliveryExecution): array
     {
@@ -194,5 +192,10 @@ class LtiNavigationService extends ConfigurableService
     private function getReturnUrlIdParams(): array
     {
         return ['returnUrlId' => \helpers_Random::generateString(10)];
+    }
+
+    private function getUrlHelper(): UrlHelper
+    {
+        return $this->getServiceLocator()->get(UrlHelper::class);
     }
 }
