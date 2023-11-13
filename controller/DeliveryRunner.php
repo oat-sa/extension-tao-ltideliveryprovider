@@ -20,13 +20,11 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
-use common_Exception;
 use common_exception_Error;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
 use oat\taoDelivery\model\execution\ServiceProxy;
-use oat\taoDelivery\model\RuntimeService;
 use oat\taoLti\controller\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
@@ -39,9 +37,6 @@ use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\taoQtiTest\model\Service\PauseService;
-use oat\taoQtiTest\models\container\QtiTestDeliveryContainer;
-use oat\taoQtiTest\models\runner\QtiRunnerService;
-use taoQtiTest_actions_Runner;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
