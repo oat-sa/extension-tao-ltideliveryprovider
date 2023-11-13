@@ -33,6 +33,7 @@ use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
+use oat\taoQtiTest\model\Service\PauseService;
 use taoQtiTest_actions_Runner;
 
 class LtiNavigationService extends ConfigurableService
@@ -59,7 +60,7 @@ class LtiNavigationService extends ConfigurableService
         DeliveryExecutionInterface $deliveryExecution,
         ?string $pauseReason = null
     ): string {
-        if ($pauseReason ===  taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
+        if ($pauseReason ===  PauseService::PAUSE_REASON_CONCURRENT_TEST) {
             return $this->buildFeedbackUrl();
         }
 

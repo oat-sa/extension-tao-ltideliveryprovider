@@ -38,6 +38,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\taoQtiTest\model\Service\PauseService;
 use oat\taoQtiTest\models\container\QtiTestDeliveryContainer;
 use oat\taoQtiTest\models\runner\QtiRunnerService;
 use taoQtiTest_actions_Runner;
@@ -182,7 +183,7 @@ class DeliveryRunner extends DeliveryServer
 
     public function feedback(): void
     {
-        if ($this->getPauseReason() ===  taoQtiTest_actions_Runner::PAUSE_REASON_CONCURRENT_TEST) {
+        if ($this->getPauseReason() ===  PauseService::PAUSE_REASON_CONCURRENT_TEST) {
             $this->setData('reason', 'concurrent-test');
         }
 
