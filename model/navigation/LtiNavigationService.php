@@ -76,7 +76,7 @@ class LtiNavigationService extends ConfigurableService
      */
     protected function buildConsumerReturnUrl(
         LtiLaunchData $launchData,
-        DeliveryExecutionInterface $deliveryExecution,
+        DeliveryExecutionInterface $deliveryExecution
     ): string {
         $urlParts = parse_url($launchData->getReturnUrl());
         $port = empty($urlParts['port']) ? '' : (':' . $urlParts['port']);
