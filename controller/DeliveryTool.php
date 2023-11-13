@@ -24,7 +24,6 @@ use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
-use oat\generis\model\data\Ontology;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
