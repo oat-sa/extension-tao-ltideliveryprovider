@@ -160,7 +160,7 @@ class LtiAgsListener extends ConfigurableService
         $scoreTotal,
         $scoreTotalMax,
         string $gradingStatus,
-        ?int $gradingTimestamp = null
+        ?string $timestamp = null
     ): void {
 
         if (!$ltiLaunchData->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
@@ -182,12 +182,9 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
+                'timestamp' => $timestamp,
             ]
         ];
-
-        if ($gradingTimestamp !== null) {
-            $taskBody['data']['timestamp'] = date('Y-m-d H:i:s', $gradingTimestamp);
-        }
 
         /** @var QueueDispatcherInterface $taskQueue */
         $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
