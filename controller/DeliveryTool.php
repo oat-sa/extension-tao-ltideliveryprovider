@@ -48,8 +48,8 @@ use oat\taoQtiTest\models\runner\ActiveDeliveryExecutionsService;
 use oat\taoQtiTest\models\runner\QtiRunnerService;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
-
 use Throwable;
+
 use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
@@ -115,7 +115,7 @@ class DeliveryTool extends ToolModule
         $compiledDelivery = $this->getDelivery();
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
-                // User authorised to select the Delivery
+                // user authorised to select the Delivery
                 $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
             } else {
                 // user NOT authorised to select the Delivery
@@ -132,9 +132,8 @@ class DeliveryTool extends ToolModule
             }
 
             $user = $session->getUser();
-
-            $learnerRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
-            $isLearner = !is_null($user) && count(array_intersect($learnerRoles, $user->getRoles())) > 0;
+            $ltiRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
+            $isLearner = !is_null($user) && count(array_intersect($ltiRoles, $user->getRoles())) > 0;
 
             $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
 
