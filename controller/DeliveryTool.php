@@ -116,16 +116,14 @@ class DeliveryTool extends ToolModule
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // User authorised to select the Delivery
-                // redirect() does not return
-                $this->redirect(
-                    tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null)
+                $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
+            } else {
+                // user NOT authorised to select the Delivery
+                throw new LtiException(
+                    __('This tool has not yet been configured, please contact your instructor'),
+                    LtiErrorMessage::ERROR_INVALID_PARAMETER
                 );
             }
-            // user NOT authorised to select the Delivery
-            throw new LtiException(
-                __('This tool has not yet been configured, please contact your instructor'),
-                LtiErrorMessage::ERROR_INVALID_PARAMETER
-            );
         } else {
             $session = common_session_SessionManager::getSession();
 
