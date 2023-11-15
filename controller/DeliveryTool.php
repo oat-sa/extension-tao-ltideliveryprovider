@@ -22,6 +22,7 @@ namespace oat\ltiDeliveryProvider\controller;
 
 use common_ext_ExtensionsManager;
 use common_Logger;
+use common_session_Session;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -33,6 +34,7 @@ use oat\tao\model\actionQueue\ActionFullException;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoDelivery\model\Capacity\CapacityInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\execution\DeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
@@ -40,10 +42,14 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
+use oat\taoQtiTest\model\Service\PauseService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
+use oat\taoQtiTest\models\runner\ActiveDeliveryExecutionsService;
+use oat\taoQtiTest\models\runner\QtiRunnerService;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
 
+use Throwable;
 use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
@@ -88,6 +94,8 @@ class DeliveryTool extends ToolModule
      */
     public const PARAM_THANKYOU_MESSAGE = 'custom_message';
 
+    private ?ActiveDeliveryExecutionsService $activeDeliveryExecutionsService = null;
+
     /**
      * (non-PHPdoc)
      * @see ToolModule::run()
@@ -102,67 +110,163 @@ class DeliveryTool extends ToolModule
      */
     public function run()
     {
+        $this->getLogger()->info('DeliveryTool::run()');
+
         $compiledDelivery = $this->getDelivery();
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
-                // user authorised to select the Delivery
-                $this->redirect(tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null));
-            } else {
-                // user NOT authorised to select the Delivery
-                throw new LtiException(
-                    __('This tool has not yet been configured, please contact your instructor'),
-                    LtiErrorMessage::ERROR_INVALID_PARAMETER
+                // User authorised to select the Delivery
+                // redirect() does not return
+                $this->redirect(
+                    tao_helpers_Uri::url('configureDelivery', 'LinkConfiguration', null)
                 );
             }
-        } else {
-            $session = common_session_SessionManager::getSession();
+            // user NOT authorised to select the Delivery
+            throw new LtiException(
+                __('This tool has not yet been configured, please contact your instructor'),
+                LtiErrorMessage::ERROR_INVALID_PARAMETER
+            );
+        }
 
-            if (is_null($session)) {
-                throw new LtiException(__('Test Session not found'));
-            }
+        $session = common_session_SessionManager::getSession();
 
-            $user = $session->getUser();
-            $ltiRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
+        if (is_null($session)) {
+            throw new LtiException(__('Test Session not found'));
+        }
 
-            $isLearner = !is_null($user) && count(array_intersect($ltiRoles, $user->getRoles())) > 0;
+        $user = $session->getUser();
 
-            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
+        $learnerRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
+        $isLearner = !is_null($user) && count(array_intersect($learnerRoles, $user->getRoles())) > 0;
 
-            if ($isLearner || $isDryRun) {
-                if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
-                    try {
-                        $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+        $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
 
-                        $this->resetDeliveryExecutionState($activeExecution);
-                        $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
-                    } catch (QtiTestExtractionFailedException $e) {
-                        common_Logger::i($e->getMessage());
-                        throw new LtiException($e->getMessage());
-                    } catch (ActionFullException $e) {
-                        $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
-                            'position' => $e->getPosition(),
-                            'delivery' => $compiledDelivery->getUri(),
-                        ]));
-                    }
-                } else {
-                    common_Logger::e('Lti learner has no access to delivery runner');
-                    $this->returnError(__('Access to this functionality is restricted'), false);
+        if ($isLearner || $isDryRun) {
+            if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
+                try {
+                    $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+
+                    $this->pauseConcurrentSessions($session, $activeExecution);
+
+                    $this->resetDeliveryExecutionState($activeExecution);
+                    $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
+                } catch (QtiTestExtractionFailedException $e) {
+                    common_Logger::i($e->getMessage());
+                    throw new LtiException($e->getMessage());
+                } catch (ActionFullException $e) {
+                    $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
+                        'position' => $e->getPosition(),
+                        'delivery' => $compiledDelivery->getUri(),
+                    ]));
                 }
-            } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
-                $this->redirect(
-                    _url(
-                        'showDelivery',
-                        'LinkConfiguration',
-                        null,
-                        [
-                            'uri' => $compiledDelivery->getUri()
-                        ]
+            } else {
+                common_Logger::e('Lti learner has no access to delivery runner');
+                $this->returnError(__('Access to this functionality is restricted'), false);
+            }
+        } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
+            $this->redirect(
+                _url(
+                    'showDelivery',
+                    'LinkConfiguration',
+                    null,
+                    [
+                        'uri' => $compiledDelivery->getUri()
+                    ]
+                )
+            );
+        } else {
+            $this->returnError(__('Access to this functionality is restricted to students'), false);
+        }
+    }
+
+    private function pauseConcurrentSessions(
+        common_session_Session $session,
+        DeliveryExecution $activeExecution
+    ): void {
+        $user = $session->getUser();
+
+        // @todo Exit early if the user is anonymous
+
+        $deliveryExecutionService = $this->getDeliveryExecutionService();
+        $activeExecutionService = $this->getActiveDeliveryExecutionsService();
+
+        // @fixme Executions for the *same* delivery are stil being paused
+
+        //$activeExecution->getIdentifier()
+        $otherExecutionIds = $activeExecutionService->getExecutionIdsForOtherDeliveries(
+            $user->getIdentifier(),
+            $activeExecution->getIdentifier() //$this->getSessionId()
+        );
+
+        $this->getLogger()->debug(
+            sprintf(
+                'Current execution ID: %s, other execution IDs: %s',
+                $activeExecution->getIdentifier(), //$this->getSessionId(),
+                print_r($otherExecutionIds, true)
+            )
+        );
+
+        foreach ($otherExecutionIds as $executionId) {
+            try {
+                $this->getLogger()->debug("Pausing execution {$executionId}");
+                $execution = $deliveryExecutionService->getDeliveryExecution(
+                    $executionId
+                );
+
+                if ($execution) {
+                    $this->setSessionAttribute(
+                        "pauseReason-{$executionId}",
+                        PauseService::PAUSE_REASON_CONCURRENT_TEST
+                    );
+
+                    $this->getRunnerService()->pause(
+                        $this->getServiceContextByDeliveryExecution($execution)
+                    );
+
+                    // @todo Propagate somehow why it has been paused (it runs on a
+                    //       different tab, hence its next request should be able to know
+                    //       why it was paused)
+                    $this->getStateService()->pause($execution);
+                }
+            } catch (Throwable $e) {
+                $this->getLogger()->warning(
+                    sprintf(
+                        '%s: Unable to pause delivery execution %s: %s',
+                        self::class,
+                        $executionId,
+                        $e->getMessage()
                     )
                 );
-            } else {
-                $this->returnError(__('Access to this functionality is restricted to students'), false);
             }
         }
+
+    }
+
+    /**
+     * @return QtiRunnerService
+     */
+    protected function getRunnerService()
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->getServiceLocator()->get(QtiRunnerService::SERVICE_ID);
+    }
+
+    private function getActiveDeliveryExecutionsService(): ActiveDeliveryExecutionsService
+    {
+        // @todo Move ActiveDeliveryExecutionsService into this extension
+        if ($this->activeDeliveryExecutionsService == null) {
+            $this->activeDeliveryExecutionsService = new ActiveDeliveryExecutionsService(
+                $this->getLogger(),
+                $this->getDeliveryExecutionService()
+            );
+        }
+
+        return $this->activeDeliveryExecutionsService;
+    }
+
+    private function getDeliveryExecutionService(): DeliveryExecutionService
+    {
+        return $this->getServiceLocator()->get(DeliveryExecutionService::SERVICE_ID);
     }
 
     /**

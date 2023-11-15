@@ -66,6 +66,7 @@ class DeliveryRunner extends DeliveryServer
     protected function getReturnUrl()
     {
         $deliveryExecution = $this->getCurrentDeliveryExecution();
+
         return _url(
             'ltiReturn',
             'DeliveryRunner',
@@ -206,8 +207,28 @@ class DeliveryRunner extends DeliveryServer
 
     private function getPauseReason(): ?string
     {
-        if ($this->hasSessionAttribute('pauseReason')) {
-            return ($this->getSessionAttribute('pauseReason') ?? null);
+        if ($this->hasRequestParameter('deliveryExecution')) {
+            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
+                $this->getRequestParameter('deliveryExecution')
+            );
+
+            if ($deliveryExecution instanceof DeliveryExecution) {
+                $this->getLogger()->info(
+                    sprintf(
+                        '%s::%s: Delivery execution ID %s',
+                        self::class,
+                        __METHOD__,
+                        $deliveryExecution->getIdentifier()
+                    )
+                );
+
+                // @fixme Does not work anymore
+                $key = "pauseReason-{$deliveryExecution->getIdentifier()}";
+
+                if ($this->hasSessionAttribute($key)) {
+                    return ($this->getSessionAttribute($key) ?? null);
+                }
+            }
         }
 
         return null;

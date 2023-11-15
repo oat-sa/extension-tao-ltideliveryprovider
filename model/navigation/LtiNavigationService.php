@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2018-2023 (original work) Open Assessment Technologies SA.
  *
  */
 
@@ -34,7 +34,6 @@ use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoQtiTest\model\Service\PauseService;
-use taoQtiTest_actions_Runner;
 
 class LtiNavigationService extends ConfigurableService
 {
@@ -60,8 +59,10 @@ class LtiNavigationService extends ConfigurableService
         DeliveryExecutionInterface $deliveryExecution,
         ?string $pauseReason = null
     ): string {
+        $this->getLogger()->critical('getReturnUrl: pauseReason=' . $pauseReason);
+
         if ($pauseReason ===  PauseService::PAUSE_REASON_CONCURRENT_TEST) {
-            return $this->buildFeedbackUrl();
+            return $this->buildFeedbackUrl($deliveryExecution);
         }
 
         return $this->shouldShowThankYou($launchData)
@@ -135,9 +136,16 @@ class LtiNavigationService extends ConfigurableService
         return $this->getUrlHelper()->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
-    protected function buildFeedbackUrl(): string
+    protected function buildFeedbackUrl(DeliveryExecutionInterface $deliveryExecution): string
     {
-        return $this->getUrlHelper()->buildUrl('feedback', 'DeliveryRunner', 'ltiDeliveryProvider');
+        return $this->getUrlHelper()->buildUrl(
+            'feedback',
+            'DeliveryRunner',
+            'ltiDeliveryProvider',
+            [
+                'deliveryExecution' => $deliveryExecution->getIdentifier(),
+            ]
+        );
     }
 
     /**
