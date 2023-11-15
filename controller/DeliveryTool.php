@@ -126,56 +126,56 @@ class DeliveryTool extends ToolModule
                 __('This tool has not yet been configured, please contact your instructor'),
                 LtiErrorMessage::ERROR_INVALID_PARAMETER
             );
-        }
-
-        $session = common_session_SessionManager::getSession();
-
-        if (is_null($session)) {
-            throw new LtiException(__('Test Session not found'));
-        }
-
-        $user = $session->getUser();
-
-        $learnerRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
-        $isLearner = !is_null($user) && count(array_intersect($learnerRoles, $user->getRoles())) > 0;
-
-        $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
-
-        if ($isLearner || $isDryRun) {
-            if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
-                try {
-                    $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
-
-                    $this->pauseConcurrentSessions($session, $activeExecution);
-
-                    $this->resetDeliveryExecutionState($activeExecution);
-                    $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
-                } catch (QtiTestExtractionFailedException $e) {
-                    common_Logger::i($e->getMessage());
-                    throw new LtiException($e->getMessage());
-                } catch (ActionFullException $e) {
-                    $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
-                        'position' => $e->getPosition(),
-                        'delivery' => $compiledDelivery->getUri(),
-                    ]));
-                }
-            } else {
-                common_Logger::e('Lti learner has no access to delivery runner');
-                $this->returnError(__('Access to this functionality is restricted'), false);
-            }
-        } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
-            $this->redirect(
-                _url(
-                    'showDelivery',
-                    'LinkConfiguration',
-                    null,
-                    [
-                        'uri' => $compiledDelivery->getUri()
-                    ]
-                )
-            );
         } else {
-            $this->returnError(__('Access to this functionality is restricted to students'), false);
+            $session = common_session_SessionManager::getSession();
+
+            if (is_null($session)) {
+                throw new LtiException(__('Test Session not found'));
+            }
+
+            $user = $session->getUser();
+
+            $learnerRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
+            $isLearner = !is_null($user) && count(array_intersect($learnerRoles, $user->getRoles())) > 0;
+
+            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
+
+            if ($isLearner || $isDryRun) {
+                if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
+                    try {
+                        $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+
+                        $this->pauseConcurrentSessions($session, $activeExecution);
+
+                        $this->resetDeliveryExecutionState($activeExecution);
+                        $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
+                    } catch (QtiTestExtractionFailedException $e) {
+                        common_Logger::i($e->getMessage());
+                        throw new LtiException($e->getMessage());
+                    } catch (ActionFullException $e) {
+                        $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
+                            'position' => $e->getPosition(),
+                            'delivery' => $compiledDelivery->getUri(),
+                        ]));
+                    }
+                } else {
+                    common_Logger::e('Lti learner has no access to delivery runner');
+                    $this->returnError(__('Access to this functionality is restricted'), false);
+                }
+            } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
+                $this->redirect(
+                    _url(
+                        'showDelivery',
+                        'LinkConfiguration',
+                        null,
+                        [
+                            'uri' => $compiledDelivery->getUri()
+                        ]
+                    )
+                );
+            } else {
+                $this->returnError(__('Access to this functionality is restricted to students'), false);
+            }
         }
     }
 
@@ -185,7 +185,9 @@ class DeliveryTool extends ToolModule
     ): void {
         $user = $session->getUser();
 
-        // @todo Exit early if the user is anonymous
+        if ($user === null) {  // Exit early if the user is anonymous
+            return;
+        }
 
         $deliveryExecutionService = $this->getDeliveryExecutionService();
         $activeExecutionService = $this->getActiveDeliveryExecutionsService();
