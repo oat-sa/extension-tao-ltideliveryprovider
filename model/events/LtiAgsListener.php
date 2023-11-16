@@ -191,7 +191,7 @@ class LtiAgsListener extends ConfigurableService
         $this->logInfo('queueSendAgsScoreTaskWithScores:taskBody ' . print_r($taskBody, true), $taskBody);
         /** @var QueueDispatcherInterface $taskQueue */
         $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
-        $taskQueue->createTask(new SendAgsScoreTask(), $taskBody, $taskLabel. print_r($taskBody, true));
+        $taskQueue->createTask(new SendAgsScoreTask(), $taskBody, $taskLabel);
     }
 
     private function isManualScored(AssessmentTestSession $session): bool
