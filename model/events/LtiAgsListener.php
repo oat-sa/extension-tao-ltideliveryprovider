@@ -188,7 +188,6 @@ class LtiAgsListener extends ConfigurableService
                 'timestamp' => $timestamp,
             ]
         ];
-        $this->logInfo('queueSendAgsScoreTaskWithScores:taskBody ' . print_r($taskBody, true), $taskBody);
         /** @var QueueDispatcherInterface $taskQueue */
         $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
         $taskQueue->createTask(new SendAgsScoreTask(), $taskBody, $taskLabel);
