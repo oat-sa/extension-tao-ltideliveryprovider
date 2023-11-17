@@ -47,13 +47,13 @@ class SendAgsScoreTask extends AbstractAction
     public function __invoke($params): Report
     {
         $this->params = array_merge($this->params, $params);
-
+        $this->logInfo('SendAgsScoreTask Params' . print_r($params, true));
         $this->getLogger()->info('Start AGS score sending task', $params);
 
         try {
             $this->validateParams($params);
         } catch (InvalidArgumentException $e) {
-            return $this->reportError($e->getMessage());
+            return $this->reportError('ValidateParams failed: ' . $e->getMessage());
         }
 
         $registrationId = $params['registrationId'];
