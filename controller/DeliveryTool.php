@@ -249,15 +249,7 @@ class DeliveryTool extends ToolModule
 
     private function getActiveDeliveryExecutionsService(): ActiveDeliveryExecutionsService
     {
-        // @todo Move ActiveDeliveryExecutionsService into this extension
-        if ($this->activeDeliveryExecutionsService == null) {
-            $this->activeDeliveryExecutionsService = new ActiveDeliveryExecutionsService(
-                $this->getLogger(),
-                $this->getDeliveryExecutionService()
-            );
-        }
-
-        return $this->activeDeliveryExecutionsService;
+        return $this->getServiceManager()->getContainer()->get(ActiveDeliveryExecutionsService::class);
     }
 
     private function getDeliveryExecutionService(): DeliveryExecutionService

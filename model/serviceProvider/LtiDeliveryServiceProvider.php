@@ -22,10 +22,14 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\serviceProvider;
 
+use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\ltiDeliveryProvider\model\delivery\ActiveDeliveryExecutionsService;
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3ContextCacheRepository;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
 use oat\oatbox\cache\factory\CacheItemPoolFactory;
+use oat\oatbox\log\LoggerService;
+use oat\taoDelivery\model\execution\DeliveryExecutionService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -47,6 +51,17 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
                     inline_service(CacheItemPoolInterface::class)
                         ->factory([service(CacheItemPoolFactory::class), 'create'])
                         ->args([[]])
+                ]
+            );
+
+        $services
+            ->set(ActiveDeliveryExecutionsService::class, ActiveDeliveryExecutionsService::class)
+            ->public()
+            ->args(
+                [
+                    service(Ontology::SERVICE_ID),
+                    service(LoggerService::SERVICE_ID),
+                    service(DeliveryExecutionService::SERVICE_ID),
                 ]
             );
     }

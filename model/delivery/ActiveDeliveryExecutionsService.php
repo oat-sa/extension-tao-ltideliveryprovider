@@ -4,6 +4,7 @@ namespace oat\ltiDeliveryProvider\model\delivery;
 
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
+use oat\generis\model\data\Ontology;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionService;
 use Psr\Log\LoggerInterface;
@@ -14,6 +15,7 @@ class ActiveDeliveryExecutionsService
     private DeliveryExecutionService $deliveryExecutionService;
 
     public function __construct(
+        Ontology $ontology, // @todo Use this
         LoggerInterface $logger,
         DeliveryExecutionService $deliveryExecutionService
     ) {
