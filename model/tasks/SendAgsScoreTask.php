@@ -78,6 +78,8 @@ class SendAgsScoreTask extends AbstractAction
             $this->retryTask($e, $deliveryExecutionId);
 
             return $this->reportError($e->getMessage());
+        } catch (\Exception $e) {
+            return $this->reportError($e->getMessage());
         }
 
         $this->logInfo('Finish AGS score sending task successfully');
