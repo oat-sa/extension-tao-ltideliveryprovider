@@ -1,35 +1,48 @@
 <?php
 
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2023 (original work) Open Assessment Technologies SA;
+ */
+
+declare(strict_types=1);
+
 namespace oat\ltiDeliveryProvider\model\delivery;
 
-use core_kernel_classes_Class;
-use core_kernel_classes_Property;
 use oat\generis\model\data\Ontology;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionService;
-use Psr\Log\LoggerInterface;
 
 class ActiveDeliveryExecutionsService
 {
-    private LoggerInterface $logger;
+    private Ontology $ontology;
     private DeliveryExecutionService $deliveryExecutionService;
 
     public function __construct(
-        Ontology $ontology, // @todo Use this
-        LoggerInterface $logger,
+        Ontology $ontology,
         DeliveryExecutionService $deliveryExecutionService
     ) {
-        $this->logger = $logger;
+        $this->ontology = $ontology;
         $this->deliveryExecutionService = $deliveryExecutionService;
     }
 
     public function getDeliveryIdByExecutionId(string $executionId): ?string
     {
-        // @todo Use the ontology
-        $executionClass = new core_kernel_classes_Class(DeliveryExecutionInterface::CLASS_URI);
-        $deliveryProperty = new core_kernel_classes_Property(
-            DeliveryExecutionInterface::PROPERTY_DELIVERY
-        );
+        $executionClass = $this->ontology->getClass(DeliveryExecutionInterface::CLASS_URI);
+        $deliveryProperty = $this->ontology->getProperty(DeliveryExecutionInterface::PROPERTY_DELIVERY);
 
         $executionInstance = $executionClass->getResource($executionId);
         $deliveryUri = $executionInstance->getUniquePropertyValue($deliveryProperty);
@@ -45,34 +58,22 @@ class ActiveDeliveryExecutionsService
     /**
      * @return string[]
      */
-    public function getExecutionIdsForOtherDeliveries(string $userUri, string $currentExecutionId): array
-    {
+    public function getExecutionIdsForOtherDeliveries(
+        string $userUri,
+        string $currentExecutionId
+    ): array {
         $currentDeliveryUri = (string) $this->getDeliveryIdByExecutionId($currentExecutionId);
         $executions = $this->getActiveDeliveryExecutionsByUser($userUri);
 
         $executionIdsForOtherDeliveries = [];
 
-        foreach ($executions as $executionInstance) {
+        foreach ($executions as $execution) {
             if (
-                $executionInstance->getIdentifier() === $currentExecutionId
-                //|| $executionInstance->getDelivery()->getUri() != $currentDelivery->getUri()
-                || $executionInstance->getDelivery()->getUri() === $currentDeliveryUri
+                $execution->getIdentifier() !== $currentExecutionId
+                && $execution->getDelivery()->getUri() !== $currentDeliveryUri
             ) {
-                $this->logger->debug(
-                    sprintf(
-                        '%s: execution %s belongs to delivery %s == %s ------------------',
-                        self::class,
-                        $executionInstance->getUri(),
-                        $executionInstance->getDelivery()->getUri(),
-                        $currentDeliveryUri
-                        //$currentDelivery->getUri()
-                    )
-                );
-
-                continue;
+                $executionIdsForOtherDeliveries[] = $execution->getUri();
             }
-
-            $executionIdsForOtherDeliveries[] = $executionInstance->getUri();
         }
 
         return $executionIdsForOtherDeliveries;
@@ -83,9 +84,7 @@ class ActiveDeliveryExecutionsService
      */
     public function getActiveDeliveryExecutionsByUser(string $userUri): array
     {
-        // @todo direct instantiation + searchInstances won't be testable
-        //  http://www.tao.lu/Ontologies/TAODelivery.rdf#DeliveryExecutionDelivery
-        $executionClass = new core_kernel_classes_Class(DeliveryExecutionInterface::CLASS_URI);
+        $executionClass = $this->ontology->getClass(DeliveryExecutionInterface::CLASS_URI);
         $executionInstances = $executionClass->searchInstances([
             DeliveryExecutionInterface::PROPERTY_SUBJECT  => $userUri,
             DeliveryExecutionInterface::PROPERTY_STATUS => DeliveryExecutionInterface::STATE_ACTIVE,
@@ -93,31 +92,9 @@ class ActiveDeliveryExecutionsService
             'like' => false
         ]);
 
-        $this->logger->critical(
-            sprintf('%s: %d instances ------------------', self::class, count($executionInstances))
-        );
-
-        $deliveryProperty = new core_kernel_classes_Property(
-            DeliveryExecutionInterface::PROPERTY_DELIVERY
-        );
-        $statusProperty = new core_kernel_classes_Property(
-            DeliveryExecutionInterface::PROPERTY_STATUS
-        );
-
         $executions = [];
 
         foreach ($executionInstances as $executionInstance) {
-            /** @noinspection PhpToStringImplementationInspection */
-            $this->logger->critical(
-                sprintf(
-                    '%s: instance %s instance.delivery: %s state: %s ------------------',
-                    self::class,
-                    $executionInstance->getUri(),
-                    $executionInstance->getUniquePropertyValue($deliveryProperty)->getUri(),
-                    $executionInstance->getUniquePropertyValue($statusProperty)
-                )
-            );
-
             $executions[] = $this->deliveryExecutionService->getDeliveryExecution(
                 $executionInstance->getUri()
             );
