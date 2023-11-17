@@ -185,10 +185,10 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
-//                'timestamp' => $timestamp,
+                'timestamp' => $timestamp,
             ]
         ];
-        $this->logInfo('queueSendAgsScoreTaskWithScores:timestamp ' . $timestamp);
+
         /** @var QueueDispatcherInterface $taskQueue */
         $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
         $taskQueue->createTask(new SendAgsScoreTask(), $taskBody, $taskLabel);
