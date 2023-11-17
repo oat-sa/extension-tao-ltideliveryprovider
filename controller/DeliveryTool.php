@@ -44,7 +44,7 @@ use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\model\Service\PauseService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
-use oat\taoQtiTest\models\runner\ActiveDeliveryExecutionsService;
+use oat\ltiDeliveryProvider\model\delivery\ActiveDeliveryExecutionsService;
 use oat\taoQtiTest\models\runner\QtiRunnerService;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
@@ -189,7 +189,7 @@ class DeliveryTool extends ToolModule
         $deliveryExecutionService = $this->getDeliveryExecutionService();
         $activeExecutionService = $this->getActiveDeliveryExecutionsService();
 
-        // @fixme Executions for the *same* delivery are stil being paused
+        // @fixme Executions for the *same* delivery are still being paused
 
         //$activeExecution->getIdentifier()
         $otherExecutionIds = $activeExecutionService->getExecutionIdsForOtherDeliveries(
@@ -222,9 +222,6 @@ class DeliveryTool extends ToolModule
                         $this->getServiceContextByDeliveryExecution($execution)
                     );
 
-                    // @todo Propagate somehow why it has been paused (it runs on a
-                    //       different tab, hence its next request should be able to know
-                    //       why it was paused)
                     $this->getStateService()->pause($execution);
                 }
             } catch (Throwable $e) {
