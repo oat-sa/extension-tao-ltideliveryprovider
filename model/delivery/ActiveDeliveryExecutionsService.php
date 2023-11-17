@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\delivery;
 
+use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionService;
@@ -47,8 +48,16 @@ class ActiveDeliveryExecutionsService
         $executionInstance = $executionClass->getResource($executionId);
         $deliveryUri = $executionInstance->getUniquePropertyValue($deliveryProperty);
 
+        if ($deliveryUri instanceof core_kernel_classes_Resource) {
+            $deliveryUri = $deliveryUri->getUri();
+        }
+
+        $logger = \common_Logger::singleton()->getLogger();
+        $logger->info(
+            sprintf('getDeliveryIdByExecutionId: deliveryUri=%s', var_export($deliveryUri, true))
+        );
+
         if ($deliveryUri) {
-            /** @noinspection PhpToStringImplementationInspection */
             return (string) $deliveryUri;
         }
 
@@ -65,6 +74,18 @@ class ActiveDeliveryExecutionsService
         $currentDeliveryUri = (string) $this->getDeliveryIdByExecutionId($currentExecutionId);
         $executions = $this->getActiveDeliveryExecutionsByUser($userUri);
 
+        $logger = \common_Logger::singleton();
+
+        $logger->logCritical(
+            sprintf(
+                '%s: userUri=%s currentExecutionId=%s currentDeliveryUri=%s',
+                __FUNCTION__,
+                $userUri,
+                $currentExecutionId,
+                $currentDeliveryUri
+            )
+        );
+
         $executionIdsForOtherDeliveries = [];
 
         foreach ($executions as $execution) {
@@ -73,6 +94,16 @@ class ActiveDeliveryExecutionsService
                 && $execution->getDelivery()->getUri() !== $currentDeliveryUri
             ) {
                 $executionIdsForOtherDeliveries[] = $execution->getUri();
+
+                $logger->logCritical(
+                    sprintf(
+                        '%s: execution %s belongs to other delivery "%s" != "%s"',
+                        __FUNCTION__,
+                        $execution->getIdentifier(),
+                        $execution->getDelivery()->getUri(),
+                        $currentDeliveryUri
+                    )
+                );
             }
         }
 
