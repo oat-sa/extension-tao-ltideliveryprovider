@@ -183,6 +183,8 @@ class DeliveryRunner extends DeliveryServer
             $this->setData('reason', 'concurrent-test');
         }
 
+        $this->clearPauseReason();
+
         $this->setView('learner/feedback.tpl');
     }
 
@@ -232,6 +234,30 @@ class DeliveryRunner extends DeliveryServer
         }
 
         return null;
+    }
+
+    private function clearPauseReason(): void
+    {
+        if ($this->hasRequestParameter('deliveryExecution')) {
+            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
+                $this->getRequestParameter('deliveryExecution')
+            );
+
+            if ($deliveryExecution instanceof DeliveryExecution) {
+                $this->getLogger()->info(
+                    sprintf(
+                        '%s::%s: Delivery execution ID %s',
+                        self::class,
+                        __METHOD__,
+                        $deliveryExecution->getIdentifier()
+                    )
+                );
+
+                $this->removeSessionAttribute(
+                    "pauseReason-{$deliveryExecution->getIdentifier()}"
+                );
+            }
+        }
     }
 
     private function getLtiService(): LtiService

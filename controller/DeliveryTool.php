@@ -20,6 +20,7 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_Exception;
 use common_ext_ExtensionsManager;
 use common_Logger;
 use common_session_Session;
@@ -34,8 +35,10 @@ use oat\tao\model\actionQueue\ActionFullException;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoDelivery\model\Capacity\CapacityInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\DeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
+use oat\taoDelivery\model\RuntimeService;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -43,9 +46,11 @@ use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\model\Service\PauseService;
+use oat\taoQtiTest\models\container\QtiTestDeliveryContainer;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use oat\ltiDeliveryProvider\model\delivery\ActiveDeliveryExecutionsService;
 use oat\taoQtiTest\models\runner\QtiRunnerService;
+use oat\taoQtiTest\models\runner\QtiRunnerServiceContext;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
 use Throwable;
@@ -189,9 +194,8 @@ class DeliveryTool extends ToolModule
         $deliveryExecutionService = $this->getDeliveryExecutionService();
         $activeExecutionService = $this->getActiveDeliveryExecutionsService();
 
-        // @fixme Executions for the *same* delivery are still being paused
+        // @fixme Executions for the *same* delivery are still being paused???? RECHECK
 
-        //$activeExecution->getIdentifier()
         $otherExecutionIds = $activeExecutionService->getExecutionIdsForOtherDeliveries(
             $user->getIdentifier(),
             $activeExecution->getIdentifier() //$this->getSessionId()
@@ -205,6 +209,8 @@ class DeliveryTool extends ToolModule
             )
         );
 
+        $count = 0;
+
         foreach ($otherExecutionIds as $executionId) {
             try {
                 $this->getLogger()->debug("Pausing execution {$executionId}");
@@ -213,16 +219,28 @@ class DeliveryTool extends ToolModule
                 );
 
                 if ($execution) {
+                    for($i=0;$i<20;$i++) $this->getLogger()->debug('PAUSING EXECUTION===========================');
+
+                    $this->getLogger()->debug(
+                        sprintf(
+                            'Current execution ID: %s, other execution IDs: %s, pausing execution %s',
+                            $activeExecution->getIdentifier(), //$this->getSessionId(),
+                            print_r($otherExecutionIds, true),
+                            $executionId
+                        )
+                    );
+
                     $this->setSessionAttribute(
                         "pauseReason-{$executionId}",
                         PauseService::PAUSE_REASON_CONCURRENT_TEST
                     );
 
                     $this->getRunnerService()->pause(
-                        $this->getServiceContextByDeliveryExecution($execution)
+                        $this->getRunnerServiceContextByDeliveryExecution($execution)
                     );
 
                     $this->getStateService()->pause($execution);
+                    $count++;
                 }
             } catch (Throwable $e) {
                 $this->getLogger()->warning(
@@ -236,14 +254,53 @@ class DeliveryTool extends ToolModule
             }
         }
 
+        $this->getLogger()->warning(
+            sprintf(
+                '%s: %d executions paused for other deliveries',
+                self::class,
+                $count
+            )
+        );
     }
 
-    /**
-     * @return QtiRunnerService
-     */
-    protected function getRunnerService()
+    protected function getRunnerServiceContextByDeliveryExecution(
+        DeliveryExecutionInterface $execution
+    ): QtiRunnerServiceContext /* @fixme From QtiRunner */ {
+        /*$testExecution = $this->getSessionId();
+        $execution = $this->getDeliveryExecutionService()->getDeliveryExecution($testExecution);
+        if (!$execution) {
+            throw new common_exception_ResourceNotFound();
+        }*/
+
+        /*$currentUser = $this->getSessionService()->getCurrentUser();
+        if (!$currentUser || $execution->getUserIdentifier() !== $currentUser->getIdentifier()) {
+            throw new common_exception_Unauthorized($execution->getUserIdentifier());
+        }*/
+
+        $delivery = $execution->getDelivery();
+        $container = $this->getRuntimeService()->getDeliveryContainer($delivery->getUri());
+        if (!$container instanceof QtiTestDeliveryContainer) {
+            throw new common_Exception(
+                'Non QTI test container ' . get_class($container) . ' in qti test runner'
+            );
+        }
+        $testDefinition = $container->getSourceTest($execution);
+        $testCompilation = $container->getPrivateDirId($execution) . '|' . $container->getPublicDirId($execution);
+
+        return $this->getRunnerService()->getServiceContext(
+            $testDefinition,
+            $testCompilation,
+            $execution->getIdentifier()
+        );
+    }
+
+    private function getRuntimeService(): RuntimeService
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID);
+    }
+
+    protected function getRunnerService(): QtiRunnerService
+    {
         return $this->getServiceLocator()->get(QtiRunnerService::SERVICE_ID);
     }
 
