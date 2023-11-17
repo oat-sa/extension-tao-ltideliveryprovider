@@ -60,7 +60,6 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
             ->args(
                 [
                     service(Ontology::SERVICE_ID),
-                    service(LoggerService::SERVICE_ID),
                     service(DeliveryExecutionService::SERVICE_ID),
                 ]
             );
