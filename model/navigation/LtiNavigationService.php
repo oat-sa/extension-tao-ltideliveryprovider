@@ -68,7 +68,7 @@ class LtiNavigationService extends ConfigurableService
             return $this->buildFeedbackUrl($deliveryExecution);
         }
 
-        if ($this->getSessionAttribute('testSessionConflict')) {
+        if ($this->hasSessionAttribute('testSessionConflict')) {
             return $this->buildFeedbackUrl($deliveryExecution);
         }
 

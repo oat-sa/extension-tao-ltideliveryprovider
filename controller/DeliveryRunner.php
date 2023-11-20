@@ -183,7 +183,7 @@ class DeliveryRunner extends DeliveryServer
             $this->setData('reason', 'concurrent-test');
 
             $this->clearPauseReason();
-        } elseif ($this->getSessionAttribute('testSessionConflict')) {
+        } elseif ($this->hasSessionAttribute('testSessionConflict')) {
             $this->setData('reason', 'test-session-conflict');
 
             $this->removeSessionAttribute('testSessionConflict');
