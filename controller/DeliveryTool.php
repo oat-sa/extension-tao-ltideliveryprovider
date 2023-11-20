@@ -143,26 +143,31 @@ class DeliveryTool extends ToolModule
             $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
 
             if ($isLearner || $isDryRun) {
-                if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
-                    try {
-                        $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+                if (!$this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
+                    common_Logger::e('Lti learner has no access to delivery runner');
+                    $this->returnError(__('Access to this functionality is restricted'), false);
 
+                    return;
+                }
+
+                try {
+                    $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+
+                    if ($activeExecution instanceof DeliveryExecution) {
                         $this->pauseConcurrentSessions($session, $activeExecution);
 
                         $this->resetDeliveryExecutionState($activeExecution);
-                        $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
-                    } catch (QtiTestExtractionFailedException $e) {
-                        common_Logger::i($e->getMessage());
-                        throw new LtiException($e->getMessage());
-                    } catch (ActionFullException $e) {
-                        $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
-                            'position' => $e->getPosition(),
-                            'delivery' => $compiledDelivery->getUri(),
-                        ]));
                     }
-                } else {
-                    common_Logger::e('Lti learner has no access to delivery runner');
-                    $this->returnError(__('Access to this functionality is restricted'), false);
+
+                    $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
+                } catch (QtiTestExtractionFailedException $e) {
+                    common_Logger::i($e->getMessage());
+                    throw new LtiException($e->getMessage());
+                } catch (ActionFullException $e) {
+                    $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
+                        'position' => $e->getPosition(),
+                        'delivery' => $compiledDelivery->getUri(),
+                    ]));
                 }
             } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 $this->redirect(
@@ -420,8 +425,7 @@ class DeliveryTool extends ToolModule
      */
     protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {
-        $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        return $deliveryExecutionService->getActiveDeliveryExecution($delivery);
+        return $this->getLtiDeliveryExecutionService()->getActiveDeliveryExecution($delivery);
     }
 
     /**
@@ -485,6 +489,11 @@ class DeliveryTool extends ToolModule
         return !$this->getFeatureFlagChecker()->isEnabled(
             static::FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE
         );
+    }
+
+    private function getLtiDeliveryExecutionService(): LtiDeliveryExecutionService
+    {
+        return $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
     }
 
     private function getStateService(): StateServiceInterface
