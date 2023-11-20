@@ -194,17 +194,15 @@ class DeliveryTool extends ToolModule
         $deliveryExecutionService = $this->getDeliveryExecutionService();
         $activeExecutionService = $this->getActiveDeliveryExecutionsService();
 
-        // @fixme Executions for the *same* delivery are still being paused???? RECHECK
-
         $otherExecutionIds = $activeExecutionService->getExecutionIdsForOtherDeliveries(
             $user->getIdentifier(),
-            $activeExecution->getIdentifier() //$this->getSessionId()
+            $activeExecution->getIdentifier()
         );
 
         $this->getLogger()->debug(
             sprintf(
                 'Current execution ID: %s, other execution IDs: %s',
-                $activeExecution->getIdentifier(), //$this->getSessionId(),
+                $activeExecution->getIdentifier(),
                 print_r($otherExecutionIds, true)
             )
         );
@@ -265,27 +263,17 @@ class DeliveryTool extends ToolModule
 
     protected function getRunnerServiceContextByDeliveryExecution(
         DeliveryExecutionInterface $execution
-    ): QtiRunnerServiceContext /* @fixme From QtiRunner */ {
-        /*$testExecution = $this->getSessionId();
-        $execution = $this->getDeliveryExecutionService()->getDeliveryExecution($testExecution);
-        if (!$execution) {
-            throw new common_exception_ResourceNotFound();
-        }*/
-
-        /*$currentUser = $this->getSessionService()->getCurrentUser();
-        if (!$currentUser || $execution->getUserIdentifier() !== $currentUser->getIdentifier()) {
-            throw new common_exception_Unauthorized($execution->getUserIdentifier());
-        }*/
-
+    ): QtiRunnerServiceContext {
         $delivery = $execution->getDelivery();
         $container = $this->getRuntimeService()->getDeliveryContainer($delivery->getUri());
-        if (!$container instanceof QtiTestDeliveryContainer) {
-            throw new common_Exception(
-                'Non QTI test container ' . get_class($container) . ' in qti test runner'
-            );
-        }
+        $this->assertIsQtiTestDeliveryContainer($container);
+
         $testDefinition = $container->getSourceTest($execution);
-        $testCompilation = $container->getPrivateDirId($execution) . '|' . $container->getPublicDirId($execution);
+        $testCompilation = sprintf(
+            '%s|%s',
+            $container->getPrivateDirId($execution),
+            $container->getPublicDirId($execution)
+        );
 
         return $this->getRunnerService()->getServiceContext(
             $testDefinition,
@@ -507,5 +495,19 @@ class DeliveryTool extends ToolModule
     private function getFeatureFlagChecker(): FeatureFlagChecker
     {
         return $this->getPsrContainer()->get(FeatureFlagChecker::class);
+    }
+
+    /**
+     * @throws common_Exception
+     */
+    private function assertIsQtiTestDeliveryContainer($container): void
+    {
+        if (!$container instanceof QtiTestDeliveryContainer) {
+            throw new common_Exception(
+                sprintf(
+                    'Non QTI test container %s in qti test runner', get_class($container)
+                )
+            );
+        }
     }
 }
