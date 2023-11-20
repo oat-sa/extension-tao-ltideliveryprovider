@@ -150,8 +150,7 @@ class LtiAgsListener extends ConfigurableService
                 $scoreTotalMax,
                 $this->isManualScored($session)
                     ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
-                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED,
-                Carbon::now()->format('Y-m-d\TH:i:s.uP')
+                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED
             );
         }
     }
@@ -185,7 +184,7 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
-                'timestamp' => $timestamp,
+                'timestamp' => $timestamp ?? Carbon::now()->format('Y-m-d\TH:i:s.uP'),
             ]
         ];
 
