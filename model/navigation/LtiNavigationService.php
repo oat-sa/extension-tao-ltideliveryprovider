@@ -62,8 +62,6 @@ class LtiNavigationService extends ConfigurableService
         DeliveryExecutionInterface $deliveryExecution,
         ?string $pauseReason = null
     ): string {
-        $this->getLogger()->critical('getReturnUrl: pauseReason=' . $pauseReason);
-
         if ($pauseReason === PauseService::PAUSE_REASON_CONCURRENT_TEST) {
             return $this->buildFeedbackUrl($deliveryExecution);
         }
