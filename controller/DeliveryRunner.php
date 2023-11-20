@@ -24,6 +24,7 @@ use common_exception_Error;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
+use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\controller\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiException;
@@ -198,43 +199,30 @@ class DeliveryRunner extends DeliveryServer
      */
     public function finishDeliveryExecution()
     {
-        $deliveryExecution = null;
-        if ($this->hasRequestParameter('deliveryExecution')) {
-            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
-                $this->getRequestParameter('deliveryExecution')
-            );
-            if ($deliveryExecution->getState() !== DeliveryExecution::STATE_FINISHIED) {
+        $deliveryExecution = $this->getDeliveryExecutionFromRequest();
+        $redirectUrl = $this->getReturnUrl();
+
+        if ($deliveryExecution instanceof DeliveryExecution) {
+            if ($deliveryExecution->getState()->getUri() !== DeliveryExecutionInterface::STATE_FINISHED) {
                 $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
                 $stateService->finish($deliveryExecution);
             }
+
+            $redirectUrl = $this->getLtiDeliveryTool()->getFinishUrl($deliveryExecution);
         }
-        $redirectUrl = $this->getServiceLocator()->get(LTIDeliveryTool::class)->getFinishUrl($deliveryExecution);
+
         $this->redirect($redirectUrl);
     }
 
     private function getPauseReason(): ?string
     {
-        if ($this->hasRequestParameter('deliveryExecution')) {
-            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
-                $this->getRequestParameter('deliveryExecution')
-            );
+        $deliveryExecution = $this->getDeliveryExecutionFromRequest();
 
-            if ($deliveryExecution instanceof DeliveryExecution) {
-                $this->getLogger()->info(
-                    sprintf(
-                        '%s::%s: Delivery execution ID %s',
-                        self::class,
-                        __METHOD__,
-                        $deliveryExecution->getIdentifier()
-                    )
-                );
+        if ($deliveryExecution instanceof DeliveryExecution) {
+            $key = $this->getPauseReasonKey($deliveryExecution);
 
-                // @fixme Does not work anymore
-                $key = "pauseReason-{$deliveryExecution->getIdentifier()}";
-
-                if ($this->hasSessionAttribute($key)) {
-                    return ($this->getSessionAttribute($key) ?? null);
-                }
+            if ($this->hasSessionAttribute($key)) {
+                return ($this->getSessionAttribute($key) ?? null);
             }
         }
 
@@ -243,31 +231,55 @@ class DeliveryRunner extends DeliveryServer
 
     private function clearPauseReason(): void
     {
-        if ($this->hasRequestParameter('deliveryExecution')) {
-            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
-                $this->getRequestParameter('deliveryExecution')
+        $deliveryExecution = $this->getDeliveryExecutionFromRequest();
+
+        if ($deliveryExecution instanceof DeliveryExecution) {
+            $this->removeSessionAttribute(
+                $this->getPauseReasonKey($deliveryExecution)
             );
-
-            if ($deliveryExecution instanceof DeliveryExecution) {
-                $this->getLogger()->info(
-                    sprintf(
-                        '%s::%s: Delivery execution ID %s',
-                        self::class,
-                        __METHOD__,
-                        $deliveryExecution->getIdentifier()
-                    )
-                );
-
-                $this->removeSessionAttribute(
-                    "pauseReason-{$deliveryExecution->getIdentifier()}"
-                );
-            }
         }
+    }
+
+    private function getDeliveryExecutionFromRequest(): ?DeliveryExecution
+    {
+        if (!$this->hasRequestParameter('deliveryExecution')) {
+            return null;
+        }
+
+        $id = trim($this->getRequestParameter('deliveryExecution'));
+        if (empty($id)) {
+            return null;
+        }
+
+        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($id);
+
+        if ($deliveryExecution instanceof DeliveryExecution) {
+            $this->getLogger()->info(
+                sprintf(
+                    '%s::%s: Delivery execution ID %s',
+                    self::class,
+                    __METHOD__,
+                    $deliveryExecution->getIdentifier()
+                )
+            );
+        }
+
+        return $deliveryExecution;
+    }
+
+    private function getPauseReasonKey(DeliveryExecution $execution): string
+    {
+        return "pauseReason-{$execution->getIdentifier()}";
     }
 
     private function getLtiService(): LtiService
     {
         return LtiService::singleton();
+    }
+
+    private function getLtiDeliveryTool(): LTIDeliveryTool
+    {
+        return $this->getServiceLocator()->get(LTIDeliveryTool::class);
     }
 
     private function getNavigationService(): LtiNavigationService
