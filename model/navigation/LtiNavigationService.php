@@ -27,6 +27,7 @@ use common_exception_NotFound;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\helpers\LegacySessionUtils;
 use oat\tao\helpers\UrlHelper;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
@@ -37,6 +38,8 @@ use oat\taoQtiTest\model\Service\PauseService;
 
 class LtiNavigationService extends ConfigurableService
 {
+    use LegacySessionUtils;
+
     public const SERVICE_ID = 'ltiDeliveryProvider/LtiNavigation';
 
     public const OPTION_DELIVERY_RETURN_STATUS = 'delivery_return_status';
@@ -61,7 +64,14 @@ class LtiNavigationService extends ConfigurableService
     ): string {
         $this->getLogger()->critical('getReturnUrl: pauseReason=' . $pauseReason);
 
-        if ($pauseReason ===  PauseService::PAUSE_REASON_CONCURRENT_TEST) {
+        if ($pauseReason === PauseService::PAUSE_REASON_CONCURRENT_TEST) {
+            return $this->buildFeedbackUrl($deliveryExecution);
+        }
+
+        if (
+            $this->hasSessionAttribute('testSessionConflict')
+            && $this->getSessionAttribute('testSessionConflict')
+        ) {
             return $this->buildFeedbackUrl($deliveryExecution);
         }
 

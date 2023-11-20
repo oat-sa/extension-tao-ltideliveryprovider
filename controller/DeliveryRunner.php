@@ -179,11 +179,15 @@ class DeliveryRunner extends DeliveryServer
 
     public function feedback(): void
     {
-        if ($this->getPauseReason() ===  PauseService::PAUSE_REASON_CONCURRENT_TEST) {
+        if ($this->getPauseReason() === PauseService::PAUSE_REASON_CONCURRENT_TEST) {
             $this->setData('reason', 'concurrent-test');
-        }
 
-        $this->clearPauseReason();
+            $this->clearPauseReason();
+        } elseif ($this->getSessionAttribute('testSessionConflict')) {
+            $this->setData('reason', 'test-session-conflict');
+
+            $this->removeSessionAttribute('testSessionConflict');
+        }
 
         $this->setView('learner/feedback.tpl');
     }
