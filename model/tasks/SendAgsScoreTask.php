@@ -47,7 +47,6 @@ class SendAgsScoreTask extends AbstractAction
     public function __invoke($params): Report
     {
         $this->params = array_merge($this->params, $params);
-        $this->logInfo('SendAgsScoreTask Params' . print_r($params, true));
         $this->getLogger()->info('Start AGS score sending task', $params);
 
         try {
@@ -77,8 +76,6 @@ class SendAgsScoreTask extends AbstractAction
         } catch (LtiAgsException $e) {
             $this->retryTask($e, $deliveryExecutionId);
 
-            return $this->reportError($e->getMessage());
-        } catch (\Exception $e) {
             return $this->reportError($e->getMessage());
         }
 
