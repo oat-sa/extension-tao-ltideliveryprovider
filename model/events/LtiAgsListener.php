@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\events;
 
-use Carbon\Carbon;
 use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
@@ -68,7 +67,7 @@ class LtiAgsListener extends ConfigurableService
                 'data' => [
                     'userId' => $user->getIdentifier(),
                     'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED,
-                    'timestamp' => Carbon::now()->format('Y-m-d\TH:i:s.uP'),
+                    'timestamp' => (new \DateTime('now'))->format('Y-m-d\TH:i:s.uP'),
                 ]
             ], 'AGS score send on test launch');
         }
@@ -184,7 +183,7 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
-                'timestamp' => $timestamp ?? Carbon::now()->format('Y-m-d\TH:i:s.uP'),
+                'timestamp' => $timestamp ?? (new \DateTime('now'))->format('Y-m-d\TH:i:s.uP'),
             ]
         ];
 
