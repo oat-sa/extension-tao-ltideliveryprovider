@@ -52,7 +52,7 @@ class SendAgsScoreTask extends AbstractAction
         try {
             $this->validateParams($params);
         } catch (InvalidArgumentException $e) {
-            return $this->reportError('ValidateParams failed: ' . $e->getMessage());
+            return $this->reportError($e->getMessage());
         }
 
         $registrationId = $params['registrationId'];
