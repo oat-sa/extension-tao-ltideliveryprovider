@@ -61,7 +61,6 @@ class LtiAgsListener extends ConfigurableService
             /** @var AgsClaim $agsClaim */
             $agsClaim = $user->getLaunchData()->getVariable(LtiLaunchData::AGS_CLAIMS);
 
-            $currentTimestamp = (new DateTime('now', new DateTimeZone(TIME_ZONE)));
             /** @var QueueDispatcherInterface $taskQueue */
             $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
             $taskQueue->createTask(new SendAgsScoreTask(), [
@@ -71,7 +70,7 @@ class LtiAgsListener extends ConfigurableService
                 'data' => [
                     'userId' => $user->getIdentifier(),
                     'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED,
-                    'timestamp' => $currentTimestamp->format(DateTimeInterface::RFC3339_EXTENDED),
+                    'timestamp' => (new DateTime('now'))->format(DateTimeInterface::RFC3339_EXTENDED),
                 ]
             ], 'AGS score send on test launch');
         }
@@ -175,7 +174,6 @@ class LtiAgsListener extends ConfigurableService
         $agsClaim = $ltiLaunchData->getVariable(LtiLaunchData::AGS_CLAIMS);
         $registrationId = $ltiLaunchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_ID);
         $userId = $deliveryExecution->getUserIdentifier();
-        $currentTimestamp = (new DateTime('now', new DateTimeZone(TIME_ZONE)));
         $taskBody = [
             'retryMax' => $this->getAgsMaxRetries(),
             'registrationId' => $registrationId,
@@ -187,7 +185,7 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
-                'timestamp' => $timestamp ?? $currentTimestamp->format(DateTimeInterface::RFC3339_EXTENDED),
+                'timestamp' => $timestamp ?? (new DateTime('now'))->format(DateTimeInterface::RFC3339_EXTENDED),
             ]
         ];
 
