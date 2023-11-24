@@ -70,6 +70,13 @@ class DeliveryTool extends ToolModule
     // phpcs:enable Generic.Files.LineLength
 
     /**
+     * Controls whether launching a new delivery suspends other sessions by the same user.
+     *
+     * @var string
+     */
+    public const FEATURE_FLAG_PAUSE_CONCURRENT_SESSIONS = 'FEATURE_FLAG_PAUSE_CONCURRENT_SESSIONS';
+
+    /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
      * and will start a new testsession whenever the lti tool is launched
      *
@@ -99,8 +106,6 @@ class DeliveryTool extends ToolModule
      */
     public const PARAM_THANKYOU_MESSAGE = 'custom_message';
 
-    private ?ActiveDeliveryExecutionsService $activeDeliveryExecutionsService = null;
-
     /**
      * (non-PHPdoc)
      * @see ToolModule::run()
@@ -115,9 +120,8 @@ class DeliveryTool extends ToolModule
      */
     public function run()
     {
-        $this->getLogger()->info('DeliveryTool::run()');
-
         $compiledDelivery = $this->getDelivery();
+
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // user authorised to select the Delivery
@@ -136,53 +140,61 @@ class DeliveryTool extends ToolModule
                 throw new LtiException(__('Test Session not found'));
             }
 
-            $user = $session->getUser();
-            $ltiRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
-            $isLearner = !is_null($user) && count(array_intersect($ltiRoles, $user->getRoles())) > 0;
+            $this->runTestSession($session, $compiledDelivery);
+        }
+    }
 
-            $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
+    protected function runTestSession(
+        common_session_Session $session,
+        core_kernel_classes_Resource $compiledDelivery
+    ): void {
+        $user = $session->getUser();
+        $ltiRoles = [LtiRoles::CONTEXT_LEARNER, LtiRoles::CONTEXT_LTI1P3_LEARNER];
+        $isLearner = !is_null($user) && count(array_intersect($ltiRoles, $user->getRoles())) > 0;
+        $isDryRun = !$isLearner && in_array(LtiRoles::CONTEXT_LTI1P3_INSTRUCTOR, $user->getRoles(), true);
 
-            if ($isLearner || $isDryRun) {
-                if (!$this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
-                    common_Logger::e('Lti learner has no access to delivery runner');
-                    $this->returnError(__('Access to this functionality is restricted'), false);
+        if ($isLearner || $isDryRun) {
+            if (!$this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
+                common_Logger::e('Lti learner has no access to delivery runner');
+                $this->returnError(__('Access to this functionality is restricted'), false);
 
-                    return;
-                }
+                return;
+            }
 
-                try {
-                    $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+            try {
+                $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
 
-                    if ($activeExecution instanceof DeliveryExecution) {
+                if ($activeExecution instanceof DeliveryExecution) {
+                    if ($this->isPausingConcurrentSessionsEnabled()) {
                         $this->pauseConcurrentSessions($session, $activeExecution);
-
-                        $this->resetDeliveryExecutionState($activeExecution);
                     }
 
-                    $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
-                } catch (QtiTestExtractionFailedException $e) {
-                    common_Logger::i($e->getMessage());
-                    throw new LtiException($e->getMessage());
-                } catch (ActionFullException $e) {
-                    $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
-                        'position' => $e->getPosition(),
-                        'delivery' => $compiledDelivery->getUri(),
-                    ]));
+                    $this->resetDeliveryExecutionState($activeExecution);
                 }
-            } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
-                $this->redirect(
-                    _url(
-                        'showDelivery',
-                        'LinkConfiguration',
-                        null,
-                        [
-                            'uri' => $compiledDelivery->getUri()
-                        ]
-                    )
-                );
-            } else {
-                $this->returnError(__('Access to this functionality is restricted to students'), false);
+
+                $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
+            } catch (QtiTestExtractionFailedException $e) {
+                common_Logger::i($e->getMessage());
+                throw new LtiException($e->getMessage());
+            } catch (ActionFullException $e) {
+                $this->redirect(_url('launchQueue', 'DeliveryTool', null, [
+                    'position' => $e->getPosition(),
+                    'delivery' => $compiledDelivery->getUri(),
+                ]));
             }
+        } elseif ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
+            $this->redirect(
+                _url(
+                    'showDelivery',
+                    'LinkConfiguration',
+                    null,
+                    [
+                        'uri' => $compiledDelivery->getUri()
+                    ]
+                )
+            );
+        } else {
+            $this->returnError(__('Access to this functionality is restricted to students'), false);
         }
     }
 
@@ -204,49 +216,32 @@ class DeliveryTool extends ToolModule
             $activeExecution->getIdentifier()
         );
 
-        $this->getLogger()->debug(
-            sprintf(
-                'Current execution ID: %s, other execution IDs: %s',
-                $activeExecution->getIdentifier(),
-                print_r($otherExecutionIds, true)
-            )
-        );
+        $logger = $this->getLogger();
 
         $count = 0;
 
         foreach ($otherExecutionIds as $executionId) {
             try {
-                $this->getLogger()->debug("Pausing execution {$executionId}");
                 $execution = $deliveryExecutionService->getDeliveryExecution(
                     $executionId
                 );
 
-                if ($execution) {
-                    for($i=0;$i<20;$i++) $this->getLogger()->debug('PAUSING EXECUTION===========================');
-
-                    $this->getLogger()->debug(
-                        sprintf(
-                            'Current execution ID: %s, other execution IDs: %s, pausing execution %s',
-                            $activeExecution->getIdentifier(), //$this->getSessionId(),
-                            print_r($otherExecutionIds, true),
-                            $executionId
-                        )
-                    );
-
-                    $this->setSessionAttribute(
-                        "pauseReason-{$executionId}",
-                        PauseService::PAUSE_REASON_CONCURRENT_TEST
-                    );
-
-                    $this->getRunnerService()->pause(
-                        $this->getRunnerServiceContextByDeliveryExecution($execution)
-                    );
-
-                    $this->getStateService()->pause($execution);
-                    $count++;
+                if (!$execution instanceof DeliveryExecution) {
+                    continue;
                 }
+                $logger->debug(
+                    sprintf(
+                        '%s: Current execution %s, pausing non-current execution %s',
+                        self::class,
+                        $activeExecution->getIdentifier(),
+                        $executionId
+                    )
+                );
+
+                $this->pauseSingleExecution($execution);
+                $count++;
             } catch (Throwable $e) {
-                $this->getLogger()->warning(
+                $logger->warning(
                     sprintf(
                         '%s: Unable to pause delivery execution %s: %s',
                         self::class,
@@ -257,7 +252,7 @@ class DeliveryTool extends ToolModule
             }
         }
 
-        $this->getLogger()->warning(
+        $logger->debug(
             sprintf(
                 '%s: %d executions paused for other deliveries',
                 self::class,
@@ -266,7 +261,29 @@ class DeliveryTool extends ToolModule
         );
     }
 
-    protected function getRunnerServiceContextByDeliveryExecution(
+    protected function pauseSingleExecution(DeliveryExecution $execution): void
+    {
+        if ($execution->getState()->getUri() == DeliveryExecutionInterface::STATE_PAUSED) {
+            $this->getLogger()->debug(
+                sprintf('%s already paused', $execution->getIdentifier())
+            );
+
+            return; // Already paused
+        }
+
+        $this->setSessionAttribute(
+            "pauseReason-{$execution->getIdentifier()}",
+            PauseService::PAUSE_REASON_CONCURRENT_TEST
+        );
+
+        $context = $this->getRunnerServiceContextByDeliveryExecution($execution);
+
+        $this->getRunnerService()->endTimer($context);
+        $this->getRunnerService()->pause($context);
+        $this->getStateService()->pause($execution);
+    }
+
+    private function getRunnerServiceContextByDeliveryExecution(
         DeliveryExecutionInterface $execution
     ): QtiRunnerServiceContext {
         $delivery = $execution->getDelivery();
@@ -482,6 +499,13 @@ class DeliveryTool extends ToolModule
         }
 
         $this->getStateService()->pause($activeExecution);
+    }
+
+    private function isPausingConcurrentSessionsEnabled(): bool
+    {
+        return !$this->getFeatureFlagChecker()->isEnabled(
+            static::FEATURE_FLAG_PAUSE_CONCURRENT_SESSIONS
+        );
     }
 
     private function isDeliveryExecutionStateResetEnabled(): bool
