@@ -229,6 +229,7 @@ class DeliveryTool extends ToolModule
                 if (!$execution instanceof DeliveryExecution) {
                     continue;
                 }
+
                 $logger->debug(
                     sprintf(
                         '%s: Current execution %s, pausing non-current execution %s',
