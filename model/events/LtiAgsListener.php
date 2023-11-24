@@ -25,7 +25,6 @@ namespace oat\ltiDeliveryProvider\model\events;
 
 use DateTime;
 use DateTimeInterface;
-use DateTimeZone;
 use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
@@ -46,6 +45,7 @@ use qtism\data\AssessmentItemRef;
 use qtism\data\state\OutcomeDeclaration;
 use qtism\runtime\common\OutcomeVariable;
 use qtism\runtime\tests\AssessmentTestSession;
+use tao_helpers_Date as DateHelper;
 
 class LtiAgsListener extends ConfigurableService
 {
@@ -152,7 +152,8 @@ class LtiAgsListener extends ConfigurableService
                 $scoreTotalMax,
                 $this->isManualScored($session)
                     ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
-                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED
+                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED,
+                DateHelper::formatMicrotime($deliveryExecution->getFinishTime())
             );
         }
     }
