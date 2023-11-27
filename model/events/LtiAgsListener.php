@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\events;
 
+use DateTime;
+use DateTimeInterface;
 use OAT\Library\Lti1p3Ags\Model\Score\ScoreInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\AgsClaim;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
@@ -43,6 +45,7 @@ use qtism\data\AssessmentItemRef;
 use qtism\data\state\OutcomeDeclaration;
 use qtism\runtime\common\OutcomeVariable;
 use qtism\runtime\tests\AssessmentTestSession;
+use tao_helpers_Date as DateHelper;
 
 class LtiAgsListener extends ConfigurableService
 {
@@ -66,7 +69,8 @@ class LtiAgsListener extends ConfigurableService
                 'agsClaim' => $agsClaim->normalize(),
                 'data' => [
                     'userId' => $user->getIdentifier(),
-                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED
+                    'activityProgress' => ScoreInterface::ACTIVITY_PROGRESS_STATUS_STARTED,
+                    'timestamp' => (new DateTime('now'))->format(DateTimeInterface::RFC3339_EXTENDED),
                 ]
             ], 'AGS score send on test launch');
         }
@@ -148,7 +152,8 @@ class LtiAgsListener extends ConfigurableService
                 $scoreTotalMax,
                 $this->isManualScored($session)
                     ? ScoreInterface::GRADING_PROGRESS_STATUS_PENDING_MANUAL
-                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED
+                    : ScoreInterface::GRADING_PROGRESS_STATUS_FULLY_GRADED,
+                DateHelper::formatMicrotime($deliveryExecution->getFinishTime())
             );
         }
     }
@@ -160,7 +165,7 @@ class LtiAgsListener extends ConfigurableService
         $scoreTotal,
         $scoreTotalMax,
         string $gradingStatus,
-        ?int $gradingTimestamp = null
+        ?string $timestamp = null
     ): void {
 
         if (!$ltiLaunchData->hasVariable(LtiLaunchData::AGS_CLAIMS)) {
@@ -170,7 +175,6 @@ class LtiAgsListener extends ConfigurableService
         $agsClaim = $ltiLaunchData->getVariable(LtiLaunchData::AGS_CLAIMS);
         $registrationId = $ltiLaunchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_ID);
         $userId = $deliveryExecution->getUserIdentifier();
-
         $taskBody = [
             'retryMax' => $this->getAgsMaxRetries(),
             'registrationId' => $registrationId,
@@ -182,12 +186,9 @@ class LtiAgsListener extends ConfigurableService
                 'gradingProgress' => $gradingStatus,
                 'scoreGiven' => $scoreTotal,
                 'scoreMaximum' => $scoreTotalMax,
+                'timestamp' => $timestamp ?? (new DateTime('now'))->format(DateTimeInterface::RFC3339_EXTENDED),
             ]
         ];
-
-        if ($gradingTimestamp !== null) {
-            $taskBody['data']['timestamp'] = date('Y-m-d H:i:s', $gradingTimestamp);
-        }
 
         /** @var QueueDispatcherInterface $taskQueue */
         $taskQueue = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
