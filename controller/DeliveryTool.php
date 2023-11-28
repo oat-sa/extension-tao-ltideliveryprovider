@@ -151,11 +151,7 @@ class DeliveryTool extends ToolModule
                 $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
 
                 if ($activeExecution instanceof DeliveryExecution) {
-                    $this->getConcurringSessionService()->pauseConcurrentSessions(
-                        $session,
-                        PHPSession::singleton(),
-                        $activeExecution
-                    );
+                    $this->getConcurringSessionService()->pauseConcurrentSessions($activeExecution);
 
                     $this->resetDeliveryExecutionState($activeExecution);
                 }
