@@ -24,17 +24,18 @@ declare(strict_types=1);
 namespace oat\ltiDeliveryProvider\model\navigation;
 
 use common_exception_NotFound;
+use oat\ltiDeliveryProvider\model\navigation\Command\GenerateReturnUrlCommand;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
 use oat\tao\helpers\LegacySessionUtils;
 use oat\tao\helpers\UrlHelper;
+use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiMessage;
 use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
-use oat\taoQtiTest\model\Service\PauseService;
 
 class LtiNavigationService extends ConfigurableService
 {
@@ -52,27 +53,32 @@ class LtiNavigationService extends ConfigurableService
     public const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
     /**
-     * @throws InvalidService
-     * @throws InvalidServiceManagerException
-     * @throws LtiException
-     * @throws common_exception_NotFound
+     * @deprecated Please use "generateReturnUrl"
      */
-    public function getReturnUrl(
-        LtiLaunchData $launchData,
-        DeliveryExecutionInterface $deliveryExecution,
-        ?string $pauseReason = null
-    ): string {
-        if ($pauseReason === PauseService::PAUSE_REASON_CONCURRENT_TEST) {
-            return $this->buildFeedbackUrl($deliveryExecution);
+    public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution): string
+    {
+        return $this->generateReturnUrl(new GenerateReturnUrlCommand($launchData, $deliveryExecution));
+    }
+
+    public function generateReturnUrl(GenerateReturnUrlCommand $command): string
+    {
+        if ($command->isCustomFeedback()) {
+            return $this->getUrlHelper()->buildUrl(
+                'feedback',
+                'DeliveryRunner',
+                'ltiDeliveryProvider',
+                array_merge(
+                    [
+                        'deliveryExecution' => $command->getDeliveryExecution()->getIdentifier(),
+                    ],
+                    $command->getQueryStringData()
+                )
+            );
         }
 
-        if ($this->hasSessionAttribute('testSessionConflict')) {
-            return $this->buildFeedbackUrl($deliveryExecution);
-        }
-
-        return $this->shouldShowThankYou($launchData)
+        return $this->shouldShowThankYou($command->getLaunchData())
             ? $this->buildThankYouUrl()
-            : $this->buildConsumerReturnUrl($launchData, $deliveryExecution);
+            : $this->buildConsumerReturnUrl($command->getLaunchData(), $command->getDeliveryExecution());
     }
 
     /**
@@ -141,18 +147,6 @@ class LtiNavigationService extends ConfigurableService
         return $this->getUrlHelper()->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
-    protected function buildFeedbackUrl(DeliveryExecutionInterface $deliveryExecution): string
-    {
-        return $this->getUrlHelper()->buildUrl(
-            'feedback',
-            'DeliveryRunner',
-            'ltiDeliveryProvider',
-            [
-                'deliveryExecution' => $deliveryExecution->getIdentifier(),
-            ]
-        );
-    }
-
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param array $urlParts
@@ -211,5 +205,21 @@ class LtiNavigationService extends ConfigurableService
     private function getUrlHelper(): UrlHelper
     {
         return $this->getServiceLocator()->get(UrlHelper::class);
+    }
+
+    private function getPauseReason(DeliveryExecution $deliveryExecution): ?string
+    {
+        $key = "pauseReason-{$deliveryExecution->getIdentifier()}";
+
+        if ($this->hasSessionAttribute($key)) {
+            return ($this->getSessionAttribute($key) ?? null);
+        }
+    }
+
+    private function clearPauseReason(DeliveryExecution $deliveryExecution): void
+    {
+        $key = "pauseReason-{$deliveryExecution->getIdentifier()}";
+
+        $this->removeSessionAttribute($key);
     }
 }

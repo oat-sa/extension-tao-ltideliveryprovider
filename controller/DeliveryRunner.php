@@ -20,24 +20,22 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
-use common_exception_Error;
+use oat\ltiDeliveryProvider\model\navigation\Command\GenerateReturnUrlCommand;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
-use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoLti\controller\traits\LtiModuleTrait;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\LtiService;
-use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoLti\models\classes\theme\LtiHeadless;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
-use oat\taoQtiTest\model\Service\PauseService;
+use oat\taoQtiTest\model\Service\ConcurringSessionService;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -78,16 +76,30 @@ class DeliveryRunner extends DeliveryServer
 
     public function ltiReturn()
     {
+        $isFeedback = false;
+        $queryString = [];
+        $concurringService = $this->getConcurringSessionService();
+        $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
 
-        $launchData = $this->getLtiService()->getLtiSession()->getLaunchData();
-        $redirectUrl = $this->getNavigationService()->getReturnUrl(
-            $launchData,
-            $deliveryExecution,
-            $this->getPauseReason()
+        if ($concurringService->isConcurringSession($deliveryExecution)) {
+            $isFeedback = true;
+            $queryString = [
+                'reason' => 'concurrent-test'
+            ];
+            $concurringService->clearConcurringSession($deliveryExecution);
+        }
+
+        $redirectUrl = $navigation->generateReturnUrl(
+            new GenerateReturnUrlCommand(
+                $launchData,
+                $deliveryExecution,
+                $isFeedback,
+                $queryString
+            )
         );
-
-        $this->getLogger()->info(
+        \common_Logger::i(
             sprintf(
                 'Redirected from the deliveryExecution %s to %s',
                 $deliveryExecution->getIdentifier(),
@@ -99,7 +111,7 @@ class DeliveryRunner extends DeliveryServer
     }
 
     /**
-     * Shown upon returning to a finished delivery execution
+     * Shown uppon returning to a finished delivery execution
      */
     public function ltiOverview()
     {
@@ -112,15 +124,15 @@ class DeliveryRunner extends DeliveryServer
      * @throws LtiException
      * @throws \InterruptedActionException
      * @throws \ResolverException
-     * @throws common_exception_Error
+     * @throws \common_exception_Error
      * @throws \common_exception_IsAjaxAction
-     * @throws LtiVariableMissingException
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
     public function repeat()
     {
         $delivery = new \core_kernel_classes_Resource($this->getRequestParameter('delivery'));
 
-        $remoteLink = $this->getLtiService()->getLtiSession()->getLtiLinkResource();
+        $remoteLink = LtiService::singleton()->getLtiSession()->getLtiLinkResource();
         $user = \common_session_SessionManager::getSession()->getUser();
 
         try {
@@ -150,12 +162,12 @@ class DeliveryRunner extends DeliveryServer
 
     /**
      * @throws LtiException
-     * @throws common_exception_Error
-     * @throws LtiVariableMissingException
+     * @throws \common_exception_Error
+     * @throws \oat\taoLti\models\classes\LtiVariableMissingException
      */
     public function thankYou()
     {
-        $launchData = $this->getLtiService()->getLtiSession()->getLaunchData();
+        $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
 
         if ($launchData->hasVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME)) {
             $this->setData('consumerLabel', $launchData->getVariable(LtiLaunchData::TOOL_CONSUMER_INSTANCE_NAME));
@@ -180,17 +192,7 @@ class DeliveryRunner extends DeliveryServer
 
     public function feedback(): void
     {
-        if ($this->getPauseReason() === PauseService::PAUSE_REASON_CONCURRENT_TEST) {
-            $this->setData('reason', 'concurrent-test');
-
-            $this->clearPauseReason();
-        } elseif ($this->hasSessionAttribute('testSessionConflict')
-            && $this->getSessionAttribute('testSessionConflict')) {
-            $this->setData('reason', 'test-session-conflict');
-
-            $this->removeSessionAttribute('testSessionConflict');
-        }
-
+        $this->setData('reason', $this->getRequestParameter('reason'));
         $this->setView('learner/feedback.tpl');
     }
 
@@ -199,91 +201,24 @@ class DeliveryRunner extends DeliveryServer
      */
     public function finishDeliveryExecution()
     {
-        $deliveryExecution = $this->getDeliveryExecutionFromRequest();
-        $redirectUrl = $this->getReturnUrl();
-
-        if ($deliveryExecution instanceof DeliveryExecution) {
-            if ($deliveryExecution->getState()->getUri() !== DeliveryExecutionInterface::STATE_FINISHED) {
+        $deliveryExecution = null;
+        if ($this->hasRequestParameter('deliveryExecution')) {
+            $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution(
+                $this->getRequestParameter('deliveryExecution')
+            );
+            if ($deliveryExecution->getState() !== DeliveryExecution::STATE_FINISHIED) {
                 $stateService = $this->getServiceLocator()->get(StateServiceInterface::SERVICE_ID);
                 $stateService->finish($deliveryExecution);
             }
-
-            $redirectUrl = $this->getLtiDeliveryTool()->getFinishUrl($deliveryExecution);
         }
-
+        $redirectUrl = $deliveryExecution
+            ? $this->getServiceLocator()->get(LTIDeliveryTool::class)->getFinishUrl($deliveryExecution)
+            : $this->getReturnUrl();
         $this->redirect($redirectUrl);
     }
 
-    private function getPauseReason(): ?string
+    private function getConcurringSessionService(): ConcurringSessionService
     {
-        $deliveryExecution = $this->getDeliveryExecutionFromRequest();
-
-        if ($deliveryExecution instanceof DeliveryExecution) {
-            $key = $this->getPauseReasonKey($deliveryExecution);
-
-            if ($this->hasSessionAttribute($key)) {
-                return ($this->getSessionAttribute($key) ?? null);
-            }
-        }
-
-        return null;
-    }
-
-    private function clearPauseReason(): void
-    {
-        $deliveryExecution = $this->getDeliveryExecutionFromRequest();
-
-        if ($deliveryExecution instanceof DeliveryExecution) {
-            $this->removeSessionAttribute(
-                $this->getPauseReasonKey($deliveryExecution)
-            );
-        }
-    }
-
-    private function getDeliveryExecutionFromRequest(): ?DeliveryExecution
-    {
-        if (!$this->hasRequestParameter('deliveryExecution')) {
-            return null;
-        }
-
-        $id = trim($this->getRequestParameter('deliveryExecution'));
-        if (empty($id)) {
-            return null;
-        }
-
-        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($id);
-
-        if ($deliveryExecution instanceof DeliveryExecution) {
-            $this->getLogger()->info(
-                sprintf(
-                    '%s::%s: Delivery execution ID %s',
-                    self::class,
-                    __METHOD__,
-                    $deliveryExecution->getIdentifier()
-                )
-            );
-        }
-
-        return $deliveryExecution;
-    }
-
-    private function getPauseReasonKey(DeliveryExecution $execution): string
-    {
-        return "pauseReason-{$execution->getIdentifier()}";
-    }
-
-    private function getLtiService(): LtiService
-    {
-        return LtiService::singleton();
-    }
-
-    private function getLtiDeliveryTool(): LTIDeliveryTool
-    {
-        return $this->getServiceLocator()->get(LTIDeliveryTool::class);
-    }
-
-    private function getNavigationService(): LtiNavigationService
-    {
-        return $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
+        return $this->getPsrContainer()->get(ConcurringSessionService::class);
     }
 }
