@@ -12,7 +12,7 @@ use oat\tao\helpers\Template;
 <body>
 <div id="main" class="ui-widget-content ui-corner-all">
 <?php if (isset($reason) && $reason == 'concurrent-test'): ?>
-    <h1>Test paused</h1>
+    <h1>Test suspended</h1>
     <div class="message">
         <?= __('The test was suspended because another one was opened in a different window or tab'); ?>.
     </div>
