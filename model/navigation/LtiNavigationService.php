@@ -23,14 +23,11 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\navigation;
 
-use common_exception_NotFound;
 use oat\ltiDeliveryProvider\model\navigation\Command\GenerateReturnUrlCommand;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
-use oat\tao\helpers\LegacySessionUtils;
 use oat\tao\helpers\UrlHelper;
-use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\ltiDeliveryProvider\controller\DeliveryTool;
@@ -39,8 +36,6 @@ use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
 
 class LtiNavigationService extends ConfigurableService
 {
-    use LegacySessionUtils;
-
     public const SERVICE_ID = 'ltiDeliveryProvider/LtiNavigation';
 
     public const OPTION_DELIVERY_RETURN_STATUS = 'delivery_return_status';
@@ -82,7 +77,10 @@ class LtiNavigationService extends ConfigurableService
     }
 
     /**
-     * @throws common_exception_NotFound
+     * @param LtiLaunchData $launchData
+     * @param DeliveryExecutionInterface $deliveryExecution
+     * @return string
+     * @throws \common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      * @throws LtiException
@@ -102,7 +100,7 @@ class LtiNavigationService extends ConfigurableService
     /**
      * @param DeliveryExecutionInterface $deliveryExecution
      * @return array
-     * @throws common_exception_NotFound
+     * @throws \common_exception_NotFound
      * @throws InvalidService
      * @throws InvalidServiceManagerException
      */
@@ -142,6 +140,9 @@ class LtiNavigationService extends ConfigurableService
         return $this->getOption(self::OPTION_THANK_YOU_SCREEN);
     }
 
+    /**
+     * @return string
+     */
     protected function buildThankYouUrl(): string
     {
         return $this->getUrlHelper()->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
@@ -151,7 +152,7 @@ class LtiNavigationService extends ConfigurableService
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param array $urlParts
      * @return array
-     * @throws common_exception_NotFound
+     * @throws \common_exception_NotFound
      */
     private function buildConsumerReturnUrlQuery(DeliveryExecutionInterface $deliveryExecution, array $urlParts): string
     {
@@ -178,7 +179,7 @@ class LtiNavigationService extends ConfigurableService
      * @param DeliveryExecutionInterface $deliveryExecution
      * @param $params
      * @return mixed
-     * @throws common_exception_NotFound
+     * @throws \common_exception_NotFound
      */
     private function getDeliveryReturnQueryParams(DeliveryExecutionInterface $deliveryExecution): array
     {
@@ -205,21 +206,5 @@ class LtiNavigationService extends ConfigurableService
     private function getUrlHelper(): UrlHelper
     {
         return $this->getServiceLocator()->get(UrlHelper::class);
-    }
-
-    private function getPauseReason(DeliveryExecution $deliveryExecution): ?string
-    {
-        $key = "pauseReason-{$deliveryExecution->getIdentifier()}";
-
-        if ($this->hasSessionAttribute($key)) {
-            return ($this->getSessionAttribute($key) ?? null);
-        }
-    }
-
-    private function clearPauseReason(DeliveryExecution $deliveryExecution): void
-    {
-        $key = "pauseReason-{$deliveryExecution->getIdentifier()}";
-
-        $this->removeSessionAttribute($key);
     }
 }
