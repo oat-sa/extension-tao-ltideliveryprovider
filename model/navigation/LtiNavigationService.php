@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2018-2023 (original work) Open Assessment Technologies SA.
  *
  */
 
@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace oat\ltiDeliveryProvider\model\navigation;
 
+use oat\ltiDeliveryProvider\model\navigation\Command\GenerateReturnUrlCommand;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\exception\InvalidService;
 use oat\oatbox\service\exception\InvalidServiceManagerException;
@@ -46,21 +47,33 @@ class LtiNavigationService extends ConfigurableService
      */
     public const OPTION_THANK_YOU_SCREEN = 'thankyouScreen';
 
-
     /**
-     * @param LtiLaunchData $launchData
-     * @param DeliveryExecutionInterface $deliveryExecution
-     * @return string
-     * @throws \common_exception_NotFound
-     * @throws InvalidService
-     * @throws InvalidServiceManagerException
-     * @throws LtiException
+     * @deprecated Please use "generateReturnUrl"
      */
     public function getReturnUrl(LtiLaunchData $launchData, DeliveryExecutionInterface $deliveryExecution): string
     {
-        return $this->shouldShowThankYou($launchData)
+        return $this->generateReturnUrl(new GenerateReturnUrlCommand($launchData, $deliveryExecution));
+    }
+
+    public function generateReturnUrl(GenerateReturnUrlCommand $command): string
+    {
+        if ($command->isCustomFeedback()) {
+            return $this->getUrlHelper()->buildUrl(
+                'feedback',
+                'DeliveryRunner',
+                'ltiDeliveryProvider',
+                array_merge(
+                    [
+                        'deliveryExecution' => $command->getDeliveryExecution()->getIdentifier(),
+                    ],
+                    $command->getQueryStringData()
+                )
+            );
+        }
+
+        return $this->shouldShowThankYou($command->getLaunchData())
             ? $this->buildThankYouUrl()
-            : $this->buildConsumerReturnUrl($launchData, $deliveryExecution);
+            : $this->buildConsumerReturnUrl($command->getLaunchData(), $command->getDeliveryExecution());
     }
 
     /**
@@ -132,11 +145,7 @@ class LtiNavigationService extends ConfigurableService
      */
     protected function buildThankYouUrl(): string
     {
-        return $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
-            'thankYou',
-            'DeliveryRunner',
-            'ltiDeliveryProvider'
-        );
+        return $this->getUrlHelper()->buildUrl('thankYou', 'DeliveryRunner', 'ltiDeliveryProvider');
     }
 
     /**
@@ -192,5 +201,10 @@ class LtiNavigationService extends ConfigurableService
     private function getReturnUrlIdParams(): array
     {
         return ['returnUrlId' => \helpers_Random::generateString(10)];
+    }
+
+    private function getUrlHelper(): UrlHelper
+    {
+        return $this->getServiceLocator()->get(UrlHelper::class);
     }
 }
