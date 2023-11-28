@@ -14,12 +14,7 @@ use oat\tao\helpers\Template;
 <?php if (isset($reason) && $reason == 'concurrent-test'): ?>
     <h1>Test paused</h1>
     <div class="message">
-        <?= __('The test was paused because another one was opened in a different window or tab'); ?>.
-    </div>
-<?php elseif (isset($reason) && $reason == 'test-session-conflict'): ?>
-    <h1>Test session conflict</h1>
-    <div class="message">
-        <?= __('The system identified multiple active sessions for the same test in a different window or tab'); ?>.
+        <?= __('The test was suspended because another one was opened in a different window or tab'); ?>.
     </div>
 <?php else: ?>
     <h1>Test error</h1>

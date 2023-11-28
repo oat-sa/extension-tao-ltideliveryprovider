@@ -35,25 +35,18 @@ use oat\tao\model\actionQueue\ActionFullException;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoDelivery\model\Capacity\CapacityInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoDelivery\model\execution\DeliveryExecutionInterface;
-use oat\taoDelivery\model\execution\DeliveryExecutionService;
 use oat\taoDelivery\model\execution\StateServiceInterface;
-use oat\taoDelivery\model\RuntimeService;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
-use oat\taoQtiTest\model\Service\PauseService;
-use oat\taoQtiTest\models\container\QtiTestDeliveryContainer;
+use oat\taoQtiTest\model\Service\ConcurringSessionService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
-use oat\ltiDeliveryProvider\model\delivery\ActiveDeliveryExecutionsService;
-use oat\taoQtiTest\models\runner\QtiRunnerService;
-use oat\taoQtiTest\models\runner\QtiRunnerServiceContext;
+use PHPSession;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
-use Throwable;
 
 use function GuzzleHttp\Psr7\stream_for;
 
@@ -68,13 +61,6 @@ class DeliveryTool extends ToolModule
      */
     public const FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE = 'FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE';
     // phpcs:enable Generic.Files.LineLength
-
-    /**
-     * Controls whether launching a new delivery suspends other sessions by the same user.
-     *
-     * @var string
-     */
-    public const FEATURE_FLAG_PAUSE_CONCURRENT_SESSIONS = 'FEATURE_FLAG_PAUSE_CONCURRENT_SESSIONS';
 
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
@@ -165,9 +151,11 @@ class DeliveryTool extends ToolModule
                 $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
 
                 if ($activeExecution instanceof DeliveryExecution) {
-                    if ($this->isPausingConcurrentSessionsEnabled()) {
-                        $this->pauseConcurrentSessions($session, $activeExecution);
-                    }
+                    $this->getConcurringSessionService()->pauseConcurrentSessions(
+                        $session,
+                        PHPSession::singleton(),
+                        $activeExecution
+                    );
 
                     $this->resetDeliveryExecutionState($activeExecution);
                 }
@@ -196,133 +184,6 @@ class DeliveryTool extends ToolModule
         } else {
             $this->returnError(__('Access to this functionality is restricted to students'), false);
         }
-    }
-
-    private function pauseConcurrentSessions(
-        common_session_Session $session,
-        DeliveryExecution $activeExecution
-    ): void {
-        $user = $session->getUser();
-
-        if ($user === null) {  // Exit early if the user is anonymous
-            return;
-        }
-
-        $deliveryExecutionService = $this->getDeliveryExecutionService();
-        $activeExecutionService = $this->getActiveDeliveryExecutionsService();
-
-        $otherExecutionIds = $activeExecutionService->getExecutionIdsForOtherDeliveries(
-            $user->getIdentifier(),
-            $activeExecution->getIdentifier()
-        );
-
-        $logger = $this->getLogger();
-
-        $count = 0;
-
-        foreach ($otherExecutionIds as $executionId) {
-            try {
-                $execution = $deliveryExecutionService->getDeliveryExecution(
-                    $executionId
-                );
-
-                if (!$execution instanceof DeliveryExecution) {
-                    continue;
-                }
-
-                $logger->debug(
-                    sprintf(
-                        '%s: Current execution %s, pausing non-current execution %s',
-                        self::class,
-                        $activeExecution->getIdentifier(),
-                        $executionId
-                    )
-                );
-
-                $this->pauseSingleExecution($execution);
-                $count++;
-            } catch (Throwable $e) {
-                $logger->warning(
-                    sprintf(
-                        '%s: Unable to pause delivery execution %s: %s',
-                        self::class,
-                        $executionId,
-                        $e->getMessage()
-                    )
-                );
-            }
-        }
-
-        $logger->debug(
-            sprintf(
-                '%s: %d executions paused for other deliveries',
-                self::class,
-                $count
-            )
-        );
-    }
-
-    protected function pauseSingleExecution(DeliveryExecution $execution): void
-    {
-        if ($execution->getState()->getUri() == DeliveryExecutionInterface::STATE_PAUSED) {
-            $this->getLogger()->debug(
-                sprintf('%s already paused', $execution->getIdentifier())
-            );
-
-            return; // Already paused
-        }
-
-        $this->setSessionAttribute(
-            "pauseReason-{$execution->getIdentifier()}",
-            PauseService::PAUSE_REASON_CONCURRENT_TEST
-        );
-
-        $context = $this->getRunnerServiceContextByDeliveryExecution($execution);
-
-        $this->getRunnerService()->endTimer($context);
-        $this->getRunnerService()->pause($context);
-        $this->getStateService()->pause($execution);
-    }
-
-    private function getRunnerServiceContextByDeliveryExecution(
-        DeliveryExecutionInterface $execution
-    ): QtiRunnerServiceContext {
-        $delivery = $execution->getDelivery();
-        $container = $this->getRuntimeService()->getDeliveryContainer($delivery->getUri());
-        $this->assertIsQtiTestDeliveryContainer($container);
-
-        $testDefinition = $container->getSourceTest($execution);
-        $testCompilation = sprintf(
-            '%s|%s',
-            $container->getPrivateDirId($execution),
-            $container->getPublicDirId($execution)
-        );
-
-        return $this->getRunnerService()->getServiceContext(
-            $testDefinition,
-            $testCompilation,
-            $execution->getIdentifier()
-        );
-    }
-
-    private function getRuntimeService(): RuntimeService
-    {
-        return $this->getServiceLocator()->get(RuntimeService::SERVICE_ID);
-    }
-
-    protected function getRunnerService(): QtiRunnerService
-    {
-        return $this->getServiceLocator()->get(QtiRunnerService::SERVICE_ID);
-    }
-
-    private function getActiveDeliveryExecutionsService(): ActiveDeliveryExecutionsService
-    {
-        return $this->getServiceManager()->getContainer()->get(ActiveDeliveryExecutionsService::class);
-    }
-
-    private function getDeliveryExecutionService(): DeliveryExecutionService
-    {
-        return $this->getServiceLocator()->get(DeliveryExecutionService::SERVICE_ID);
     }
 
     /**
@@ -502,13 +363,6 @@ class DeliveryTool extends ToolModule
         $this->getStateService()->pause($activeExecution);
     }
 
-    private function isPausingConcurrentSessionsEnabled(): bool
-    {
-        return !$this->getFeatureFlagChecker()->isEnabled(
-            static::FEATURE_FLAG_PAUSE_CONCURRENT_SESSIONS
-        );
-    }
-
     private function isDeliveryExecutionStateResetEnabled(): bool
     {
         return !$this->getFeatureFlagChecker()->isEnabled(
@@ -531,17 +385,8 @@ class DeliveryTool extends ToolModule
         return $this->getPsrContainer()->get(FeatureFlagChecker::class);
     }
 
-    /**
-     * @throws common_Exception
-     */
-    private function assertIsQtiTestDeliveryContainer($container): void
+    private function getConcurringSessionService(): ConcurringSessionService
     {
-        if (!$container instanceof QtiTestDeliveryContainer) {
-            throw new common_Exception(
-                sprintf(
-                    'Non QTI test container %s in qti test runner', get_class($container)
-                )
-            );
-        }
+        return $this->getPsrContainer()->get(ConcurringSessionService::class);
     }
 }
