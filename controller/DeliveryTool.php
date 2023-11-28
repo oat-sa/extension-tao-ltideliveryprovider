@@ -292,7 +292,7 @@ class DeliveryTool extends ToolModule
      */
     protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {
-        return $this->getLtiDeliveryExecutionService()->getActiveDeliveryExecution($delivery);
+        return $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->getActiveDeliveryExecution($delivery);
     }
 
     /**
@@ -356,11 +356,6 @@ class DeliveryTool extends ToolModule
         return !$this->getFeatureFlagChecker()->isEnabled(
             static::FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE
         );
-    }
-
-    private function getLtiDeliveryExecutionService(): LtiDeliveryExecutionService
-    {
-        return $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
     }
 
     private function getStateService(): StateServiceInterface
