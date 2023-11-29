@@ -68,7 +68,7 @@
 		"oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
 		"oat-sa/extension-tao-lti" : ">=15.11.0",
 		"oat-sa/extension-tao-outcomeui" : ">=10.0.0",
-		"oat-sa/extension-tao-testqti" : "dev-feat/TR-5852/disable-multiple-delivery-launch as 42.2.0",
+		"oat-sa/extension-tao-testqti" : "dev-feat/RFE-748-integration-branch as 42.2.0",
 		"oat-sa/extension-tao-outcome" : ">=13.3.0"
 	}
 }
