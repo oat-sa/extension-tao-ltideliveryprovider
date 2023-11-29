@@ -38,8 +38,7 @@ class GenerateReturnUrlCommand
         DeliveryExecutionInterface $deliveryExecution,
         bool $isCustomFeedback = false,
         array $queryStringData = []
-    )
-    {
+    ) {
         $this->launchData = $launchData;
         $this->deliveryExecution = $deliveryExecution;
         $this->isCustomFeedback = $isCustomFeedback;
