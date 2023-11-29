@@ -292,7 +292,9 @@ class DeliveryTool extends ToolModule
      */
     protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {
-        return $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID)->getActiveDeliveryExecution($delivery);
+        return $this->getServiceLocator()
+            ->get(LtiDeliveryExecutionService::SERVICE_ID)
+            ->getActiveDeliveryExecution($delivery);
     }
 
     /**
