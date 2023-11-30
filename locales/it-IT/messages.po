@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint132\n"
-"PO-Revision-Date: 2020-07-17T11:49:30\n"
+"Project-Id-Version: TAO 2023.12\n"
+"PO-Revision-Date: 2023-11-30T14:56:09\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -26,7 +26,7 @@ msgid "Access to this functionality is restricted to students"
 msgstr "L'accesso a questa funzionalità è riservato agli studenti"
 
 msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr ""
+msgstr "Il tuo test comincerà a breve. Potrebbero essere necessari alcuni minuti per garantire un svolgimento regolare. Ti preghiamo di aspettare."
 
 msgid "Attempts limit has been reached."
 msgstr ""
@@ -123,11 +123,26 @@ msgstr "Somministrazione selezionata"
 msgid "Selected Delivery"
 msgstr "Somministrazione selezionata"
 
+msgid "Test error"
+msgstr ""
+
 msgid "Test Launch Queue"
+msgstr "Attendi per iniziare il tuo test"
+
+msgid "Test Session not found"
 msgstr ""
 
 msgid "Thank you"
 msgstr "Grazie"
+
+msgid "The delivery is currently unavailable."
+msgstr ""
+
+msgid "The test was suspended because another one was opened in a different window or tab"
+msgstr ""
+
+msgid "There was an error during the test"
+msgstr ""
 
 msgid "This tool has been configured:"
 msgstr " Questo strumento è stato configurato : "
@@ -149,10 +164,4 @@ msgstr "Hai già svolto questo test"
 
 msgid "You have finished the test!"
 msgstr "Hai finito il test!"
-
-msgid "Test Launch Queue"
-msgstr "Attendi per iniziare il tuo test"
-
-msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
-msgstr "Il tuo test comincerà a breve. Potrebbero essere necessari alcuni minuti per garantire un svolgimento regolare. Ti preghiamo di aspettare."
 
