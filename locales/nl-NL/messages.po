@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint132\n"
-"PO-Revision-Date: 2020-07-17T11:49:30\n"
+"Project-Id-Version: TAO 2023.12\n"
+"PO-Revision-Date: 2023-11-30T14:56:09\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -123,11 +123,26 @@ msgstr "Selecteer pakketje"
 msgid "Selected Delivery"
 msgstr "Geselecteerd pakketje"
 
+msgid "Test error"
+msgstr ""
+
 msgid "Test Launch Queue"
+msgstr ""
+
+msgid "Test Session not found"
 msgstr ""
 
 msgid "Thank you"
 msgstr "Dank u"
+
+msgid "The delivery is currently unavailable."
+msgstr ""
+
+msgid "The test was suspended because another one was opened in a different window or tab"
+msgstr ""
+
+msgid "There was an error during the test"
+msgstr ""
 
 msgid "This tool has been configured:"
 msgstr "Deze tool is geconfigureerd:"
