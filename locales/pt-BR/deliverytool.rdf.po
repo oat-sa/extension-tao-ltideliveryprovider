@@ -9,6 +9,13 @@ msgstr ""
 "targetLanguage: pt-BR\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /ltiDeliveryProvider/locales/en-US/deliverytool.rdf.po\n"
+"X-Crowdin-File-ID: 1219\n"
+"Language-Team: Portuguese, Brazilian\n"
 
 # http://www.tao.lu/Ontologies/TAOLTI.rdf#LTIToolDelivery
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
