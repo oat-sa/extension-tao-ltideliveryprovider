@@ -37,7 +37,6 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
-        $parameters = $configurator->parameters();
 
         $services
             ->set(LtiContextRepositoryInterface::class, Lti1p3ContextCacheRepository::class)

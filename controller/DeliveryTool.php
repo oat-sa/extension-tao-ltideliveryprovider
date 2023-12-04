@@ -20,8 +20,10 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use common_Exception;
 use common_ext_ExtensionsManager;
 use common_Logger;
+use common_session_Session;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -40,7 +42,9 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
+use oat\taoQtiTest\model\Service\ConcurringSessionService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
+use PHPSession;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
 
@@ -103,6 +107,7 @@ class DeliveryTool extends ToolModule
     public function run()
     {
         $compiledDelivery = $this->getDelivery();
+
         if (is_null($compiledDelivery) || !$compiledDelivery->exists()) {
             if ($this->hasAccess(LinkConfiguration::class, 'configureDelivery')) {
                 // user authorised to select the Delivery
@@ -132,6 +137,10 @@ class DeliveryTool extends ToolModule
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
                         $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
+
+                        if ($activeExecution instanceof DeliveryExecution) {
+                            $this->getConcurringSessionService()->pauseConcurrentSessions($activeExecution);
+                        }
 
                         $this->resetDeliveryExecutionState($activeExecution);
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
@@ -283,8 +292,9 @@ class DeliveryTool extends ToolModule
      */
     protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
     {
-        $deliveryExecutionService = $this->getServiceLocator()->get(LtiDeliveryExecutionService::SERVICE_ID);
-        return $deliveryExecutionService->getActiveDeliveryExecution($delivery);
+        return $this->getServiceLocator()
+            ->get(LtiDeliveryExecutionService::SERVICE_ID)
+            ->getActiveDeliveryExecution($delivery);
     }
 
     /**
@@ -358,5 +368,10 @@ class DeliveryTool extends ToolModule
     private function getFeatureFlagChecker(): FeatureFlagChecker
     {
         return $this->getPsrContainer()->get(FeatureFlagChecker::class);
+    }
+
+    private function getConcurringSessionService(): ConcurringSessionService
+    {
+        return $this->getPsrContainer()->get(ConcurringSessionService::class);
     }
 }
