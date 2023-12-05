@@ -38,6 +38,7 @@ use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionStateContext;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\user\Lti1p3User;
+use oat\taoQtiTest\models\event\ResultTestVariablesAfterTransmissionEvent;
 use oat\taoQtiTest\models\TestSessionService;
 use oat\taoResultServer\models\Events\DeliveryExecutionResultsRecalculated;
 use qtism\common\datatypes\QtiScalar;
@@ -108,8 +109,10 @@ class LtiAgsListener extends ConfigurableService
         }
     }
 
-    private function onDeliveryExecutionFinish(DeliveryExecutionState $event): void
+    public function onDeliveryExecutionFinish(ResultTestVariablesAfterTransmissionEvent $event): void
     {
+        //todo : add logic
+        return;
         /** @var User $user */
         $user = $event->getContext()->getParameter(DeliveryExecutionStateContext::PARAM_USER);
         $deliveryExecution = $event->getDeliveryExecution();
