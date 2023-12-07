@@ -40,11 +40,6 @@ class RegisterLtiEvents extends InstallAction
         );
 
         $this->registerEvent(
-            DeliveryExecutionState::class,
-            [LtiAgsListener::class, 'onDeliveryExecutionStateUpdate']
-        );
-
-        $this->registerEvent(
             DeliveryExecutionResultsRecalculated::class,
             [LtiAgsListener::class, 'onDeliveryExecutionResultsRecalculated']
         );

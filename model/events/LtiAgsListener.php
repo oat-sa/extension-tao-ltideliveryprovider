@@ -70,18 +70,6 @@ class LtiAgsListener extends ConfigurableService
         }
     }
 
-    public function onDeliveryExecutionStateUpdate(DeliveryExecutionState $event)
-    {
-        if (
-            $event->getPreviousState() === DeliveryExecutionInterface::STATE_ACTIVE
-            && $event->getState() === DeliveryExecutionInterface::STATE_FINISHED
-            && null !== $event->getContext()
-        ) {
-            //Todo : Unregister event? how
-//            $this->onDeliveryExecutionFinish($event);
-        }
-    }
-
     public function onDeliveryExecutionResultsRecalculated(DeliveryExecutionResultsRecalculated $event): void
     {
         $deliveryExecution = $event->getDeliveryExecution();
