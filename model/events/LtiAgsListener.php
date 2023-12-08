@@ -92,7 +92,9 @@ class LtiAgsListener extends ConfigurableService
     public function onDeliveryExecutionFinish(TestVariablesRecorded $event): void
     {
         $launchData = $this->getLtiContextRepository()->findByDeliveryExecutionId($event->getDeliveryExecutionId());
-
+        if (!$launchData) {
+            return;
+        }
         $scoreTotal = null;
         $scoreTotalMax = null;
         $scoreTotalMicrotime = null;
