@@ -20,8 +20,7 @@ final class Version202312071726511874_ltiDeliveryProvider extends AbstractMigrat
 {
     public function getDescription(): string
     {
-        return 'Register ResultTestVariablesAfterTransmissionEvent event,' .
-            'Unregister LtiAgsListener onDeliveryExecutionStateUpdate event';
+        return 'Register TestVariablesRecorded event, Unregister LtiAgsListener onDeliveryExecutionStateUpdate event';
     }
 
     public function up(Schema $schema): void
