@@ -103,12 +103,12 @@ class LtiAgsListener extends ConfigurableService
 
             if ($variable instanceof OutcomeVariable) {
                 if ($variable->getIdentifier() === 'SCORE_TOTAL') {
-                    $scoreTotal = $variable->getValue();
+                    $scoreTotal = (float)$variable->getValue();
                     $scoreTotalMicrotime = $variable->getEpoch();
                 }
 
                 if ($variable->getIdentifier() === 'SCORE_TOTAL_MAX') {
-                    $scoreTotalMax = $variable->getValue();
+                    $scoreTotalMax = (float)$variable->getValue();
                 }
 
                 if ($scoreTotal !== null && $scoreTotalMax !== null) {
