@@ -61,6 +61,23 @@ class Lti1p3ContextCacheRepositoryTest extends TestCase
         $this->assertEquals($this->launchDataObject, $result);
     }
 
+    public function testFindByDeliveryExecutionIdHappyPath(): void
+    {
+        $cacheItem = $this
+            ->createConfiguredMock(
+                CacheItemInterface::class,
+                ['get' => json_encode($this->launchDataObject)]
+            );
+        $this->storage
+            ->expects($this->once())
+            ->method('getItem')
+            ->willReturn($cacheItem);
+
+        $result = $this->subject->findByDeliveryExecutionId($this->deliveryExecution->getIdentifier());
+
+        $this->assertEquals($this->launchDataObject, $result);
+    }
+
     public function testFindByDeliveryExecutionReturnsNull(): void
     {
         $cacheItem = $this
