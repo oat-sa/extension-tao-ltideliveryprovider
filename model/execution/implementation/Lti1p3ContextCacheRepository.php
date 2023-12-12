@@ -38,6 +38,18 @@ class Lti1p3ContextCacheRepository implements LtiContextRepositoryInterface
         $this->cache = $cache;
     }
 
+    public function findByDeliveryExecutionId($deliveryExecutionId): ?LtiLaunchData
+    {
+
+        $item = $this->cache->getItem($this->buildKey($deliveryExecutionId));
+
+        if ($data = $item->get()) {
+            return LtiLaunchData::fromJsonArray(json_decode($data, true));
+        }
+
+        return null;
+    }
+
     public function findByDeliveryExecution(DeliveryExecutionInterface $deliveryExecution): ?LtiLaunchData
     {
 
