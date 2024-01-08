@@ -8,7 +8,6 @@ use Doctrine\DBAL\Schema\Schema;
 use oat\ltiDeliveryProvider\model\events\LtiAgsListener;
 use oat\oatbox\event\EventManager;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
-use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
 use oat\taoQtiTest\models\event\DeliveryExecutionFinish;
 
 /**
@@ -16,33 +15,44 @@ use oat\taoQtiTest\models\event\DeliveryExecutionFinish;
  *
  * phpcs:disable Squiz.Classes.ValidClassName
  */
-final class Version202312071726511874_ltiDeliveryProvider extends AbstractMigration
+final class Version202312291225421874_ltiDeliveryProvider extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Register TestVariablesRecorded event, Unregister LtiAgsListener onDeliveryExecutionStateUpdate event';
+        return 'Remove TestVariablesRecorded and add DeliveryExecutionFinish event.';
     }
 
     public function up(Schema $schema): void
     {
         $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
 
+        $eventManager->attach(
+            DeliveryExecutionFinish::class,
+            [LtiAgsListener::class, 'onDeliveryExecutionFinish']
+        );
+
         $eventManager->detach(
-            DeliveryExecutionState::class,
-            [LtiAgsListener::class, 'onDeliveryExecutionStateUpdate']
+            'TestVariablesRecorded',
+            [LtiAgsListener::class, 'onDeliveryExecutionFinish']
         );
 
 
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+
     }
 
     public function down(Schema $schema): void
     {
         $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
 
+        $eventManager->detach(
+            DeliveryExecutionFinish::class,
+            [LtiAgsListener::class, 'onDeliveryExecutionFinish']
+        );
+
         $eventManager->attach(
-            DeliveryExecutionState::class,
-            [LtiAgsListener::class, 'onDeliveryExecutionStateUpdate']
+            'TestVariablesRecorded',
+            [LtiAgsListener::class, 'onDeliveryExecutionFinish']
         );
 
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
