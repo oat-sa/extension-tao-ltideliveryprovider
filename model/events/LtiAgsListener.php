@@ -34,7 +34,7 @@ use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionCreated;
 use oat\taoLti\models\classes\LtiLaunchData;
 use oat\taoLti\models\classes\user\Lti1p3User;
-use oat\taoQtiTest\models\event\TestVariablesRecorded;
+use oat\taoQtiTest\models\event\DeliveryExecutionFinish;
 use oat\taoResultServer\models\Events\DeliveryExecutionResultsRecalculated;
 use tao_helpers_Date as DateHelper;
 use taoResultServer_models_classes_OutcomeVariable as OutcomeVariable;
@@ -89,9 +89,10 @@ class LtiAgsListener extends ConfigurableService
         }
     }
 
-    public function onDeliveryExecutionFinish(TestVariablesRecorded $event): void
+    public function onDeliveryExecutionFinish(DeliveryExecutionFinish $event): void
     {
-        $launchData = $this->getLtiContextRepository()->findByDeliveryExecutionId($event->getDeliveryExecutionId());
+        $deliveryId = $event->getDeliveryExecution()->getIdentifier();
+        $launchData = $this->getLtiContextRepository()->findByDeliveryExecutionId($deliveryId);
         if (!$launchData) {
             return;
         }
@@ -117,10 +118,14 @@ class LtiAgsListener extends ConfigurableService
             }
         }
 
+        if (!$scoreTotalMicrotime) {
+            $scoreTotalMicrotime = $event->getDeliveryExecution()->getFinishTime();
+        }
+
         $this->queueSendAgsScoreTaskWithScores(
             'AGS score send on test finish',
             $launchData,
-            $event->getDeliveryExecutionId(),
+            $deliveryId,
             $scoreTotal,
             $scoreTotalMax,
             $event->getIsManualScored()
