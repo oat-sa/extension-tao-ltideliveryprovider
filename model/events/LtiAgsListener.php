@@ -91,7 +91,8 @@ class LtiAgsListener extends ConfigurableService
 
     public function onDeliveryExecutionFinish(DeliveryExecutionFinish $event): void
     {
-        $launchData = $this->getLtiContextRepository()->findByDeliveryExecutionId($event->getDeliveryExecution()->getIdentifier());
+        $deliveryId = $event->getDeliveryExecution()->getIdentifier();
+        $launchData = $this->getLtiContextRepository()->findByDeliveryExecutionId($deliveryId);
         if (!$launchData) {
             return;
         }
@@ -124,7 +125,7 @@ class LtiAgsListener extends ConfigurableService
         $this->queueSendAgsScoreTaskWithScores(
             'AGS score send on test finish',
             $launchData,
-            $event->getDeliveryExecution()->getIdentifier(),
+            $deliveryId,
             $scoreTotal,
             $scoreTotalMax,
             $event->getIsManualScored()
