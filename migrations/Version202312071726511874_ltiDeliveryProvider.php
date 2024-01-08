@@ -9,7 +9,7 @@ use oat\ltiDeliveryProvider\model\events\LtiAgsListener;
 use oat\oatbox\event\EventManager;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\taoDelivery\models\classes\execution\event\DeliveryExecutionState;
-use oat\taoQtiTest\models\event\DeliveryExecutionFinish;
+use oat\taoQtiTest\models\event\TestVariablesRecorded;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -27,6 +27,11 @@ final class Version202312071726511874_ltiDeliveryProvider extends AbstractMigrat
     {
         $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
 
+        $eventManager->attach(
+            TestVariablesRecorded::class,
+            [LtiAgsListener::class, 'onDeliveryExecutionFinish']
+        );
+
         $eventManager->detach(
             DeliveryExecutionState::class,
             [LtiAgsListener::class, 'onDeliveryExecutionStateUpdate']
@@ -39,6 +44,11 @@ final class Version202312071726511874_ltiDeliveryProvider extends AbstractMigrat
     public function down(Schema $schema): void
     {
         $eventManager = $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+
+        $eventManager->detach(
+            TestVariablesRecorded::class,
+            [LtiAgsListener::class, 'onDeliveryExecutionFinish']
+        );
 
         $eventManager->attach(
             DeliveryExecutionState::class,
