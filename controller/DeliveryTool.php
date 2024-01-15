@@ -140,6 +140,10 @@ class DeliveryTool extends ToolModule
 
                         if ($activeExecution instanceof DeliveryExecution) {
                             $this->getConcurringSessionService()->pauseConcurrentSessions($activeExecution);
+
+                            if ($activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED) {
+                                $this->getConcurringSessionService()->adjustTimers($activeExecution);
+                            }
                         }
 
                         $this->resetDeliveryExecutionState($activeExecution);
