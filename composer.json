@@ -68,7 +68,7 @@
 		"oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
 		"oat-sa/extension-tao-lti" : ">=15.11.0",
 		"oat-sa/extension-tao-outcomeui" : ">=10.0.0",
-		"oat-sa/extension-tao-testqti" : ">=48.1.0",
+		"oat-sa/extension-tao-testqti" : "dev-feat/TR-5911-adjust-server-timers-when-resuming-an-execution as >=48.2.2",
 		"oat-sa/extension-tao-outcome" : ">=13.3.0"
 	}
 }
