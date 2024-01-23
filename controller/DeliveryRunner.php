@@ -15,13 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
- *
+ * Copyright (c) 2013-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\ltiDeliveryProvider\controller;
 
+use oat\ltiDeliveryProvider\model\navigation\Command\GenerateReturnUrlCommand;
 use oat\tao\helpers\UrlHelper;
 use oat\tao\model\theme\ThemeServiceInterface;
 use oat\taoDelivery\controller\DeliveryServer;
@@ -36,6 +35,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
+use oat\taoQtiTest\model\Service\ConcurringSessionService;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -65,6 +65,7 @@ class DeliveryRunner extends DeliveryServer
     protected function getReturnUrl()
     {
         $deliveryExecution = $this->getCurrentDeliveryExecution();
+
         return _url(
             'ltiReturn',
             'DeliveryRunner',
@@ -75,10 +76,29 @@ class DeliveryRunner extends DeliveryServer
 
     public function ltiReturn()
     {
+        $isFeedback = false;
+        $queryString = [];
+        $concurringService = $this->getConcurringSessionService();
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
-        $redirectUrl = $navigation->getReturnUrl($launchData, $deliveryExecution);
+
+        if ($concurringService->isConcurringSession($deliveryExecution)) {
+            $isFeedback = true;
+            $queryString = [
+                'reason' => 'concurrent-test'
+            ];
+            $concurringService->clearConcurringSession($deliveryExecution);
+        }
+
+        $redirectUrl = $navigation->generateReturnUrl(
+            new GenerateReturnUrlCommand(
+                $launchData,
+                $deliveryExecution,
+                $isFeedback,
+                $queryString
+            )
+        );
         \common_Logger::i(
             sprintf(
                 'Redirected from the deliveryExecution %s to %s',
@@ -86,6 +106,7 @@ class DeliveryRunner extends DeliveryServer
                 $redirectUrl
             )
         );
+
         $this->redirect($redirectUrl);
     }
 
@@ -169,6 +190,12 @@ class DeliveryRunner extends DeliveryServer
         $this->setView('learner/thankYou.tpl');
     }
 
+    public function feedback(): void
+    {
+        $this->setData('reason', $this->getRequestParameter('reason'));
+        $this->setView('learner/feedback.tpl');
+    }
+
     /**
      * Redirect user to return URL
      */
@@ -184,7 +211,14 @@ class DeliveryRunner extends DeliveryServer
                 $stateService->finish($deliveryExecution);
             }
         }
-        $redirectUrl = $this->getServiceLocator()->get(LTIDeliveryTool::class)->getFinishUrl($deliveryExecution);
+        $redirectUrl = $deliveryExecution
+            ? $this->getServiceLocator()->get(LTIDeliveryTool::class)->getFinishUrl($deliveryExecution)
+            : $this->getReturnUrl();
         $this->redirect($redirectUrl);
+    }
+
+    private function getConcurringSessionService(): ConcurringSessionService
+    {
+        return $this->getPsrContainer()->get(ConcurringSessionService::class);
     }
 }
