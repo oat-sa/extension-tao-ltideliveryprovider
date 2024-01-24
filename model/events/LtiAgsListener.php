@@ -80,7 +80,7 @@ class LtiAgsListener extends ConfigurableService
             $this->queueSendAgsScoreTaskWithScores(
                 'AGS scores send on result recalculation',
                 $launchData,
-                $deliveryExecution->getUserIdentifier(),
+                $deliveryExecution->getIdentifier(),
                 $event->getTotalScore(),
                 $event->getTotalMaxScore(),
                 $gradingStatus,
