@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013-2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2024 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 namespace oat\ltiDeliveryProvider\controller;
@@ -140,6 +140,10 @@ class DeliveryTool extends ToolModule
 
                         if ($activeExecution instanceof DeliveryExecution) {
                             $this->getConcurringSessionService()->pauseConcurrentSessions($activeExecution);
+
+                            if ($activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED) {
+                                $this->getConcurringSessionService()->adjustTimers($activeExecution);
+                            }
                         }
 
                         $this->resetDeliveryExecutionState($activeExecution);
