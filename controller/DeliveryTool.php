@@ -144,9 +144,12 @@ class DeliveryTool extends ToolModule
                             if ($activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED) {
                                 $this->getConcurringSessionService()->adjustTimers($activeExecution);
                             }
+
+                            $this->getConcurringSessionService()->clearConcurringSession($activeExecution);
                         }
 
                         $this->resetDeliveryExecutionState($activeExecution);
+
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
@@ -232,7 +235,7 @@ class DeliveryTool extends ToolModule
 
     /**
      * @param core_kernel_classes_Resource $delivery
-     * @param DeliveryExecution            $activeExecution
+     * @param DeliveryExecution|null $activeExecution
      *
      * @return string
      * @throws LtiException
