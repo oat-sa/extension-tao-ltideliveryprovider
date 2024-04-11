@@ -121,8 +121,10 @@ class DeliveryTool extends ToolModule
             if ($isLearner || $isDryRun) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
-                        $activeExecution = $this->getLtiConcurringSessionService()->getActiveDeliveryExecution($compiledDelivery);
-                        $this->getLtiConcurringSessionService()->pauseActiveDeliveryExecution($activeExecution);
+                        $ltiConcurringSessionService = $this->getLtiConcurringSessionService();
+                        $activeExecution = $ltiConcurringSessionService->getActiveDeliveryExecution($compiledDelivery);
+                        $ltiConcurringSessionService->pauseActiveDeliveryExecution($activeExecution);
+                        
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());

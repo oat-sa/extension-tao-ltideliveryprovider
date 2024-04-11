@@ -66,6 +66,6 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
                     service(DeliveryExecutionService::SERVICE_ID),
                     service(FeatureFlagChecker::class),
                 ]
-            );    
+            );
     }
 }

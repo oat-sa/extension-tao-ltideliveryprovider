@@ -45,7 +45,6 @@ class LtiConcurringSessionService extends ConcurringSessionService
 
     public function pauseActiveDeliveryExecution($activeExecution): void
     {
-        
         if ($activeExecution instanceof DeliveryExecution) {
             $this->getConcurringSessionService()->pauseConcurrentSessions($activeExecution);
 
