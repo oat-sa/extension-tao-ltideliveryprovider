@@ -25,7 +25,13 @@ namespace oat\ltiDeliveryProvider\model\serviceProvider;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3ContextCacheRepository;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
+use oat\ltiDeliveryProvider\model\session\ConcuringSession\LtiConcurringSessionService;
 use oat\oatbox\cache\factory\CacheItemPoolFactory;
+use oat\oatbox\log\LoggerService;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\taoDelivery\model\execution\DeliveryExecutionService;
+use oat\taoDelivery\model\RuntimeService;
+use oat\taoQtiTest\models\runner\QtiRunnerService;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -48,5 +54,18 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
                         ->args([[]])
                 ]
             );
+
+        $services
+            ->set(LtiConcurringSessionService::class, LtiConcurringSessionService::class)
+            ->public()
+            ->args(
+                [
+                    service(LoggerService::SERVICE_ID),
+                    service(QtiRunnerService::SERVICE_ID),
+                    service(RuntimeService::SERVICE_ID),
+                    service(DeliveryExecutionService::SERVICE_ID),
+                    service(FeatureFlagChecker::class),
+                ]
+            );    
     }
 }
