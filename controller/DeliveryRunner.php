@@ -35,7 +35,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoDelivery\model\execution\DeliveryExecution;
 use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
-use oat\ltiDeliveryProvider\model\session\ConcuringSession\LtiConcurringSessionService;
+use oat\taoQtiTest\model\Service\ConcurringSessionService;
 
 /**
  * Called by the DeliveryTool to override DeliveryServer settings
@@ -78,7 +78,7 @@ class DeliveryRunner extends DeliveryServer
     {
         $isFeedback = false;
         $queryString = [];
-        $concurringService = $this->getLtiConcurringSessionService();
+        $concurringService = $this->getConcurringSessionService();
         $navigation = $this->getServiceLocator()->get(LtiNavigationService::SERVICE_ID);
         $deliveryExecution = $this->getCurrentDeliveryExecution();
         $launchData = LtiService::singleton()->getLtiSession()->getLaunchData();
@@ -141,7 +141,7 @@ class DeliveryRunner extends DeliveryServer
                 $remoteLink,
                 $user
             );
-            $this->getLtiConcurringSessionService()->pauseActiveDeliveryExecution($newExecution);
+            $this->getConcurringSessionService()->pauseActiveDeliveryExecution($newExecution);
             $runDeliveryExecutionUrl = $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
                 'runDeliveryExecution',
                 null,
@@ -215,8 +215,8 @@ class DeliveryRunner extends DeliveryServer
         $this->redirect($redirectUrl);
     }
 
-    private function getLtiConcurringSessionService(): LtiConcurringSessionService
+    private function getConcurringSessionService(): ConcurringSessionService
     {
-        return $this->getPsrContainer()->get(LtiConcurringSessionService::class);
+        return $this->getPsrContainer()->get(ConcurringSessionService::class);
     }
 }
