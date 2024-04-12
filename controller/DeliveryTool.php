@@ -39,6 +39,7 @@ use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
 use oat\taoLti\models\classes\LtiRoles;
 use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
+use oat\taoQtiTest\model\Service\ConcurringSessionService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
@@ -121,9 +122,8 @@ class DeliveryTool extends ToolModule
             if ($isLearner || $isDryRun) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
-                        $ltiConcurringSessionService = $this->getLtiConcurringSessionService();
-                        $activeExecution = $ltiConcurringSessionService->getActiveDeliveryExecution($compiledDelivery);
-                        $ltiConcurringSessionService->pauseActiveDeliveryExecution($activeExecution);
+                        $activeExecution = $this->getLtiConcurringSessionService()->getActiveDeliveryExecution($compiledDelivery);
+                        $this->getConcurringSessionService()->pauseActiveDeliveryExecution($activeExecution);
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
@@ -312,5 +312,10 @@ class DeliveryTool extends ToolModule
     private function getLtiConcurringSessionService(): LtiConcurringSessionService
     {
         return $this->getPsrContainer()->get(LtiConcurringSessionService::class);
+    }
+
+    private function getConcurringSessionService(): ConcurringSessionService
+    {
+        return $this->getPsrContainer()->get(ConcurringSessionService::class);
     }
 }
