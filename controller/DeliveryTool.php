@@ -29,7 +29,6 @@ use oat\ltiDeliveryProvider\model\LtiAssignment;
 use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
-use oat\ltiDeliveryProvider\model\session\ConcuringSession\LtiConcurringSessionService;
 use oat\tao\model\actionQueue\ActionFullException;
 use oat\taoDelivery\model\Capacity\CapacityInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
@@ -122,7 +121,7 @@ class DeliveryTool extends ToolModule
             if ($isLearner || $isDryRun) {
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
-                        $activeExecution = $this->getLtiConcurringSessionService()->getActiveDeliveryExecution($compiledDelivery);
+                        $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
                         $this->getConcurringSessionService()->pauseActiveDeliveryExecution($activeExecution);
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
@@ -220,7 +219,7 @@ class DeliveryTool extends ToolModule
         $currentSession = \common_session_SessionManager::getSession();
         $user = $currentSession->getUser();
         if ($activeExecution === null) {
-            $activeExecution = $this->getLtiConcurringSessionService()->getActiveDeliveryExecution($delivery);
+            $activeExecution = $this->getActiveDeliveryExecution($delivery);
         }
 
         if ($activeExecution !== null) {
@@ -300,6 +299,18 @@ class DeliveryTool extends ToolModule
         return $returnValue;
     }
 
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     *
+     * @return mixed|null|DeliveryExecution
+     */
+    protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
+    {
+        return $this->getServiceLocator()
+            ->get(LtiDeliveryExecutionService::SERVICE_ID)
+            ->getActiveDeliveryExecution($delivery);
+    }
+
     private function configureI18n(): void
     {
         $extension = $this->getServiceLocator()
@@ -307,11 +318,6 @@ class DeliveryTool extends ToolModule
             ->getExtensionById('ltiDeliveryProvider');
 
         tao_helpers_I18n::init($extension, DEFAULT_ANONYMOUS_INTERFACE_LANG);
-    }
-
-    private function getLtiConcurringSessionService(): LtiConcurringSessionService
-    {
-        return $this->getPsrContainer()->get(LtiConcurringSessionService::class);
     }
 
     private function getConcurringSessionService(): ConcurringSessionService

@@ -24,9 +24,7 @@ namespace oat\ltiDeliveryProvider\model\serviceProvider;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\ltiDeliveryProvider\model\execution\implementation\Lti1p3ContextCacheRepository;
-use oat\ltiDeliveryProvider\model\execution\implementation\LtiDeliveryExecutionService;
 use oat\ltiDeliveryProvider\model\execution\LtiContextRepositoryInterface;
-use oat\ltiDeliveryProvider\model\session\ConcuringSession\LtiConcurringSessionService;
 use oat\oatbox\cache\factory\CacheItemPoolFactory;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -48,15 +46,6 @@ class LtiDeliveryServiceProvider implements ContainerServiceProviderInterface
                     inline_service(CacheItemPoolInterface::class)
                         ->factory([service(CacheItemPoolFactory::class), 'create'])
                         ->args([[]])
-                ]
-            );
-
-        $services
-            ->set(LtiConcurringSessionService::class, LtiConcurringSessionService::class)
-            ->public()
-            ->args(
-                [
-                    service(LtiDeliveryExecutionService::SERVICE_ID),
                 ]
             );
     }
