@@ -141,7 +141,7 @@ class DeliveryRunner extends DeliveryServer
                 $remoteLink,
                 $user
             );
-            $this->getConcurringSessionService()->pauseActiveDeliveryExecution($newExecution);
+            $this->getConcurringSessionService()->pauseActiveDeliveryExecutionsForUser($newExecution);
             $runDeliveryExecutionUrl = $this->getServiceLocator()->get(UrlHelper::class)->buildUrl(
                 'runDeliveryExecution',
                 null,
