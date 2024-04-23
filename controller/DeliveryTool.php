@@ -20,10 +20,8 @@
 
 namespace oat\ltiDeliveryProvider\controller;
 
-use common_Exception;
 use common_ext_ExtensionsManager;
 use common_Logger;
-use common_session_Session;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\ltiDeliveryProvider\model\execution\LtiDeliveryExecutionService;
@@ -32,10 +30,8 @@ use oat\ltiDeliveryProvider\model\LTIDeliveryTool;
 use oat\ltiDeliveryProvider\model\LtiLaunchDataService;
 use oat\ltiDeliveryProvider\model\navigation\LtiNavigationService;
 use oat\tao\model\actionQueue\ActionFullException;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoDelivery\model\Capacity\CapacityInterface;
 use oat\taoDelivery\model\execution\DeliveryExecution;
-use oat\taoDelivery\model\execution\StateServiceInterface;
 use oat\taoLti\controller\ToolModule;
 use oat\taoLti\models\classes\LtiException;
 use oat\taoLti\models\classes\LtiMessages\LtiErrorMessage;
@@ -44,7 +40,6 @@ use oat\taoLti\models\classes\LtiService;
 use oat\taoLti\models\classes\LtiVariableMissingException;
 use oat\taoQtiTest\model\Service\ConcurringSessionService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
-use PHPSession;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
 
@@ -52,16 +47,6 @@ use function GuzzleHttp\Psr7\stream_for;
 
 class DeliveryTool extends ToolModule
 {
-    /**
-     * @var string Controls whether a delivery execution state should be kept as is or reset each time it starts.
-     *             `false` – the state will be reset on each restart.
-     *             `true` – the state will be maintained upon a restart.
-     *
-     * phpcs:disable Generic.Files.LineLength
-     */
-    public const FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE = 'FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE';
-    // phpcs:enable Generic.Files.LineLength
-
     /**
      * Setting this parameter to 'true' will prevent resuming a testsession in progress
      * and will start a new testsession whenever the lti tool is launched
@@ -137,19 +122,7 @@ class DeliveryTool extends ToolModule
                 if ($this->hasAccess(DeliveryRunner::class, 'runDeliveryExecution')) {
                     try {
                         $activeExecution = $this->getActiveDeliveryExecution($compiledDelivery);
-
-                        if ($activeExecution instanceof DeliveryExecution) {
-                            $this->getConcurringSessionService()->pauseConcurrentSessions($activeExecution);
-
-                            if ($activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED) {
-                                $this->getConcurringSessionService()->adjustTimers($activeExecution);
-                            }
-
-                            $this->getConcurringSessionService()->clearConcurringSession($activeExecution);
-                        }
-
-                        $this->resetDeliveryExecutionState($activeExecution);
-
+                        $this->getConcurringSessionService()->pauseActiveDeliveryExecutionsForUser($activeExecution);
                         $this->redirect($this->getLearnerUrl($compiledDelivery, $activeExecution));
                     } catch (QtiTestExtractionFailedException $e) {
                         common_Logger::i($e->getMessage());
@@ -293,18 +266,6 @@ class DeliveryTool extends ToolModule
     }
 
     /**
-     * @param core_kernel_classes_Resource $delivery
-     *
-     * @return mixed|null|DeliveryExecution
-     */
-    protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
-    {
-        return $this->getServiceLocator()
-            ->get(LtiDeliveryExecutionService::SERVICE_ID)
-            ->getActiveDeliveryExecution($delivery);
-    }
-
-    /**
      * (non-PHPdoc)
      * @see ToolModule::getTool()
      */
@@ -338,6 +299,18 @@ class DeliveryTool extends ToolModule
         return $returnValue;
     }
 
+    /**
+     * @param core_kernel_classes_Resource $delivery
+     *
+     * @return mixed|null|DeliveryExecution
+     */
+    protected function getActiveDeliveryExecution(\core_kernel_classes_Resource $delivery)
+    {
+        return $this->getServiceLocator()
+            ->get(LtiDeliveryExecutionService::SERVICE_ID)
+            ->getActiveDeliveryExecution($delivery);
+    }
+
     private function configureI18n(): void
     {
         $extension = $this->getServiceLocator()
@@ -345,36 +318,6 @@ class DeliveryTool extends ToolModule
             ->getExtensionById('ltiDeliveryProvider');
 
         tao_helpers_I18n::init($extension, DEFAULT_ANONYMOUS_INTERFACE_LANG);
-    }
-
-    private function resetDeliveryExecutionState(DeliveryExecution $activeExecution = null): void
-    {
-        if (
-            null === $activeExecution
-            || !$this->isDeliveryExecutionStateResetEnabled()
-            || $activeExecution->getState()->getUri() === DeliveryExecution::STATE_PAUSED
-        ) {
-            return;
-        }
-
-        $this->getStateService()->pause($activeExecution);
-    }
-
-    private function isDeliveryExecutionStateResetEnabled(): bool
-    {
-        return !$this->getFeatureFlagChecker()->isEnabled(
-            static::FEATURE_FLAG_MAINTAIN_RESTARTED_DELIVERY_EXECUTION_STATE
-        );
-    }
-
-    private function getStateService(): StateServiceInterface
-    {
-        return $this->getPsrContainer()->get(StateServiceInterface::SERVICE_ID);
-    }
-
-    private function getFeatureFlagChecker(): FeatureFlagChecker
-    {
-        return $this->getPsrContainer()->get(FeatureFlagChecker::class);
     }
 
     private function getConcurringSessionService(): ConcurringSessionService
