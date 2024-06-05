@@ -1,0 +1,167 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2024.06\n"
+"PO-Revision-Date: 2024-06-03T14:19:03\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: en-US\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s Tool Provider"
+msgstr ""
+
+msgid "%s\" has been configured:"
+msgstr ""
+
+msgid "Access to this functionality is restricted"
+msgstr ""
+
+msgid "Access to this functionality is restricted to students"
+msgstr ""
+
+msgid "An unusually high number of people are testing right now, your test will launch in a few moments to ensure that it runs smoothly. Thanks for your patience!"
+msgstr ""
+
+msgid "Attempts limit has been reached."
+msgstr ""
+
+msgid "Available Deliveries"
+msgstr "Available Assessments"
+
+msgid "Back"
+msgstr ""
+
+msgid "Click on the back button to return to %s."
+msgstr ""
+
+msgid "Click on the back button to return."
+msgstr ""
+
+msgid "Configured LTI Link"
+msgstr ""
+
+msgid "Copy and paste the following URL into your LTI compatible tool consumer."
+msgstr ""
+
+#, tao-public
+msgid "Deliveries"
+msgstr "Assessments"
+
+msgid "Delivery does not exist. Please contact your instructor."
+msgstr "Assessment does not exist. Please contact your instructor."
+
+msgid "Executions"
+msgstr ""
+
+msgid "Launch URL"
+msgstr ""
+
+#, tao-public
+msgid "LTI"
+msgstr ""
+
+msgid "max_attempts\" variable must me numeric."
+msgstr ""
+
+msgid "No deliveries available"
+msgstr "No assessments available"
+
+msgid "No LTI consumers defined"
+msgstr ""
+
+msgid "no monitoring"
+msgstr ""
+
+msgid "Please give the key value persistence id"
+msgstr ""
+
+msgid "Please select a delivery"
+msgstr "Please select an assessment"
+
+msgid "Please select a delivery for \"%s"
+msgstr "Please select an assessment for \"%s"
+
+msgid "Registered activeExecutions metric"
+msgstr ""
+
+msgid "Registered and created LtiResultIdStorage Rds Storage"
+msgstr ""
+
+msgid "Registered and created ResultAliasService / LtiOutcomeService services"
+msgstr ""
+
+msgid "Registered Lti delivery execution service in Key value"
+msgstr "Registered Lti assessment execution service in Key value"
+
+msgid "Registered Lti delivery execution service in Ontology"
+msgstr "Registered Lti assessment execution service in Ontology"
+
+msgid "Repeat"
+msgstr ""
+
+msgid "Repeat the test"
+msgstr ""
+
+msgid "Retake the test"
+msgstr ""
+
+msgid "Return to %s."
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Select Delivery"
+msgstr "Select Assessment"
+
+msgid "Selected Delivery"
+msgstr "Selected Assessment"
+
+msgid "Test error"
+msgstr ""
+
+msgid "Test Launch Queue"
+msgstr ""
+
+msgid "Test Session not found"
+msgstr ""
+
+msgid "Thank you"
+msgstr ""
+
+msgid "The delivery is currently unavailable."
+msgstr "The assessment is currently unavailable."
+
+msgid "The test was suspended because another one was opened in a different window or tab"
+msgstr ""
+
+msgid "There was an error during the test"
+msgstr ""
+
+msgid "This tool has been configured:"
+msgstr ""
+
+msgid "This tool has not yet been configured, please contact your instructor"
+msgstr ""
+
+msgid "Tool consumer(s)"
+msgstr ""
+
+msgid "User is not authorized to run this delivery"
+msgstr "User is not authorized to run this assessment"
+
+msgid "Wrong value of \"secure\" variable."
+msgstr ""
+
+msgid "You have already taken this test."
+msgstr ""
+
+msgid "You have finished the test!"
+msgstr ""
+
