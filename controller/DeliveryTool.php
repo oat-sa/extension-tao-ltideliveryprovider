@@ -42,8 +42,7 @@ use oat\taoQtiTest\model\Service\ConcurringSessionService;
 use oat\taoQtiTest\models\QtiTestExtractionFailedException;
 use tao_helpers_I18n;
 use tao_helpers_Uri;
-
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 
 class DeliveryTool extends ToolModule
 {
@@ -194,7 +193,7 @@ class DeliveryTool extends ToolModule
             $payload['status'] = 1;
         }
 
-        return $this->getPsrResponse()->withBody(stream_for(json_encode($payload)))
+        return $this->getPsrResponse()->withBody(Utils::streamFor(json_encode($payload)))
             ->withHeader('Content-Type', 'application/json');
     }
 
